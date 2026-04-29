@@ -14,6 +14,7 @@ language: 'en'
 - no more font extras, rio will always find the glyph if the font is installed.
 - wgpu now is optional via feature flag, this feature flag is required if you use rio with retro arch shaders. This is a movement to make rio possible for official debian.
 - rio now only renders on Screen::render to ensure GPU is not stuck or overloaded during high render peaks.
+- renderer.backend is only three options: `wgpu`, `metal` and `vulkan`.
 
 tested with 7e222ef2f1bc0a9eb4ff7f111b8f4c94faa9be97
 

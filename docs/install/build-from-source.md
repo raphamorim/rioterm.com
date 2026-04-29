@@ -123,7 +123,7 @@ If audio support is not compiled in, Rio will log a debug message when the bell 
 The `wgpu` feature flag enables the [wgpu](https://wgpu.rs/) rendering backend in sugarloaf along with the [librashader](https://github.com/SnowflakePowered/librashader) filter chain that powers [RetroArch shaders](/docs/features/retroarch-shaders).
 
 - **Required** on Windows and WebAssembly — these targets do not have a native backend yet.
-- **Optional** on macOS and Linux — the default builds ship the native Metal and Vulkan backends, which are smaller and skip the wgpu translation layer. Enable `wgpu` only if you need RetroArch filters or want to select a `wgpu`-backed renderer (`GL`, `WgpuMetal`, `DX12`, etc.) from your config.
+- **Optional** on macOS and Linux — the default builds ship the native Metal and Vulkan backends, which are smaller and skip the wgpu translation layer. Enable `wgpu` only if you need RetroArch filters or want to select the `Webgpu` renderer from your config.
 
 ```sh
 # Build with the wgpu backend + RetroArch filter chain enabled
