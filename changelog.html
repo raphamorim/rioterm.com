@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&amp;display=swap"><link rel="stylesheet" href="/assets/css/styles.8baaaff7.css">
-<script src="/assets/js/runtime~main.971fef60.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.0538c5ab.js" defer="defer"></script>
 <script src="/assets/js/main.bbd5f6d3.js" defer="defer"></script>
 </head>
 <body>
@@ -34,6 +34,7 @@
 <li class="">no more font extras, rio will always find the glyph if the font is installed.</li>
 <li class="">wgpu now is optional via feature flag, this feature flag is required if you use rio with retro arch shaders. This is a movement to make rio possible for official debian.</li>
 <li class="">rio now only renders on Screen::render to ensure GPU is not stuck or overloaded during high render peaks.</li>
+<li class="">renderer.backend is only three options: <code>wgpu</code>, <code>metal</code> and <code>vulkan</code>.</li>
 </ul>
 <p>tested with 7e222ef2f1bc0a9eb4ff7f111b8f4c94faa9be97</p>
 <table><thead><tr><th>Scenario</th><th>main</th><th>new-v4</th><th>Delta</th></tr></thead><tbody><tr><td>Idle frame</td><td>~150 µs</td><td>~100 µs</td><td>v4 ~33% faster</td></tr><tr><td>Typing, light redraw</td><td>~300 µs</td><td>~200 µs</td><td>v4 ~33% faster</td></tr><tr><td>Shell output / row damage</td><td>1000–2000 µs</td><td>100–300 µs</td><td><strong>v4 5–10× faster</strong></td></tr><tr><td>25-row scroll frame</td><td>5500 µs (renderer=3448 µs)</td><td>1661 µs (emit=1424 µs)</td><td><strong>v4 ~3× faster</strong></td></tr><tr><td>Trail animation tail (CPU work)</td><td>~300 µs</td><td>~200 µs</td><td>comparable, v4 slightly faster</td></tr><tr><td>GPU exec time (both)</td><td>~700–1000 µs</td><td>~700–1500 µs</td><td>comparable</td></tr><tr><td>First-frame setup</td><td>15 638 µs</td><td>9 397 µs</td><td>v4 ~40% faster</td></tr></tbody></table>

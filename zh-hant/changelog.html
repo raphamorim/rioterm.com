@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&amp;display=swap"><link rel="stylesheet" href="/zh-hant/assets/css/styles.8baaaff7.css">
-<script src="/zh-hant/assets/js/runtime~main.ada66336.js" defer="defer"></script>
+<script src="/zh-hant/assets/js/runtime~main.135190aa.js" defer="defer"></script>
 <script src="/zh-hant/assets/js/main.fa772993.js" defer="defer"></script>
 </head>
 <body>
@@ -34,10 +34,11 @@
 <li class="">no more font extras, rio will always find the glyph if the font is installed.</li>
 <li class="">wgpu now is optional via feature flag, this feature flag is required if you use rio with retro arch shaders. This is a movement to make rio possible for official debian.</li>
 <li class="">rio now only renders on Screen::render to ensure GPU is not stuck or overloaded during high render peaks.</li>
+<li class="">renderer.backend is only three options: <code>wgpu</code>, <code>metal</code> and <code>vulkan</code>.</li>
 </ul>
 <p>tested with 7e222ef2f1bc0a9eb4ff7f111b8f4c94faa9be97</p>
 <table><thead><tr><th>Scenario</th><th>main</th><th>new-v4</th><th>Delta</th></tr></thead><tbody><tr><td>Idle frame</td><td>~150 µs</td><td>~100 µs</td><td>v4 ~33% faster</td></tr><tr><td>Typing, light redraw</td><td>~300 µs</td><td>~200 µs</td><td>v4 ~33% faster</td></tr><tr><td>Shell output / row damage</td><td>1000–2000 µs</td><td>100–300 µs</td><td><strong>v4 5–10× faster</strong></td></tr><tr><td>25-row scroll frame</td><td>5500 µs (renderer=3448 µs)</td><td>1661 µs (emit=1424 µs)</td><td><strong>v4 ~3× faster</strong></td></tr><tr><td>Trail animation tail (CPU work)</td><td>~300 µs</td><td>~200 µs</td><td>comparable, v4 slightly faster</td></tr><tr><td>GPU exec time (both)</td><td>~700–1000 µs</td><td>~700–1500 µs</td><td>comparable</td></tr><tr><td>First-frame setup</td><td>15 638 µs</td><td>9 397 µs</td><td>v4 ~40% faster</td></tr></tbody></table>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0311">0.3.11<a href="#0311" class="hash-link" aria-label="0.3.11的直接  連結" title="0.3.11的直接連結" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0311">0.3.11<a href="#0311" class="hash-link" aria-label="0.3.11的直接連結" title="0.3.11的直接連結" translate="no">​</a></h2>
 <ul>
 <li class="">Windows: native <code>MessageBoxW</code> close-confirmation dialog when <code>confirm-before-quit = true</code> (default), mirroring macOS&#x27;s <code>applicationShouldTerminate</code> <code>NSAlert</code> in <code>rio-window/src/platform_impl/macos/app_delegate.rs</code>. Replaces rio&#x27;s in-window GPU-rendered confirmation modal on Windows. New <code>EventLoopRunner.confirm_before_quit: Cell&lt;bool&gt;</code> set via the same public <code>EventLoop::set_confirm_before_quit</code> that macOS already uses (cfg gate widened to <code>any(target_os = &quot;macos&quot;, target_os = &quot;windows&quot;)</code>). The <code>WM_CLOSE</code> handler in <code>event_loop.rs</code> checks the flag and <code>vsync_state.window_count() &lt;= 1</code> (only the <em>last</em> window prompts — matches macOS&#x27;s app-wide quit semantics) and on confirm-No swallows the message so the window stays open. rioterm&#x27;s <code>WindowEvent::CloseRequested</code> handler now follows the same fast path on Windows as on macOS — <code>routes.remove(&amp;window_id)</code> + maybe-<code>exit()</code> — since the user already confirmed at the OS layer.</li>
 <li class="">Windows render loop now matches the macOS / CVDisplayLink model exactly: <code>Window::request_redraw</code> sets a per-window <code>Arc&lt;AtomicBool&gt;</code> dirty flag instead of immediately calling <code>RedrawWindow(RDW_INTERNALPAINT)</code>. The DwmFlush worker thread (<code>rio-window/src/platform_impl/windows/event_loop/vsync.rs</code>) is the single source of frame timing — per composition cycle it iterates the window registry and, for each window where <code>dirty || should_present_after_input</code> (1 s post-input window, identical to macOS), calls <code>RedrawWindow(.., RDW_INVALIDATE)</code>. Existing <code>WM_PAINT</code> → <code>RedrawRequested</code> path is unchanged. Plumbing: new <code>vsync::VSyncSharedState</code> (<code>Arc&lt;RwLock&lt;HashMap&lt;HWND, Arc&lt;AtomicBool&gt;&gt;&gt;&gt;</code> registry + <code>Mutex&lt;Instant&gt;</code> for last input) lives on <code>ActiveEventLoop</code>, threaded into <code>WindowData</code> and the <code>Window</code> struct so input handlers, <code>request_redraw</code>, and the worker all share it. <code>Window::Drop</code> unregisters before <code>DESTROY_MSG_ID</code>. Replaces the earlier &quot;always invalidate per vsync&quot; zed mirror — that approach worked but didn&#x27;t compose with the app&#x27;s own <code>request_redraw</code>, which made scroll feel locked to DWM tick. Now scroll-driven renders queue immediately into the next vsync (≤16 ms wait) and idle frames are skipped entirely. Net behaviour matches macOS one-to-one.</li>
@@ -391,7 +392,7 @@
 </li>
 <li class=""><strong>Hints Configuration</strong>: Renamed <code>hints.enabled</code> to <code>hints.rules</code> for better clarity<!-- -->
 <ul>
-<li class="">Update your configuration: <code>[[hints.enabled]]</code>  → <code>[[hints.rules]]</code></li>
+<li class="">Update your configuration: <code>[[hints.enabled]]</code> → <code>[[hints.rules]]</code></li>
 <li class="">All hint configuration sections now use <code>hints.rules.*</code> instead of <code>hints.enabled.*</code></li>
 <li class="">Functionality remains the same, only the configuration key names changed</li>
 </ul>
@@ -869,7 +870,7 @@
 <li class="">Fix: Window output lost when rio loses focus <a href="https://github.com/raphamorim/rio/issues/706" target="_blank" rel="noopener noreferrer" class="">#706</a>.</li>
 <li class="">Updated wgpu to <code>23.0.0</code>.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0117">0.1.17<a href="#0117" class="hash-link" aria-label="0.1.17的直接連結" title="0.1.17的直 接連結" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0117">0.1.17<a href="#0117" class="hash-link" aria-label="0.1.17的直接連結" title="0.1.17的直接連結" translate="no">​</a></h2>
 <ul>
 <li class="">Fix flash of white during startup on Microsoft Windows <a href="https://github.com/raphamorim/rio/issues/640" target="_blank" rel="noopener noreferrer" class="">#640</a>.</li>
 <li class="">Add DWMWA_CLOAK support on Microsoft Windows.</li>
