@@ -298,7 +298,7 @@ The font configuration default:
 
 ```toml
 [fonts]
-size = 18
+size = 14
 features = []
 use-drawable-chars = true
 symbol-map = []
