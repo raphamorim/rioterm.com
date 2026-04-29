@@ -307,28 +307,22 @@ additional-dirs = []
 
 [fonts.regular]
 family = "cascadiacode"
-style = "Normal"
-width = "Normal"
-weight = 400
+style = "default"
 
 [fonts.bold]
 family = "cascadiacode"
-style = "Normal"
-width = "Normal"
-weight = 800
+style = "default"
 
 [fonts.italic]
 family = "cascadiacode"
-style = "Italic"
-width = "Normal"
-weight = 400
+style = "default"
 
 [fonts.bold-italic]
 family = "cascadiacode"
-style = "Italic"
-width = "Normal"
-weight = 800
+style = "default"
 ```
+
+Each per-slot `style` accepts `"default"` (let font discovery pick using slot-implied bold/italic traits), `false` (disable this style — fall back to the regular face), or a face style name like `"Light"`, `"Medium"`, `"Bold"`, `"Heavy"`.
 
 ## fonts.disable-warnings-not-found
 
