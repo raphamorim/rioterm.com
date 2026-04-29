@@ -1,41 +1,46 @@
-# Website
+# rioterm.com
 
-This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
+Source for [rioterm.com](https://rioterm.com), the Rio Terminal documentation
+site. Built with [Docusaurus](https://docusaurus.io/).
 
-### Installation
+The site previously lived at `docs/` inside [raphamorim/rio](https://github.com/raphamorim/rio)
+and was moved here per [rio#1525](https://github.com/raphamorim/rio/issues/1525)
+to keep the main repo lean.
 
-```
-$ yarn
-```
+## Local development
 
-### Local Development
+Requires Node.js 20+.
 
-```
-$ yarn start
-```
-
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
-
-### Build
-
-```
-$ yarn build
+```sh
+npm ci
+npm start
 ```
 
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
+Opens a dev server with hot reload at <http://localhost:3000>.
 
-### Deployment
+## Build
 
-Using SSH:
-
-```
-$ USE_SSH=true yarn deploy
+```sh
+npm run build
 ```
 
-Not using SSH:
+Outputs the static site to `build/`.
 
-```
-$ GIT_USER=<Your GitHub username> yarn deploy
-```
+## Deployment
 
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+Pushes to `main` are deployed automatically by
+[`.github/workflows/docs.yml`](./.github/workflows/docs.yml): the workflow
+builds the site and publishes `build/` to the `gh-pages` branch via
+`peaceiris/actions-gh-pages`. GitHub Pages serves `gh-pages` at
+[rioterm.com](https://rioterm.com) (custom domain wired via `static/CNAME`).
+
+## Translations
+
+Locale sources live under `i18n/`. Supported locales: `en`, `ko`, `pt-br`,
+`es`, `pl`, `ja`, `zh-hans`, `zh-hant`.
+
+To preview a non-default locale locally:
+
+```sh
+npm start -- --locale pt-br
+```

@@ -3,7 +3,6 @@
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import FeaturesSection from '@site/src/components/FeaturesSection/index';
-import MentionsSection from '@site/src/components/MentionsSection/index';
 import Heading from '@theme/Heading';
 import Layout from '@theme/Layout';
 import clsx from 'clsx';
@@ -62,7 +61,6 @@ export default function Home() {
       <HomepageHeader />
       <main>
         <FeaturesSection />
-        <MentionsSection />
       </main>
     </Layout>
   );

@@ -8,6 +8,7 @@ import Palette from '@site/static/assets/feature-icons/palette.svg';
 import FontLigatures from '@site/static/assets/feature-icons/font-ligatures.svg';
 import Splits from '@site/static/assets/feature-icons/splits.svg';
 import CustomShaders from '@site/static/assets/feature-icons/custom-shaders.svg';
+import Gpu from '@site/static/assets/feature-icons/gpu.svg';
 
 /**
  * @satisfies {import('@site/src/components/FeaturesSection/index').FeatureCardProps[]}
@@ -99,6 +100,18 @@ const FEATURES = [
     description: (
       <Translate id="home.features.custom-shaders.description">
         Rio support configure custom filters and CRT shaders through RetroArch shader files.
+      </Translate>
+    ),
+  },
+  {
+    title: translate({
+      message: 'Native GPU rendering',
+      id: 'home.features.native-gpu-rendering.title',
+    }),
+    Icon: Gpu,
+    description: (
+      <Translate id="home.features.native-gpu-rendering.description">
+        Rio renders natively on the GPU using Metal on macOS and Vulkan on Linux and Windows.
       </Translate>
     ),
   },
