@@ -5,6 +5,13 @@ language: 'en'
 
 <h1 style={{fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(-120deg, #fb43fe 30%, #00dbe5)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", borderBottom: "none", paddingBottom: "1rem", marginBottom: "2rem"}}>Changelog</h1>
 
+## Unreleased
+
+- macOS Metal: window transparency now actually renders. The `CAMetalLayer` is flipped to non-opaque whenever `window.opacity < 1` or a blur style is set, so the alpha in the drawable's pixels reaches the compositor. Default windows stay opaque so the macOS opaque-window fast path is preserved.
+- Per-cell background alpha: cells that don't paint an explicit background color now write `alpha = 0` instead of stamping the default theme background at full alpha. The drawable's translucent clear shows through, which is what makes the window actually look transparent (not just the margins). Cells with an SGR-set background, selection / search highlights, and inverse-video cells stay fully opaque.
+- New `window.opacity-cells` config option. Off by default — cells with an SGR-set background stay fully opaque so syntax-highlighted regions and TUI panels (Neovim, tmux, lazygit) keep their contrast. Set to `true` to apply the opacity multiplier to those cells too, so the entire terminal — including TUI surfaces — shares the configured translucency.
+- `window.blur` now accepts the macOS liquid-glass styles in addition to the existing bool. New string values: `"macos-glass-regular"` (regular opacity) and `"macos-glass-clear"` (highly transparent), both available on macOS 26 (Tahoe) and later. Older macOS / other platforms fall back to the standard system blur and emit a warning instead of failing. Existing `blur = true` / `blur = false` configs are unchanged.
+
 ## 0.4.1
 
 - small updates on goreleaser build config for perf optimizations.

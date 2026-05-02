@@ -1634,11 +1634,36 @@ Example:
 opacity = 0.5
 ```
 
-## window.blur
+## window.opacity-cells
 
-Set blur on the window background. Changing this config requires restarting Rio to take effect.
+Apply `window.opacity` to cells that paint an explicit background color too, not just to the window's default background.
+
+By default `window.opacity` only affects the window background — cells with an explicit SGR-set background color stay fully opaque. That preserves contrast on syntax-highlighted regions and on TUIs (Neovim, tmux, lazygit, …) that paint their own panel backgrounds, but it also means those tools can look fully opaque inside an otherwise translucent window.
+
+Set this to `true` to apply the opacity multiplier to those cells as well, so the entire terminal — including TUI surfaces — shares the configured translucency.
+
+Selection highlights, search highlights, and inverse-video cells stay fully opaque regardless of this flag.
 
 - Default: `false`.
+
+Example:
+
+```toml
+[window]
+opacity = 0.6
+opacity-cells = true
+```
+
+## window.blur
+
+Background blur for the window. Accepts a bool or one of the macOS liquid-glass styles. Changing this setting requires restarting Rio to take effect.
+
+- `false` (default) — no blur.
+- `true` — standard system blur (CGS backdrop on macOS, KWin blur on Wayland, DWM acrylic on Windows 11+).
+- `"macos-glass-regular"` — macOS 26 (Tahoe) and later. Native liquid-glass effect with the *regular* style (some opacity).
+- `"macos-glass-clear"` — macOS 26 and later. Native liquid-glass effect with the *clear* style (highly transparent).
+
+The macOS glass values imply a translucent window the same way `opacity < 1` does — the layer is flipped to non-opaque for you. On platforms or macOS versions where a glass style isn't available, Rio falls back to the standard system blur and logs a warning instead of failing.
 
 ```toml
 [window]
@@ -1652,6 +1677,15 @@ blur = false
 opacity = 0.5
 decorations = "enabled"
 blur = true
+```
+
+#### macOS liquid glass:
+
+```toml
+[window]
+opacity = 0.6
+decorations = "transparent"
+blur = "macos-glass-regular"
 ```
 
 ![Demo blur and background opacity](/assets/demos/demo-macos-blur.png)
