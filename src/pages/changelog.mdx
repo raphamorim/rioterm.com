@@ -5,7 +5,15 @@ language: 'en'
 
 <h1 style={{fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(-120deg, #fb43fe 30%, #00dbe5)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", borderBottom: "none", paddingBottom: "1rem", marginBottom: "2rem"}}>Changelog</h1>
 
-## Unreleased
+## 0.4.3
+
+- fix wrong font size and window chrome alignment after connecting/disconnecting an external monitor ([#1588](https://github.com/raphamorim/rio/pull/1588) by [@tauil](https://github.com/tauil)).
+- drop the `copa` and `rio-proc-macros` crates — the escape-sequence parser now lives in
+`rio-backend` with hot-path optimizations (bulk ASCII dispatch, inline OSC buffer, flat
+codepoint-width table, fused validate+decode).
+- adopt `simdutf` for SIMD UTF-8 transcoding, validation, and base64 decoding.
+
+## 0.4.2
 
 - macOS Metal: window transparency now actually renders. The `CAMetalLayer` is flipped to non-opaque whenever `window.opacity < 1` or a blur style is set, so the alpha in the drawable's pixels reaches the compositor. Default windows stay opaque so the macOS opaque-window fast path is preserved.
 - Per-cell background alpha: cells that don't paint an explicit background color now write `alpha = 0` instead of stamping the default theme background at full alpha. The drawable's translucent clear shows through, which is what makes the window actually look transparent (not just the margins). Cells with an SGR-set background, selection / search highlights, and inverse-video cells stay fully opaque.
