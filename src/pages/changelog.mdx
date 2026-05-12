@@ -5,6 +5,14 @@ language: 'en'
 
 <h1 style={{fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(-120deg, #fb43fe 30%, #00dbe5)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", borderBottom: "none", paddingBottom: "1rem", marginBottom: "2rem"}}>Changelog</h1>
 
+## 0.4.4
+
+- fix characters disappearing while typing on macOS — e.g. "agg" rendering as "ag", "355" as "35" ([#1595](https://github.com/raphamorim/rio/issues/1595)). The text-run iterator now breaks the run around the cursor cell so speculative substitutions on later cells can't blank earlier ones.
+- fix panic on window resize / maximize ([#1593](https://github.com/raphamorim/rio/issues/1593), [#1596](https://github.com/raphamorim/rio/pull/1596) by [@kronberger-droid](https://github.com/kronberger-droid)). Grid dimensions are now sourced from the same snapshot that sized the row buffers, not from a live value that could race ahead.
+- macOS: text selection at the top of the window now works when `navigation.hide-if-single` is on with a single tab ([#1512](https://github.com/raphamorim/rio/issues/1512), [#1516](https://github.com/raphamorim/rio/pull/1516) by [@0x0aa](https://github.com/0x0aa)). Click routing and the cursor override now share a single gate that matches what the renderer paints.
+- reduce per-frame allocations in the rioterm renderer: per-cell styles are materialized once per snapshot, per-row dirty bits skip unchanged rows on partial damage, and visible-cell extras live in a per-frame map.
+- text-run shape cache key is now position-independent, and runs no longer break on space — adjacent words shape in a single call and cache hits stay high as the cursor walks a row.
+
 ## 0.4.3
 
 - fix wrong font size and window chrome alignment after connecting/disconnecting an external monitor ([#1588](https://github.com/raphamorim/rio/pull/1588) by [@tauil](https://github.com/tauil)).
