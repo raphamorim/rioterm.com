@@ -1479,8 +1479,6 @@ After that all you have to do is set the `theme` property in your configuration 
 theme = "foobar"
 ```
 
-Proud of your new theme? Why not share it on the [Rio Discord](https://discord.gg/zRvJjmKGwS)!
-
 ## title.content
 
 Configure window title using template.
