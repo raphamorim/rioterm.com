@@ -5,6 +5,12 @@ language: 'en'
 
 <h1 style={{fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(-120deg, #fb43fe 30%, #00dbe5)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", borderBottom: "none", paddingBottom: "1rem", marginBottom: "2rem"}}>Changelog</h1>
 
+## 0.4.5
+
+- Tab color picker now also opens on right-click (previously Control + left-click only).
+- New reset swatch in the tab color picker: a slashed box at the end of the swatch row clears the tab's custom color back to the default.
+- Fix clicks and cursor overrides being intercepted over the empty band at the top of the window when `navigation.hide-if-single` hides the tab strip on a single tab. New shared `Navigation::island_visible(num_tabs)` predicate keeps the renderer, click router, and cursor handler aligned — the empty band now passes through to the grid for selection and double-click maximize.
+
 ## 0.4.4
 
 - fix characters disappearing while typing on macOS — e.g. "agg" rendering as "ag", "355" as "35" ([#1595](https://github.com/raphamorim/rio/issues/1595)). The text-run iterator now breaks the run around the cursor cell so speculative substitutions on later cells can't blank earlier ones.
