@@ -12,6 +12,7 @@ Rio supports the [Kitty graphics protocol](https://sw.kovidgoyal.net/kitty/graph
 - **Compression**: Zlib
 - **Chunked transfers**: Multi-part image transmission
 - **Placements**: Display images at cursor or specific positions with z-index layering
+- **Sub-cell positioning**: `X=`/`Y=` pixel offsets within the first cell
 - **Virtual placements**: Unicode placeholder-based rendering
 - **Deletion**: By image ID, placement ID, cursor position, column, row, z-index, image number, cell+z filter, and ID range
 - **Z-index layering**: Images render below or above text depending on z-index
