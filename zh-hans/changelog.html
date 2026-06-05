@@ -17,8 +17,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&amp;display=swap"><link rel="stylesheet" href="/zh-hans/assets/css/styles.8baaaff7.css">
-<script src="/zh-hans/assets/js/runtime~main.67804f4a.js" defer="defer"></script>
-<script src="/zh-hans/assets/js/main.65470e03.js" defer="defer"></script>
+<script src="/zh-hans/assets/js/runtime~main.39d1e3cb.js" defer="defer"></script>
+<script src="/zh-hans/assets/js/main.279fbf12.js" defer="defer"></script>
 </head>
 <body>
 <svg style="display: none;"><defs>
@@ -28,6 +28,7 @@
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="046">0.4.6<a href="#046" class="hash-link" aria-label="0.4.6的直接链接" title="0.4.6的直接链接" translate="no">​</a></h2>
 <ul>
 <li class="">Box-drawing and related symbols render again. Box-drawing, block elements, braille, powerline separators, geometric shapes, and legacy computing symbols are now drawn as crisp, pixel-aligned atlas sprites that tile seamlessly at any font size and scale factor — they no longer fall back to the font&#x27;s (often gappy) glyphs. These had been dropped during the v0.4.x grid rewrite.</li>
+<li class="">Kitty graphics: the <code>X=</code>/<code>Y=</code> sub-cell pixel offset is now applied when placing images (<a href="https://github.com/raphamorim/rio/pull/1645" target="_blank" rel="noopener noreferrer" class="">#1645</a> by <a href="https://github.com/floens" target="_blank" rel="noopener noreferrer" class="">@floens</a>) — the parser already understood it, but placements were pinned to the cell boundary. Offsets are clamped to the cell box per the kitty spec, and an offset that spills the image into an extra row/column is now accounted for in cursor movement and row occupation.</li>
 <li class="">Updated <code>wgpu</code> to 29.0.3 and the <code>librashader</code> filter chain to 0.11 (the wgpu path used for RetroArch shaders on Windows/WASM and behind the <code>wgpu</code> feature flag elsewhere).</li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="045">0.4.5<a href="#045" class="hash-link" aria-label="0.4.5的直接链接" title="0.4.5的直接链接" translate="no">​</a></h2>
@@ -351,7 +352,7 @@ codepoint-width table, fused validate+decode).</li>
 </li>
 <li class="">Add audible &amp; visual bell support <a href="https://github.com/raphamorim/rio/pull/1284" target="_blank" rel="noopener noreferrer" class="">#1284</a>.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0229">0.2.29<a href="#0229" class="hash-link" aria-label="0.2.29的直接链接" title="0.2.29的直接链接" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0229">0.2.29<a href="#0229" class="hash-link" aria-label="0.2.29的直接链接" title="0.2.29的直接链  接" translate="no">​</a></h2>
 <ul>
 <li class="">Fix blinking cursor issue <a href="https://github.com/raphamorim/rio/issues/1269" target="_blank" rel="noopener noreferrer" class="">#1269</a>.</li>
 <li class="">Fix Rio uses UNC (?) path as working directory, breaking Neovim subprocesses on Windows.</li>
@@ -809,7 +810,7 @@ codepoint-width table, fused validate+decode).</li>
 <li class="">Downgrade MSRV to 1.80.1</li>
 <li class="">Update wgpu to 24.0.0.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="023">0.2.3<a href="#023" class="hash-link" aria-label="0.2.3的直接链接" title="0.2.3的直接链接" translate="no">  ​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="023">0.2.3<a href="#023" class="hash-link" aria-label="0.2.3的直接链接" title="0.2.3的直接链接" translate="no">​</a></h2>
 <ul>
 <li class="">Rio now allows you to configure window title through configuration via template. Possible options:<!-- -->
 <ul>
@@ -1423,7 +1424,7 @@ codepoint-width table, fused validate+decode).</li>
 <li class="">Implemented <code>TERM_PROGRAM</code> and <code>TERM_PROGRAM_VERSION</code> (Ref: <a href="https://github.com/raphamorim/rio/issues/200" target="_blank" rel="noopener noreferrer" class="">https://github.com/raphamorim/rio/issues/200</a>).</li>
 <li class="">Whenever native tabs is on disable macos deadzone logic.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0018">0.0.18<a href="#0018" class="hash-link" aria-label="0.0.18的直 接链接" title="0.0.18的直接链接" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0018">0.0.18<a href="#0018" class="hash-link" aria-label="0.0.18的直接链接" title="0.0.18的直接链接" translate="no">​</a></h2>
 <ul>
 <li class="">Upgraded to Rust 1.72.0.</li>
 <li class="">Fix delete key inputs square character.</li>

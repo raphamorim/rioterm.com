@@ -17,8 +17,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&amp;display=swap"><link rel="stylesheet" href="/es/assets/css/styles.8baaaff7.css">
-<script src="/es/assets/js/runtime~main.3bc0d087.js" defer="defer"></script>
-<script src="/es/assets/js/main.9a88976f.js" defer="defer"></script>
+<script src="/es/assets/js/runtime~main.94b7f7e5.js" defer="defer"></script>
+<script src="/es/assets/js/main.1662cb9b.js" defer="defer"></script>
 </head>
 <body>
 <svg style="display: none;"><defs>
@@ -28,6 +28,7 @@
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="046">0.4.6<a href="#046" class="hash-link" aria-label="Enlace directo al 0.4.6" title="Enlace directo al 0.4.6" translate="no">​</a></h2>
 <ul>
 <li class="">Box-drawing and related symbols render again. Box-drawing, block elements, braille, powerline separators, geometric shapes, and legacy computing symbols are now drawn as crisp, pixel-aligned atlas sprites that tile seamlessly at any font size and scale factor — they no longer fall back to the font&#x27;s (often gappy) glyphs. These had been dropped during the v0.4.x grid rewrite.</li>
+<li class="">Kitty graphics: the <code>X=</code>/<code>Y=</code> sub-cell pixel offset is now applied when placing images (<a href="https://github.com/raphamorim/rio/pull/1645" target="_blank" rel="noopener noreferrer" class="">#1645</a> by <a href="https://github.com/floens" target="_blank" rel="noopener noreferrer" class="">@floens</a>) — the parser already understood it, but placements were pinned to the cell boundary. Offsets are clamped to the cell box per the kitty spec, and an offset that spills the image into an extra row/column is now accounted for in cursor movement and row occupation.</li>
 <li class="">Updated <code>wgpu</code> to 29.0.3 and the <code>librashader</code> filter chain to 0.11 (the wgpu path used for RetroArch shaders on Windows/WASM and behind the <code>wgpu</code> feature flag elsewhere).</li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="045">0.4.5<a href="#045" class="hash-link" aria-label="Enlace directo al 0.4.5" title="Enlace directo al 0.4.5" translate="no">​</a></h2>
@@ -1038,7 +1039,7 @@ codepoint-width table, fused validate+decode).</li>
 <li class="">Fix scale update on transitioning between screens with different DPI.</li>
 <li class="">Support a short variant (<code>-w</code>) for <code>--working-dir</code> argument.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="018">0.1.8<a href="#018" class="hash-link" aria-label="Enlace directo al 0.1.8" title="Enlace directo al 0.1.8" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="018">0.1.8<a href="#018" class="hash-link" aria-label="Enlace directo al 0.1.8" title="Enlace directo al 0.1.8" translate="no">  ​</a></h2>
 <ul>
 <li class=""><strong>breaking:</strong> Introduced a new property in theme called <code>tabs-active-highlight</code>, default color is <code>#ff00ff</code>.</li>
 <li class=""><strong>breaking:</strong> Removed breadcrumb navigation.</li>

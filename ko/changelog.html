@@ -17,8 +17,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&amp;display=swap"><link rel="stylesheet" href="/ko/assets/css/styles.8baaaff7.css">
-<script src="/ko/assets/js/runtime~main.bd0fbe07.js" defer="defer"></script>
-<script src="/ko/assets/js/main.9edc7534.js" defer="defer"></script>
+<script src="/ko/assets/js/runtime~main.d58b7080.js" defer="defer"></script>
+<script src="/ko/assets/js/main.04e86523.js" defer="defer"></script>
 </head>
 <body>
 <svg style="display: none;"><defs>
@@ -28,6 +28,7 @@
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="046">0.4.6<a href="#046" class="hash-link" aria-label="0.4.6에 대한 직접 링크" title="0.4.6에 대한 직접 링크" translate="no">​</a></h2>
 <ul>
 <li class="">Box-drawing and related symbols render again. Box-drawing, block elements, braille, powerline separators, geometric shapes, and legacy computing symbols are now drawn as crisp, pixel-aligned atlas sprites that tile seamlessly at any font size and scale factor — they no longer fall back to the font&#x27;s (often gappy) glyphs. These had been dropped during the v0.4.x grid rewrite.</li>
+<li class="">Kitty graphics: the <code>X=</code>/<code>Y=</code> sub-cell pixel offset is now applied when placing images (<a href="https://github.com/raphamorim/rio/pull/1645" target="_blank" rel="noopener noreferrer" class="">#1645</a> by <a href="https://github.com/floens" target="_blank" rel="noopener noreferrer" class="">@floens</a>) — the parser already understood it, but placements were pinned to the cell boundary. Offsets are clamped to the cell box per the kitty spec, and an offset that spills the image into an extra row/column is now accounted for in cursor movement and row occupation.</li>
 <li class="">Updated <code>wgpu</code> to 29.0.3 and the <code>librashader</code> filter chain to 0.11 (the wgpu path used for RetroArch shaders on Windows/WASM and behind the <code>wgpu</code> feature flag elsewhere).</li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="045">0.4.5<a href="#045" class="hash-link" aria-label="0.4.5에 대한 직접 링크" title="0.4.5에 대한 직접 링크" translate="no">​</a></h2>
@@ -44,7 +45,7 @@
 <li class="">reduce per-frame allocations in the rioterm renderer: per-cell styles are materialized once per snapshot, per-row dirty bits skip unchanged rows on partial damage, and visible-cell extras live in a per-frame map.</li>
 <li class="">text-run shape cache key is now position-independent, and runs no longer break on space — adjacent words shape in a single call and cache hits stay high as the cursor walks a row.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="043">0.4.3<a href="#043" class="hash-link" aria-label="0.4.3에 대한 직 접 링크" title="0.4.3에 대한 직접 링크" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="043">0.4.3<a href="#043" class="hash-link" aria-label="0.4.3에 대한 직접 링크" title="0.4.3에 대한 직접 링크" translate="no">​</a></h2>
 <ul>
 <li class="">fix wrong font size and window chrome alignment after connecting/disconnecting an external monitor (<a href="https://github.com/raphamorim/rio/pull/1588" target="_blank" rel="noopener noreferrer" class="">#1588</a> by <a href="https://github.com/tauil" target="_blank" rel="noopener noreferrer" class="">@tauil</a>).</li>
 <li class="">drop the <code>copa</code> and <code>rio-proc-macros</code> crates — the escape-sequence parser now lives in
@@ -78,7 +79,7 @@ codepoint-width table, fused validate+decode).</li>
 </ul>
 <p>tested with 7e222ef2f1bc0a9eb4ff7f111b8f4c94faa9be97</p>
 <table><thead><tr><th>Scenario</th><th>main</th><th>new-v4</th><th>Delta</th></tr></thead><tbody><tr><td>Idle frame</td><td>~150 µs</td><td>~100 µs</td><td>v4 ~33% faster</td></tr><tr><td>Typing, light redraw</td><td>~300 µs</td><td>~200 µs</td><td>v4 ~33% faster</td></tr><tr><td>Shell output / row damage</td><td>1000–2000 µs</td><td>100–300 µs</td><td><strong>v4 5–10× faster</strong></td></tr><tr><td>25-row scroll frame</td><td>5500 µs (renderer=3448 µs)</td><td>1661 µs (emit=1424 µs)</td><td><strong>v4 ~3× faster</strong></td></tr><tr><td>Trail animation tail (CPU work)</td><td>~300 µs</td><td>~200 µs</td><td>comparable, v4 slightly faster</td></tr><tr><td>GPU exec time (both)</td><td>~700–1000 µs</td><td>~700–1500 µs</td><td>comparable</td></tr><tr><td>First-frame setup</td><td>15 638 µs</td><td>9 397 µs</td><td>v4 ~40% faster</td></tr></tbody></table>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0311">0.3.11<a href="#0311" class="hash-link" aria-label="0.3.11에 대한 직접 링크" title="0.3.11에 대한 직접 링크" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0311">0.3.11<a href="#0311" class="hash-link" aria-label="0.3.11에 대한 직 접 링크" title="0.3.11에 대한 직접 링크" translate="no">​</a></h2>
 <ul>
 <li class="">Windows: native <code>MessageBoxW</code> close-confirmation dialog when <code>confirm-before-quit = true</code> (default), mirroring macOS&#x27;s <code>applicationShouldTerminate</code> <code>NSAlert</code> in <code>rio-window/src/platform_impl/macos/app_delegate.rs</code>. Replaces rio&#x27;s in-window GPU-rendered confirmation modal on Windows. New <code>EventLoopRunner.confirm_before_quit: Cell&lt;bool&gt;</code> set via the same public <code>EventLoop::set_confirm_before_quit</code> that macOS already uses (cfg gate widened to <code>any(target_os = &quot;macos&quot;, target_os = &quot;windows&quot;)</code>). The <code>WM_CLOSE</code> handler in <code>event_loop.rs</code> checks the flag and <code>vsync_state.window_count() &lt;= 1</code> (only the <em>last</em> window prompts — matches macOS&#x27;s app-wide quit semantics) and on confirm-No swallows the message so the window stays open. rioterm&#x27;s <code>WindowEvent::CloseRequested</code> handler now follows the same fast path on Windows as on macOS — <code>routes.remove(&amp;window_id)</code> + maybe-<code>exit()</code> — since the user already confirmed at the OS layer.</li>
 <li class="">Windows render loop now matches the macOS / CVDisplayLink model exactly: <code>Window::request_redraw</code> sets a per-window <code>Arc&lt;AtomicBool&gt;</code> dirty flag instead of immediately calling <code>RedrawWindow(RDW_INTERNALPAINT)</code>. The DwmFlush worker thread (<code>rio-window/src/platform_impl/windows/event_loop/vsync.rs</code>) is the single source of frame timing — per composition cycle it iterates the window registry and, for each window where <code>dirty || should_present_after_input</code> (1 s post-input window, identical to macOS), calls <code>RedrawWindow(.., RDW_INVALIDATE)</code>. Existing <code>WM_PAINT</code> → <code>RedrawRequested</code> path is unchanged. Plumbing: new <code>vsync::VSyncSharedState</code> (<code>Arc&lt;RwLock&lt;HashMap&lt;HWND, Arc&lt;AtomicBool&gt;&gt;&gt;&gt;</code> registry + <code>Mutex&lt;Instant&gt;</code> for last input) lives on <code>ActiveEventLoop</code>, threaded into <code>WindowData</code> and the <code>Window</code> struct so input handlers, <code>request_redraw</code>, and the worker all share it. <code>Window::Drop</code> unregisters before <code>DESTROY_MSG_ID</code>. Replaces the earlier &quot;always invalidate per vsync&quot; zed mirror — that approach worked but didn&#x27;t compose with the app&#x27;s own <code>request_redraw</code>, which made scroll feel locked to DWM tick. Now scroll-driven renders queue immediately into the next vsync (≤16 ms wait) and idle frames are skipped entirely. Net behaviour matches macOS one-to-one.</li>
@@ -281,7 +282,7 @@ codepoint-width table, fused validate+decode).</li>
 <li class="">Fix font loader for fallbacks and extra.</li>
 <li class="">Fix font size updating through config.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0236-1">0.2.36<a href="#0236-1" class="hash-link" aria-label="0.2.36에 대한  직접 링크" title="0.2.36에 대한 직접 링크" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0236-1">0.2.36<a href="#0236-1" class="hash-link" aria-label="0.2.36에 대한 직접 링크" title="0.2.36에 대한 직접 링크" translate="no">​</a></h2>
 <ul>
 <li class="">Fix handler should process two intermediate bytes in CSI sequences by <a href="https://github.com/aymanbagabas" target="_blank" rel="noopener noreferrer" class="">@aymanbagabas</a>.</li>
 <li class="">Fix DECSCUSR.</li>
@@ -648,7 +649,7 @@ codepoint-width table, fused validate+decode).</li>
 </ul>
 </li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0220">0.2.20<a href="#0220" class="hash-link" aria-label="0.2.20에 대한 직접 링크" title="0.2.20에 대한 직접 링크" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0220">0.2.20<a href="#0220" class="hash-link" aria-label="0.2.20에 대한 직접   링크" title="0.2.20에 대한 직접 링크" translate="no">​</a></h2>
 <ul>
 <li class="">Performance: Implemented SIMD-accelerated UTF-8 validation throughout Rio terminal using the <code>simdutf8</code> crate.<!-- -->
 <ul>
@@ -689,7 +690,7 @@ codepoint-width table, fused validate+decode).</li>
 <li class="">Fix: Crash on whenever attempting to clean an invalid line index.</li>
 <li class="">Add metainfo and screenshots for appstream by <a href="https://github.com/ranisalt" target="_blank" rel="noopener noreferrer" class="">@ranisalt</a>.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0215">0.2.15<a href="#0215" class="hash-link" aria-label="0.2.15에 대한 직접 링크" title="0.2.15에 대한 직접 링크" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0215">0.2.15<a href="#0215" class="hash-link" aria-label="0.2.15에  대한 직접 링크" title="0.2.15에 대한 직접 링크" translate="no">​</a></h2>
 <ul>
 <li class="">Fix: In some cases, the first typed character doesn&#x27;t display until after a delay, or until another key is hit <a href="https://github.com/raphamorim/rio/issues/1098" target="_blank" rel="noopener noreferrer" class="">#1098</a>.</li>
 <li class="">Fix: Anomalous behavior occurs with the Bookmark tab style in the new versions 0.14 and 0.13. <a href="https://github.com/raphamorim/rio/issues/1094" target="_blank" rel="noopener noreferrer" class="">#1094</a>.</li>
@@ -921,7 +922,7 @@ codepoint-width table, fused validate+decode).</li>
 <li class="">Fix IME color for underline and beam cursors.</li>
 <li class="">Add default for Style property on Sugarloaf font.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0116">0.1.16<a href="#0116" class="hash-link" aria-label="0.1.16에 대한 직접 링크" title="0.1.16에 대한 직접 링크" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0116">0.1.16<a href="#0116" class="hash-link" aria-label="0.1.16 에 대한 직접 링크" title="0.1.16에 대한 직접 링크" translate="no">​</a></h2>
 <ul>
 <li class="">Support auto bold on fonts.</li>
 <li class="">Support auto italic on fonts.</li>
@@ -989,7 +990,7 @@ codepoint-width table, fused validate+decode).</li>
 <div class="language-toml codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-toml codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><div class="token-line" style="color:#F8F8F2"><span class="token key property">cursor</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(248, 248, 242)">=</span><span class="token plain"> </span><span class="token string" style="color:rgb(255, 121, 198)">&#x27;▇&#x27;</span><span class="token plain"></span><br></div><div class="token-line" style="color:#F8F8F2"><span class="token plain"></span><span class="token key property">blinking-cursor</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(248, 248, 242)">=</span><span class="token plain"> </span><span class="token boolean">false</span><br></div></code></pre></div></div>
 <p>After:</p>
 <div class="language-toml codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-toml codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><div class="token-line" style="color:#F8F8F2"><span class="token punctuation" style="color:rgb(248, 248, 242)">[</span><span class="token table class-name">cursor</span><span class="token punctuation" style="color:rgb(248, 248, 242)">]</span><span class="token plain"></span><br></div><div class="token-line" style="color:#F8F8F2"><span class="token plain"></span><span class="token key property">shape</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(248, 248, 242)">=</span><span class="token plain"> </span><span class="token string" style="color:rgb(255, 121, 198)">&#x27;block&#x27;</span><span class="token plain"></span><br></div><div class="token-line" style="color:#F8F8F2"><span class="token plain"></span><span class="token key property">blinking</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(248, 248, 242)">=</span><span class="token plain"> </span><span class="token boolean">false</span><br></div></code></pre></div></div>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0111">0.1.11<a href="#0111" class="hash-link" aria-label="0.1.11에 대한 직접 링크" title="0.1.11에 대한 직접 링크" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0111">0.1.11<a href="#0111" class="hash-link" aria-label="0.1.11에 대한   직접 링크" title="0.1.11에 대한 직접 링크" translate="no">​</a></h2>
 <ul>
 <li class="">Experimental support to Sixel protocol.</li>
 <li class="">Clipboard has been moved to Application level and shared to all windows.</li>
@@ -1113,7 +1114,7 @@ codepoint-width table, fused validate+decode).</li>
 <li class="">fix: IO Safety violation from dropping RawFd (fatal runtime error: IO Safety violation: owned file descriptor already closed).</li>
 <li class="">Upgrade to Rust 1.80.0.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="012">0.1.2<a href="#012" class="hash-link" aria-label="0.1.2에 대한 직접 링크" title="0.1.2에 대한 직접   링크" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="012">0.1.2<a href="#012" class="hash-link" aria-label="0.1.2에 대한 직접 링크" title="0.1.2에 대한 직접 링크" translate="no">​</a></h2>
 <ul>
 <li class="">Upgrade wgpu to v22.0.0.</li>
 <li class="">Restrict of cells width.</li>
@@ -1316,14 +1317,14 @@ codepoint-width table, fused validate+decode).</li>
 <li class="">Fix MacOS fullscreen empty space on margin top.</li>
 <li class="">Upgrade winit to 0.29.2.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0024">0.0.24<a href="#0024" class="hash-link" aria-label="0.0.24에 대한 직접 링크" title="0.0.24에 대한 직접 링크" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0024">0.0.24<a href="#0024" class="hash-link" aria-label="0.0.24에 대한 직  접 링크" title="0.0.24에 대한 직접 링크" translate="no">​</a></h2>
 <ul>
 <li class="">Improvements on selection text for scale factor &gt;= 2.0.</li>
 <li class="">Improvements on cursor sugar creation, dropped unnecessary usage of clone.</li>
 <li class="">Colors/Themes got a new property called <code>vi-cursor</code>, you can specify any color you wish for VI Cursor.</li>
 <li class="">Alacritty&#x27;s VI Mode.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0023">0.0.23<a href="#0023" class="hash-link" aria-label="0.0.23에 대한 직접 링크" title="0.0.23에 대한 직접 링  크" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0023">0.0.23<a href="#0023" class="hash-link" aria-label="0.0.23에 대한 직접 링크" title="0.0.23에 대한 직접 링크" translate="no">​</a></h2>
 <h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="breaking-changes">Breaking changes<a href="#breaking-changes" class="hash-link" aria-label="Breaking changes에 대한 직접 링크" title="Breaking changes에 대한 직접 링크" translate="no">​</a></h4>
 <ul>
 <li class=""><code>navigation.mode = &quot;Plain&quot;</code> now only shutdowns the key bindings related to tab creation/manipulation.</li>
@@ -1359,7 +1360,7 @@ codepoint-width table, fused validate+decode).</li>
 <ul>
 <li class="">Upgrade rust to 1.73.0 by @igorvieira.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0022">0.0.22<a href="#0022" class="hash-link" aria-label="0.0.22에 대한 직접 링크" title="0.0.22에 대한 직접 링크" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0022">0.0.22<a href="#0022" class="hash-link" aria-label="0.0.22  에 대한 직접 링크" title="0.0.22에 대한 직접 링크" translate="no">​</a></h2>
 <ul>
 <li class="">Now you can add extra fonts to load:</li>
 </ul>
@@ -1453,7 +1454,7 @@ codepoint-width table, fused validate+decode).</li>
 <li class="">Support startup notify protocol to raise initial window on Wayland/X11.</li>
 <li class="">Fix Double-tap by touchpad on the titlebar doesn&#x27;t maximize/unmaximize the window in GNOME 44, Wayland.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0016">0.0.16<a href="#0016" class="hash-link" aria-label="0.0.16  에 대한 직접 링크" title="0.0.16에 대한 직접 링크" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0016">0.0.16<a href="#0016" class="hash-link" aria-label="0.0.16에 대한 직접 링크" title="0.0.16에 대한 직접 링크" translate="no">​</a></h2>
 <ul>
 <li class="">Fix tab/breadcrumb bug introduced in 0.0.15</li>
 <li class="">Introduce new configuration property: <code>navigation.macos-hide-window-button</code>.</li>

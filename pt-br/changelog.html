@@ -17,8 +17,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&amp;display=swap"><link rel="stylesheet" href="/pt-br/assets/css/styles.8baaaff7.css">
-<script src="/pt-br/assets/js/runtime~main.c2c5bcf3.js" defer="defer"></script>
-<script src="/pt-br/assets/js/main.b3e049d0.js" defer="defer"></script>
+<script src="/pt-br/assets/js/runtime~main.23a2d8b8.js" defer="defer"></script>
+<script src="/pt-br/assets/js/main.7e583441.js" defer="defer"></script>
 </head>
 <body>
 <svg style="display: none;"><defs>
@@ -28,6 +28,7 @@
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="046">0.4.6<a href="#046" class="hash-link" aria-label="0.4.6link direto para" title="0.4.6link direto para" translate="no">​</a></h2>
 <ul>
 <li class="">Box-drawing and related symbols render again. Box-drawing, block elements, braille, powerline separators, geometric shapes, and legacy computing symbols are now drawn as crisp, pixel-aligned atlas sprites that tile seamlessly at any font size and scale factor — they no longer fall back to the font&#x27;s (often gappy) glyphs. These had been dropped during the v0.4.x grid rewrite.</li>
+<li class="">Kitty graphics: the <code>X=</code>/<code>Y=</code> sub-cell pixel offset is now applied when placing images (<a href="https://github.com/raphamorim/rio/pull/1645" target="_blank" rel="noopener noreferrer" class="">#1645</a> by <a href="https://github.com/floens" target="_blank" rel="noopener noreferrer" class="">@floens</a>) — the parser already understood it, but placements were pinned to the cell boundary. Offsets are clamped to the cell box per the kitty spec, and an offset that spills the image into an extra row/column is now accounted for in cursor movement and row occupation.</li>
 <li class="">Updated <code>wgpu</code> to 29.0.3 and the <code>librashader</code> filter chain to 0.11 (the wgpu path used for RetroArch shaders on Windows/WASM and behind the <code>wgpu</code> feature flag elsewhere).</li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="045">0.4.5<a href="#045" class="hash-link" aria-label="0.4.5link direto para" title="0.4.5link direto para" translate="no">​</a></h2>
@@ -56,7 +57,7 @@ codepoint-width table, fused validate+decode).</li>
 <ul>
 <li class="">macOS Metal: window transparency now actually renders. The <code>CAMetalLayer</code> is flipped to non-opaque whenever <code>window.opacity &lt; 1</code> or a blur style is set, so the alpha in the drawable&#x27;s pixels reaches the compositor. Default windows stay opaque so the macOS opaque-window fast path is preserved.</li>
 <li class="">Per-cell background alpha: cells that don&#x27;t paint an explicit background color now write <code>alpha = 0</code> instead of stamping the default theme background at full alpha. The drawable&#x27;s translucent clear shows through, which is what makes the window actually look transparent (not just the margins). Cells with an SGR-set background, selection / search highlights, and inverse-video cells stay fully opaque.</li>
-<li class="">New <code>window.opacity-cells</code> config option. Off by default — cells with an SGR-set background stay fully opaque so syntax-highlighted regions and TUI panels (Neovim, tmux, lazygit) keep their contrast. Set to <code>true</code> to apply the opacity multiplier to those cells too, so the entire terminal  — including TUI surfaces — shares the configured translucency.</li>
+<li class="">New <code>window.opacity-cells</code> config option. Off by default — cells with an SGR-set background stay fully opaque so syntax-highlighted regions and TUI panels (Neovim, tmux, lazygit) keep their contrast. Set to <code>true</code> to apply the opacity multiplier to those cells too, so the entire terminal — including TUI surfaces — shares the configured translucency.</li>
 <li class=""><code>window.blur</code> now accepts the macOS liquid-glass styles in addition to the existing bool. New string values: <code>&quot;macos-glass-regular&quot;</code> (regular opacity) and <code>&quot;macos-glass-clear&quot;</code> (highly transparent), both available on macOS 26 (Tahoe) and later. Older macOS / other platforms fall back to the standard system blur and emit a warning instead of failing. Existing <code>blur = true</code> / <code>blur = false</code> configs are unchanged.</li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="041">0.4.1<a href="#041" class="hash-link" aria-label="0.4.1link direto para" title="0.4.1link direto para" translate="no">​</a></h2>
