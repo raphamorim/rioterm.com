@@ -10,6 +10,7 @@ Short introduction of Rio terminal features.
 - [Vi mode](/docs/features/vi-mode)
 - [Hints](/docs/features/hints)
 - [Hyperlinks](/docs/features/hyperlinks)
+- [Glyph protocol](/docs/features/glyph-protocol)
 - [IME Support](/docs/features/ime-support)
 - [iTerm2 image protocol](/docs/features/iterm2-image-protocol)
 - [Kitty graphics protocol](/docs/features/kitty-graphics-protocol)
