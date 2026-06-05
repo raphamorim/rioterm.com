@@ -25,8 +25,20 @@ Messages ride APC escape sequences (`ESC _ 25a1 ; ... ESC \`) with four verbs:
 
 - **`s`** lists the payload formats the terminal accepts, and doubles as a protocol-detection ping.
 - **`q`** asks whether a codepoint is covered by a system font, a registration, both, or nothing.
-- **`r`** ships a glyph for a PUA codepoint, with sizing and placement controls (`size`, `align`, `pad`, declared `width` of 1 or 2 cells).
+- **`r`** ships a glyph for a PUA codepoint, with sizing and placement controls.
 - **`c`** removes one registration or the whole session glossary.
+
+## Sizing and placement
+
+Registrations describe how the outline maps onto the cell, so the same bytes render correctly at any font size. Every glyph passes through three transforms at render time: **pad** (compute the effective render span), **size** (pick scale factors), **align** (position the scaled outline within the span).
+
+- `width` declares the codepoint's width as 1 (narrow) or 2 (wide) cells. It is authoritative for every terminal layout decision: cursor advance, wrapping, and selection geometry.
+- `aw` and `lh` declare the authored extent (advance width and line height, in `upm` units), so the terminal scales by glyph intent instead of by bounding box.
+- `size` picks the scale policy: `height` (default, line-height drives, like regular characters), `advance`, `contain` (fits entirely inside the span), `cover` (fills the span), or `stretch` (each axis independent, useful for box-drawing).
+- `align` positions the scaled outline in the span (`start`/`center`/`end` per axis), including `baseline` vertical alignment for character-like glyphs that must sit on the text baseline, with descenders extending below it naturally.
+- `pad` insets the render span by fractional amounts on each edge.
+
+Glyphs that must visually align as a set, like spinner frames or progress-bar steps, align automatically when authored with the same extent and placement parameters.
 
 ## Payload formats
 
