@@ -8,6 +8,7 @@ language: 'en'
 ## 0.4.6
 
 - Box-drawing and related symbols render again. Box-drawing, block elements, braille, powerline separators, geometric shapes, and legacy computing symbols are now drawn as crisp, pixel-aligned atlas sprites that tile seamlessly at any font size and scale factor — they no longer fall back to the font's (often gappy) glyphs. These had been dropped during the v0.4.x grid rewrite.
+- Kitty graphics: the `X=`/`Y=` sub-cell pixel offset is now applied when placing images ([#1645](https://github.com/raphamorim/rio/pull/1645) by [@floens](https://github.com/floens)) — the parser already understood it, but placements were pinned to the cell boundary. Offsets are clamped to the cell box per the kitty spec, and an offset that spills the image into an extra row/column is now accounted for in cursor movement and row occupation.
 - Updated `wgpu` to 29.0.3 and the `librashader` filter chain to 0.11 (the wgpu path used for RetroArch shaders on Windows/WASM and behind the `wgpu` feature flag elsewhere).
 
 ## 0.4.5
