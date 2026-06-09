@@ -5,6 +5,14 @@ language: 'en'
 
 <h1 style={{fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(-120deg, #fb43fe 30%, #00dbe5)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", borderBottom: "none", paddingBottom: "1rem", marginBottom: "2rem"}}>Changelog</h1>
 
+## 0.4.7
+
+- Tabs can now be reordered by dragging them along the tab strip. Displaced tabs slide into place with a spring animation, and a released tab settles into its new slot.
+- Font fallback discovery now works on Linux and Windows: glyphs missing from your primary font — Nerd Font icons, CJK, emoji, and box/symbol characters — are discovered from installed system fonts (fontconfig on Linux, font-kit on Windows) and registered on the fly, instead of rendering as tofu (missing-glyph boxes). Previously only macOS did this. ([#1630](https://github.com/raphamorim/rio/pull/1630) by [@nikicat](https://github.com/nikicat), [#1642](https://github.com/raphamorim/rio/pull/1642) by [@pinpox](https://github.com/pinpox); closes [#1015](https://github.com/raphamorim/rio/issues/1015)).
+- A tab's custom background color now follows the tab when tabs are reordered or closed, instead of staying pinned to a slot and painting under the wrong tab. The color picker also closes when its tab is closed.
+- New tabs show `~` as a placeholder title until the running program sets one.
+- The smooth (trail) cursor no longer animates between tabs and panels — switching tab or split places the cursor directly instead of sliding a trail across the screen.
+
 ## 0.4.6
 
 - Box-drawing and related symbols render again. Box-drawing, block elements, braille, powerline separators, geometric shapes, and legacy computing symbols are now drawn as crisp, pixel-aligned atlas sprites that tile seamlessly at any font size and scale factor — they no longer fall back to the font's (often gappy) glyphs. These had been dropped during the v0.4.x grid rewrite.
