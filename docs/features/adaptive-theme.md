@@ -5,7 +5,7 @@ language: 'en'
 
 ### Adaptive theme
 
-Rio support theme based on the system theme (light and dark). This configuration only works for Web, MacOS and Windows.
+Rio supports theming based on the system theme (light and dark). This works on Web, macOS, Windows, and Linux (Wayland and X11, where it follows the XDG Desktop Portal `color-scheme` preference).
 
 ```toml
 [adaptive-theme]

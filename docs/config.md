@@ -35,7 +35,7 @@ args = []
 
 ## adaptive-theme
 
-Rio supports adaptive themes that automatically switch between light and dark themes based on the system theme. This feature works on Web, MacOS, and Windows platforms.
+Rio supports adaptive themes that automatically switch between light and dark themes based on the system theme. This feature works on Web, macOS, Windows, and Linux (Wayland and X11, via the XDG Desktop Portal) platforms.
 
 ```toml
 [adaptive-theme]
