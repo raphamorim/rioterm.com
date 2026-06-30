@@ -994,6 +994,28 @@ hide-if-single = true
 
 Use same path whenever a new tab is created (Note: requires use-fork to be set to false).
 
+## navigation.display-tab-number
+
+Prefix each tab title with its 1-based position in the tab strip (e.g. `1 vim`). The number follows the tab's position, so reordering tabs renumbers them. It does not work for `NativeTab`, which uses the OS tab bar.
+
+Default is `false`.
+
+```toml
+[navigation]
+display-tab-number = true
+```
+
+## navigation.tab-number-separator
+
+The string inserted between the tab number and the title when `navigation.display-tab-number` is enabled. For example `" "` yields `1 vim`, `" - "` yields `1 - vim`, and `": "` yields `1: vim`.
+
+Default is a single space (`" "`).
+
+```toml
+[navigation]
+tab-number-separator = " - "
+```
+
 ## option-as-alt
 
 This config only works on MacOS.
