@@ -5,6 +5,10 @@ language: 'en'
 
 <h1 style={{fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(-120deg, #fb43fe 30%, #00dbe5)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", borderBottom: "none", paddingBottom: "1rem", marginBottom: "2rem"}}>Changelog</h1>
 
+## 0.4.9
+
+- Updated `wgpu` to 30.0.0 and the `librashader` filter chain to 0.12 (the wgpu path used for RetroArch shaders on Windows/WASM and behind the `wgpu` feature flag elsewhere). librashader 0.12 brings a smarter framebuffer pool that only allocates intermediate framebuffers for the shader passes that actually need them.
+
 ## 0.4.8
 
 - Adaptive theme on Linux: Rio now follows the system light/dark preference on Wayland and X11. With [`adaptive-theme`](/docs/config#adaptive-theme) configured, Rio watches the XDG Desktop Portal `color-scheme` setting (the same one Firefox and GNOME/KDE use) and switches between your light and dark themes live when the system appearance changes, no restart required. This previously worked only on macOS and Windows ([#408](https://github.com/raphamorim/rio/issues/408); based on [#1358](https://github.com/raphamorim/rio/pull/1358) by [@pinpox](https://github.com/pinpox)).
