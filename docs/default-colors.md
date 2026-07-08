@@ -24,13 +24,12 @@ cursor = '#F712FF'
 vi-cursor = '#12d0ff'
 
 # Navigation
-tabs = '#12B5E5'
-tabs-foreground = '#7d7d7d'
-tabs-active = '#303030'
-tabs-active-highlight = '#ffa133'
-tabs-active-foreground = '#FFFFFF'
-bar = '#1b1a1a'
+# tabs and tabs-active set the inactive/active tab title colors.
+# Tab island backgrounds are derived from the window background color.
+tabs = '#424040'
+tabs-active = '#FFFFFF'
 split = '#292527'
+split-active = '#44C9F0'
 
 # Search
 search-match-background = '#44C9F0'

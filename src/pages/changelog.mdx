@@ -5,6 +5,12 @@ language: 'en'
 
 <h1 style={{fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(-120deg, #fb43fe 30%, #00dbe5)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", borderBottom: "none", paddingBottom: "1rem", marginBottom: "2rem"}}>Changelog</h1>
 
+## 0.4.10
+
+- New `SelectAll` action: selects the entire terminal content, including the scrollback history, so it can be copied. Bound to `Command + A` on macOS by default, and available on every platform for custom [key bindings](/docs/key-bindings) via `action = "SelectAll"`.
+- Fixed hint label rendering: keyboard hint labels (hyperlink hints) are now drawn as proper grid overlays using the configured hint foreground/background colors, with the leading character of each label highlighted.
+- Tab strip refresh: tab island backgrounds are now derived automatically from the window background color. `colors.tabs` and `colors.tabs-active` now set the inactive and active tab title colors, and the `bar`, `tab-border`, `tabs-foreground`, `tabs-active-foreground` and `tabs-active-highlight` color options were removed.
+
 ## 0.4.9
 
 - Updated `wgpu` to 30.0.0 and the `librashader` filter chain to 0.12 (the wgpu path used for RetroArch shaders on Windows/WASM and behind the `wgpu` feature flag elsewhere). librashader 0.12 brings a smarter framebuffer pool that only allocates intermediate framebuffers for the shader passes that actually need them.

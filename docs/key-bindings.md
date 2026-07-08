@@ -70,6 +70,7 @@ Execute a predefined action in Rio terminal.
 | Run(string)      | Example: Running command `Run(code)` or `Run(code ~/.config/rio/config.toml)` |
 | PasteSelection   | |
 | ClearSelection   | |
+| SelectAll        | Select everything, including the scrollback history, so it can be copied. Bound to `Command + A` on macOS by default |
 | CreateWindow     | Create a Rio window instance |
 | Quit             | Exit Rio |
 | ToggleFullscreen | Toggle fullscreen |
@@ -262,6 +263,7 @@ If you are missing a key binding that you believe that should be a default in th
 | Open configuration     | `Command + Comma (,)`                                          |
 | Toggle VI Mode         | `Option + Shift + Space`                                          |
 | Copy                   | `Command + C`                                                  |
+| Select all             | `Command + A`                                                  |
 | Paste                  | `Command + V`                                                  |
 | Create new window      | `Command + N`                                                  |
 | Create new tab         | `Command + T`                                                  |
