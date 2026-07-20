@@ -5,6 +5,21 @@ language: 'en'
 
 <h1 style={{fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(-120deg, #fb43fe 30%, #00dbe5)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", borderBottom: "none", paddingBottom: "1rem", marginBottom: "2rem"}}>Changelog</h1>
 
+## 0.4.11
+
+- Font caches and glyph atlases are now cleared when the font library changes. Stale entries could serve the old font's shaping, metrics and bitmaps after a config reload, or crash on font ids past the new library's length (closes [#1639](https://github.com/raphamorim/rio/issues/1639), [#1110](https://github.com/raphamorim/rio/issues/1110), [#818](https://github.com/raphamorim/rio/issues/818)).
+- Glyph atlases recover when full: instead of silently dropping characters once the atlas hit its size limit, it is cleared and every row re-emitted against the fresh atlas.
+- Fonts inside TrueType collections (.ttc) load the right face. The face index was ignored when loading configured fonts, so families like Sarasa rendered whichever face sat first in the file (closes [#1302](https://github.com/raphamorim/rio/issues/1302)).
+- The configured bold/italic/bold-italic font wins over weight metadata, so families that ship their bold at weight 600 (Nerd Font patches, Operator Mono) no longer render bold cells with the regular face or stack faux bold on a real bold face.
+- [`fonts.features`](/docs/config#fontsfeatures) works again and now live reloads. Features reach both shapers (swash and CoreText), and can be disabled with a `-` prefix: `features = ["-calt", "-liga"]` turns ligatures off (closes [#1125](https://github.com/raphamorim/rio/issues/1125), [#1032](https://github.com/raphamorim/rio/issues/1032), [#1258](https://github.com/raphamorim/rio/issues/1258)).
+- [`fonts.hinting`](/docs/config#fontshinting) now applies to the terminal grid; it was previously hardcoded on.
+- Per-slot font `weight` is back: `[fonts.bold] weight = 600` steers face selection and pins the `wght` axis on variable fonts, which also fixes variable-font weights never being applied on Linux and Windows (closes [#1577](https://github.com/raphamorim/rio/issues/1577)).
+- Font families are matched by any of their names, so CJK fonts like "Source Han Mono SC" or "LXGW WenKai Mono" are found by their English alias, not only the localized name listed first in the file (closes [#1466](https://github.com/raphamorim/rio/issues/1466), thanks [@qiuzhiqian](https://github.com/qiuzhiqian) for the analysis).
+- ctrl+digit and ctrl+punctuation combos reach the terminal: Rio computes the C0 control byte itself (ctrl+6 sends 0x1E, ctrl+/ sends 0x1F, same table kitty uses) instead of relying on inconsistent platform behavior. The kitty keyboard protocol encoding is untouched (closes [#863](https://github.com/raphamorim/rio/issues/863), [#1328](https://github.com/raphamorim/rio/issues/1328)).
+- `[bindings]` edits live reload instead of requiring a new window, unknown binding actions are rejected loudly instead of silently unbinding the default, and `f1` through `f20` can be used as binding keys (plus `enter`, `escape` and `backspace` aliases).
+- Fixed font size changing by two steps per keypress: the increase/decrease defaults were registered twice on every platform.
+- Updated `swash` to 0.2.10, which fixes a hinting cache regression that rebuilt hinting state per glyph.
+
 ## 0.4.10
 
 - New `SelectAll` action: selects the entire terminal content, including the scrollback history, so it can be copied. Bound to `Command + A` on macOS by default, and available on every platform for custom [key bindings](/docs/key-bindings) via `action = "SelectAll"`.

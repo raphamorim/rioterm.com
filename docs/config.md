@@ -324,6 +324,14 @@ style = "default"
 
 Each per-slot `style` accepts `"default"` (let font discovery pick using slot-implied bold/italic traits), `false` (disable this style — fall back to the regular face), or a face style name like `"Light"`, `"Medium"`, `"Bold"`, `"Heavy"`.
 
+Each slot also accepts an optional `weight` (CSS-style, 100..900). It steers face selection on Linux and Windows and pins the `wght` axis on variable fonts on every platform. When set, Rio renders exactly that weight and skips synthetic bold.
+
+```toml
+[fonts.bold]
+family = "cascadiacode"
+weight = 600
+```
+
 ## fonts.disable-warnings-not-found
 
 Disables warnings regarding fonts not found. Default it `false`.
@@ -351,7 +359,11 @@ In case you want to specify any font feature:
 fonts.features = ["ss02", "ss03", "ss05", "ss19"]
 ```
 
-Note: Font features do not have support to live reload on configuration, so to reflect your changes, you will need to close and reopen Rio.
+A bare tag enables the feature. Features can also be disabled with a `-` prefix or given an explicit value, which is how you turn off ligatures:
+
+```toml
+fonts.features = ["-calt", "-liga", "cv01=2"]
+```
 
 ## fonts.hinting
 
