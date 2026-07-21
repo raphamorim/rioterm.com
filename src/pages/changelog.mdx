@@ -5,6 +5,15 @@ language: 'en'
 
 <h1 style={{fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(-120deg, #fb43fe 30%, #00dbe5)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", borderBottom: "none", paddingBottom: "1rem", marginBottom: "2rem"}}>Changelog</h1>
 
+## 0.4.12
+
+- Quake mode: bind `ToggleQuake` and a dropdown terminal slides in from the top of the monitor under your cursor. The binding also works as a system wide hotkey while Rio is unfocused (no accessibility permission needed on macOS), hiding it restores focus to the app you were in, and the size is configurable via [`window.quake-width-percentage`](/docs/config#windowquake-width-percentage) and [`window.quake-height-percentage`](/docs/config#windowquake-height-percentage). Binding changes live reload (closes [#89](https://github.com/raphamorim/rio/issues/89)).
+
+  ```toml
+  [bindings]
+  keys = [{ key = "'", with = "super", action = "ToggleQuake" }]
+  ```
+
 ## 0.4.11
 
 - Font caches and glyph atlases are now cleared when the font library changes. Stale entries could serve the old font's shaping, metrics and bitmaps after a config reload, or crash on font ids past the new library's length (closes [#1639](https://github.com/raphamorim/rio/issues/1639), [#1110](https://github.com/raphamorim/rio/issues/1110), [#818](https://github.com/raphamorim/rio/issues/818)).

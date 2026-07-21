@@ -1633,6 +1633,28 @@ Example:
 mode = "Windowed"
 ```
 
+## window.quake-width-percentage
+
+Width of the quake dropdown window as a fraction of the monitor width. See the `ToggleQuake` [key binding action](/docs/key-bindings#actions) for how to open it.
+
+- Default: `1.0`
+
+```toml
+[window]
+quake-width-percentage = 1.0
+```
+
+## window.quake-height-percentage
+
+Height of the quake dropdown window as a fraction of the monitor height.
+
+- Default: `0.4`
+
+```toml
+[window]
+quake-height-percentage = 0.4
+```
+
 ## window.opacity
 
 Set window background opacity.

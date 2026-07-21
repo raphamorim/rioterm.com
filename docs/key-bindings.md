@@ -72,6 +72,7 @@ Execute a predefined action in Rio terminal.
 | ClearSelection   | |
 | SelectAll        | Select everything, including the scrollback history, so it can be copied. Bound to `Command + A` on macOS by default |
 | CreateWindow     | Create a Rio window instance |
+| ToggleQuake      | Show or hide the quake dropdown window. A `ToggleQuake` binding is also registered as a system wide hotkey on macOS, Windows and X11, so it works while Rio is unfocused. Size is set by [`window.quake-width-percentage`](/docs/config#windowquake-width-percentage) and [`window.quake-height-percentage`](/docs/config#windowquake-height-percentage) |
 | Quit             | Exit Rio |
 | ToggleFullscreen | Toggle fullscreen |
 | ToggleAppearanceTheme | Toggle between dark and light appearance theme |
