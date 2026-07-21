@@ -14,6 +14,24 @@ language: 'en'
   keys = [{ key = "'", with = "super", action = "ToggleQuake" }]
   ```
 
+- Shell integration: OSC 133 semantic prompt zones are now tracked (closes [#975](https://github.com/raphamorim/rio/issues/975)), with two new binding actions, `ScrollToPrevPrompt` and `ScrollToNextPrompt`, that jump between shell prompts in the scrollback. OSC 1337 `SetUserVar` is parsed and stored per terminal (closes [#976](https://github.com/raphamorim/rio/issues/976)); these sequences were previously dropped by the image protocol parser.
+
+  ```toml
+  [bindings]
+  keys = [
+    { key = "up", with = "super | shift", action = "ScrollToPrevPrompt" },
+    { key = "down", with = "super | shift", action = "ScrollToNextPrompt" },
+  ]
+  ```
+
+- Fixed `[shell] args` being silently dropped on Linux and BSD: the fork pty path (the default there via `use-fork = true`) never passed the configured arguments to the shell. This also fixes `OpenConfigEditor` launching the editor without the config file (closes [#1016](https://github.com/raphamorim/rio/issues/1016), [#1423](https://github.com/raphamorim/rio/issues/1423)).
+
+- Fixed two crashes: the rich text atlas textures now respect the GPU's texture size limit instead of hardcoding 4096 (startup crash on Raspberry Pi class GPUs, closes [#1641](https://github.com/raphamorim/rio/issues/1641)), and the grid iterator no longer panics on positions stale relative to the live grid, such as during tiling window manager resizes (closes [#1713](https://github.com/raphamorim/rio/issues/1713)).
+
+- Fixed the tab bar overlapping the last terminal lines after opening a tab (and the leftover gap after closing back to one tab). Margin changes from the tab bar appearing or disappearing never reached the layout engine until a window resize; they now trigger a full relayout of every tab (closes [#1495](https://github.com/raphamorim/rio/issues/1495), [#1528](https://github.com/raphamorim/rio/issues/1528)).
+
+- Fixed `[shell] args` containing spaces being word split on macOS: custom commands are now passed directly to `login(1)` instead of going through an intermediate shell string, so arguments like `args = ["-c", "tmux attach || tmux"]` survive intact.
+
 ## 0.4.11
 
 - Font caches and glyph atlases are now cleared when the font library changes. Stale entries could serve the old font's shaping, metrics and bitmaps after a config reload, or crash on font ids past the new library's length (closes [#1639](https://github.com/raphamorim/rio/issues/1639), [#1110](https://github.com/raphamorim/rio/issues/1110), [#818](https://github.com/raphamorim/rio/issues/818)).

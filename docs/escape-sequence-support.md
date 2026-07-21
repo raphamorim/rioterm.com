@@ -98,6 +98,7 @@ brevity.
 | `OSC 2`   | IMPLEMENTED |                                                |
 | `OSC 4`   | IMPLEMENTED |                                                |
 | `OSC 8`   | IMPLEMENTED |                                                |
+| `OSC 133` | IMPLEMENTED | Semantic prompt zones for prompt navigation    |
 | `OSC 9`   | IMPLEMENTED | Desktop notifications and progress bar (9;4)   |
 | `OSC 10`  | IMPLEMENTED |                                                |
 | `OSC 11`  | IMPLEMENTED |                                                |
@@ -109,6 +110,7 @@ brevity.
 | `OSC 111` | IMPLEMENTED |                                                |
 | `OSC 112` | IMPLEMENTED |                                                |
 | `OSC 777` | IMPLEMENTED | Desktop notifications (rxvt notify extension)  |
+| `OSC 1337` | IMPLEMENTED | SetUserVar and inline images (iTerm2)         |
 
 ### DCS (Device Control String) - `ESC P`
 
