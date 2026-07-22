@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&amp;display=swap"><link rel="stylesheet" href="/es/assets/css/styles.bda0a122.css">
-<script src="/es/assets/js/runtime~main.3ad7c4c2.js" defer="defer"></script>
+<script src="/es/assets/js/runtime~main.332275d5.js" defer="defer"></script>
 <script src="/es/assets/js/main.81c7e452.js" defer="defer"></script>
 </head>
 <body>
@@ -49,6 +49,9 @@
 </li>
 <li class="">
 <p>Fixed the tab bar overlapping the last terminal lines after opening a tab (and the leftover gap after closing back to one tab). Margin changes from the tab bar appearing or disappearing never reached the layout engine until a window resize; they now trigger a full relayout of every tab (closes <a href="https://github.com/raphamorim/rio/issues/1495" target="_blank" rel="noopener noreferrer" class="">#1495</a>, <a href="https://github.com/raphamorim/rio/issues/1528" target="_blank" rel="noopener noreferrer" class="">#1528</a>).</p>
+</li>
+<li class="">
+<p>Tabs grow up to 240px wide (was 180px) so titles crop later, and the cap is now configurable via <a class="" href="/es/docs/config#navigationmax-tab-width"><code>navigation.max-tab-width</code></a>.</p>
 </li>
 <li class="">
 <p>Dropped file paths are now shell escaped: paths containing spaces, parentheses, quotes or other shell metacharacters get each sensitive character prefixed with a backslash instead of being pasted raw (closes <a href="https://github.com/raphamorim/rio/issues/1730" target="_blank" rel="noopener noreferrer" class="">#1730</a>).</p>
@@ -850,7 +853,7 @@ codepoint-width table, fused validate+decode).</li>
 <li class="">fix: Can the &quot;base 16&quot; colors be changed at runtime through Ansi escape sequences? <a href="https://github.com/raphamorim/rio/issues/188" target="_blank" rel="noopener noreferrer" class="">#188</a></li>
 <li class="">fix: Changing release and nightly build Ubuntu runners for x86 (<code>ubuntu-latest</code> to <code>ubuntu-22.04</code>) and arm (<code>ubuntu-24.04-arm</code> to <code>ubuntu-22.04-arm</code>)</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="026">0.2.6<a href="#026" class="hash-link" aria-label="Enlace directo al 0.2.6" title="Enlace directo al 0.2.6" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="026">0.2.6<a href="#026" class="hash-link" aria-label="Enlace directo al 0.2.6" title="Enlace directo al 0.2.6" translate="no">  ​</a></h2>
 <ul>
 <li class="">Fix: 0.2.5 doesn&#x27;t render grey scale font on macOS <a href="https://github.com/raphamorim/rio/issues/937" target="_blank" rel="noopener noreferrer" class="">#937</a>.</li>
 <li class="">fix: fix duplicate tab_id by monotonic counter for unique tab IDs by <a href="https://github.com/hilaolu" target="_blank" rel="noopener noreferrer" class="">@hilaolu</a>.</li>
@@ -1394,7 +1397,7 @@ codepoint-width table, fused validate+decode).</li>
 <li class="">Alacritty&#x27;s VI Mode.</li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0023">0.0.23<a href="#0023" class="hash-link" aria-label="Enlace directo al 0.0.23" title="Enlace directo al 0.0.23" translate="no">​</a></h2>
-<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="breaking-changes">Breaking changes<a href="#breaking-changes" class="hash-link" aria-label="Enlace directo al Breaking changes" title="Enlace directo al Breaking changes" translate="no">​</a></h4>
+<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="breaking-changes">Breaking changes<a href="#breaking-changes" class="hash-link" aria-label="Enlace directo al Breaking changes" title="Enlace directo al Breaking changes" translate="no">  ​</a></h4>
 <ul>
 <li class=""><code>navigation.mode = &quot;Plain&quot;</code> now only shutdowns the key bindings related to tab creation/manipulation.</li>
 <li class=""><code>ignore-selection-fg-color</code> has been renamed to <code>ignore-selection-foreground-color</code>.</li>

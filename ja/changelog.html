@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&amp;display=swap"><link rel="stylesheet" href="/ja/assets/css/styles.bda0a122.css">
-<script src="/ja/assets/js/runtime~main.7913948a.js" defer="defer"></script>
+<script src="/ja/assets/js/runtime~main.98d4bb51.js" defer="defer"></script>
 <script src="/ja/assets/js/main.c9e163df.js" defer="defer"></script>
 </head>
 <body>
@@ -49,6 +49,9 @@
 </li>
 <li class="">
 <p>Fixed the tab bar overlapping the last terminal lines after opening a tab (and the leftover gap after closing back to one tab). Margin changes from the tab bar appearing or disappearing never reached the layout engine until a window resize; they now trigger a full relayout of every tab (closes <a href="https://github.com/raphamorim/rio/issues/1495" target="_blank" rel="noopener noreferrer" class="">#1495</a>, <a href="https://github.com/raphamorim/rio/issues/1528" target="_blank" rel="noopener noreferrer" class="">#1528</a>).</p>
+</li>
+<li class="">
+<p>Tabs grow up to 240px wide (was 180px) so titles crop later, and the cap is now configurable via <a class="" href="/ja/docs/config#navigationmax-tab-width"><code>navigation.max-tab-width</code></a>.</p>
 </li>
 <li class="">
 <p>Dropped file paths are now shell escaped: paths containing spaces, parentheses, quotes or other shell metacharacters get each sensitive character prefixed with a backslash instead of being pasted raw (closes <a href="https://github.com/raphamorim/rio/issues/1730" target="_blank" rel="noopener noreferrer" class="">#1730</a>).</p>
@@ -133,7 +136,7 @@ codepoint-width table, fused validate+decode).</li>
 <ul>
 <li class="">small updates on goreleaser build config for perf optimizations.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="040">0.4.0<a href="#040" class="hash-link" aria-label="0.4.0 への直接リンク" title="0.4.0 への直接リンク" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="040">0.4.0<a href="#040" class="hash-link" aria-label="0.4.0 への直接リン  ク" title="0.4.0 への直接リンク" translate="no">​</a></h2>
 <p>Note: There&#x27;s a decent chance v0.4.0 may not work for many users. I&#x27;ve done my best to test it on my very old Windows and Linux machines, but it&#x27;s difficult to cover all cases. This version includes many rewrites, so I recommend checking that it works properly before updating.</p>
 <ul>
 <li class="">reduced app size (dmg for example went from 16mb to 7.11mb).</li>
@@ -389,7 +392,7 @@ codepoint-width table, fused validate+decode).</li>
 <li class="">Updated WGPU to v27.0.1.</li>
 <li class="">Fix No backend are enabled on FreeBSD #1235.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0231">0.2.31<a href="#0231" class="hash-link" aria-label="0.2.31 へ の直接リンク" title="0.2.31 への直接リンク" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0231">0.2.31<a href="#0231" class="hash-link" aria-label="0.2.31 への直接リンク" title="0.2.31 への直接リンク" translate="no">​</a></h2>
 <ul>
 <li class="">Update Rust to v1.90.</li>
 <li class="">Fix kitty keyboard recognition.</li>
@@ -759,7 +762,7 @@ codepoint-width table, fused validate+decode).</li>
 <li class="">Fix: Crash on whenever attempting to clean an invalid line index.</li>
 <li class="">Add metainfo and screenshots for appstream by <a href="https://github.com/ranisalt" target="_blank" rel="noopener noreferrer" class="">@ranisalt</a>.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0215">0.2.15<a href="#0215" class="hash-link" aria-label="0.2.15 への直接リンク" title="0.2.15 への直接リン ク" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0215">0.2.15<a href="#0215" class="hash-link" aria-label="0.2.15 への直接リンク" title="0.2.15 への直接リンク" translate="no">​</a></h2>
 <ul>
 <li class="">Fix: In some cases, the first typed character doesn&#x27;t display until after a delay, or until another key is hit <a href="https://github.com/raphamorim/rio/issues/1098" target="_blank" rel="noopener noreferrer" class="">#1098</a>.</li>
 <li class="">Fix: Anomalous behavior occurs with the Bookmark tab style in the new versions 0.14 and 0.13. <a href="https://github.com/raphamorim/rio/issues/1094" target="_blank" rel="noopener noreferrer" class="">#1094</a>.</li>
@@ -1056,7 +1059,7 @@ codepoint-width table, fused validate+decode).</li>
 <li class=""><strong>breaking:</strong> Revamp the cursor configuration</li>
 </ul>
 <p>Before:</p>
-<div class="language-toml codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-toml codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><div class="token-line" style="color:#F8F8F2"><span class="token key property">cursor</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(248, 248, 242)">=</span><span class="token plain"> </span><span class="token string" style="color:rgb(255, 121, 198)">&#x27; ▇&#x27;</span><span class="token plain"></span><br></div><div class="token-line" style="color:#F8F8F2"><span class="token plain"></span><span class="token key property">blinking-cursor</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(248, 248, 242)">=</span><span class="token plain"> </span><span class="token boolean">false</span><br></div></code></pre></div></div>
+<div class="language-toml codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-toml codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><div class="token-line" style="color:#F8F8F2"><span class="token key property">cursor</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(248, 248, 242)">=</span><span class="token plain"> </span><span class="token string" style="color:rgb(255, 121, 198)">&#x27;▇&#x27;</span><span class="token plain"></span><br></div><div class="token-line" style="color:#F8F8F2"><span class="token plain"></span><span class="token key property">blinking-cursor</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(248, 248, 242)">=</span><span class="token plain"> </span><span class="token boolean">false</span><br></div></code></pre></div></div>
 <p>After:</p>
 <div class="language-toml codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-toml codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><div class="token-line" style="color:#F8F8F2"><span class="token punctuation" style="color:rgb(248, 248, 242)">[</span><span class="token table class-name">cursor</span><span class="token punctuation" style="color:rgb(248, 248, 242)">]</span><span class="token plain"></span><br></div><div class="token-line" style="color:#F8F8F2"><span class="token plain"></span><span class="token key property">shape</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(248, 248, 242)">=</span><span class="token plain"> </span><span class="token string" style="color:rgb(255, 121, 198)">&#x27;block&#x27;</span><span class="token plain"></span><br></div><div class="token-line" style="color:#F8F8F2"><span class="token plain"></span><span class="token key property">blinking</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(248, 248, 242)">=</span><span class="token plain"> </span><span class="token boolean">false</span><br></div></code></pre></div></div>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0111">0.1.11<a href="#0111" class="hash-link" aria-label="0.1.11 への直接リンク" title="0.1.11 への直接リンク" translate="no">​</a></h2>
@@ -1386,7 +1389,7 @@ codepoint-width table, fused validate+decode).</li>
 <li class="">Fix MacOS fullscreen empty space on margin top.</li>
 <li class="">Upgrade winit to 0.29.2.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0024">0.0.24<a href="#0024" class="hash-link" aria-label="0.0.24 への直接リンク" title="0.0.24 への直接リンク" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0024">0.0.24<a href="#0024" class="hash-link" aria-label="0.0.24 への直接リンク" title="0.0.24 への 直接リンク" translate="no">​</a></h2>
 <ul>
 <li class="">Improvements on selection text for scale factor &gt;= 2.0.</li>
 <li class="">Improvements on cursor sugar creation, dropped unnecessary usage of clone.</li>
@@ -1429,7 +1432,7 @@ codepoint-width table, fused validate+decode).</li>
 <ul>
 <li class="">Upgrade rust to 1.73.0 by @igorvieira.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0022">0.0.22<a href="#0022" class="hash-link" aria-label="0.0.22 への直接リンク" title="0.0.22 への直接リンク" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0022">0.0.22<a href="#0022" class="hash-link" aria-label="0.0.22 への直接リンク" title="0.0.22 への直 接リンク" translate="no">​</a></h2>
 <ul>
 <li class="">Now you can add extra fonts to load:</li>
 </ul>
@@ -1578,7 +1581,7 @@ codepoint-width table, fused validate+decode).</li>
 <li class="">Fix for MacOS deadzone changing cursor to draggable on window buttons.</li>
 <li class="">Fix for scroll using tmux.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0011">0.0.11<a href="#0011" class="hash-link" aria-label="0.0.11 への直接リンク" title="0.0.11 への直接リン  ク" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0011">0.0.11<a href="#0011" class="hash-link" aria-label="0.0.11 への直接リンク" title="0.0.11 への直接リンク" translate="no">​</a></h2>
 <ul>
 <li class="">Fix for font styles using CachedSugar.</li>
 </ul>

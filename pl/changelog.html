@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&amp;display=swap"><link rel="stylesheet" href="/pl/assets/css/styles.bda0a122.css">
-<script src="/pl/assets/js/runtime~main.a4fc3771.js" defer="defer"></script>
+<script src="/pl/assets/js/runtime~main.d048e96d.js" defer="defer"></script>
 <script src="/pl/assets/js/main.0eb0df35.js" defer="defer"></script>
 </head>
 <body>
@@ -51,6 +51,9 @@
 <p>Fixed the tab bar overlapping the last terminal lines after opening a tab (and the leftover gap after closing back to one tab). Margin changes from the tab bar appearing or disappearing never reached the layout engine until a window resize; they now trigger a full relayout of every tab (closes <a href="https://github.com/raphamorim/rio/issues/1495" target="_blank" rel="noopener noreferrer" class="">#1495</a>, <a href="https://github.com/raphamorim/rio/issues/1528" target="_blank" rel="noopener noreferrer" class="">#1528</a>).</p>
 </li>
 <li class="">
+<p>Tabs grow up to 240px wide (was 180px) so titles crop later, and the cap is now configurable via <a class="" href="/pl/docs/config#navigationmax-tab-width"><code>navigation.max-tab-width</code></a>.</p>
+</li>
+<li class="">
 <p>Dropped file paths are now shell escaped: paths containing spaces, parentheses, quotes or other shell metacharacters get each sensitive character prefixed with a backslash instead of being pasted raw (closes <a href="https://github.com/raphamorim/rio/issues/1730" target="_blank" rel="noopener noreferrer" class="">#1730</a>).</p>
 </li>
 <li class="">
@@ -72,7 +75,7 @@
 <li class="">Fixed font size changing by two steps per keypress: the increase/decrease defaults were registered twice on every platform.</li>
 <li class="">Updated <code>swash</code> to 0.2.10, which fixes a hinting cache regression that rebuilt hinting state per glyph.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0410">0.4.10<a href="#0410" class="hash-link" aria-label="Bezpośredni link do 0.4.10" title="Bezpośredni link do 0.4.10" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0410">0.4.10<a href="#0410" class="hash-link" aria-label="Bezpośredni link do 0.4.10" title="Bezpośredni link do 0.4.10" translate="no"> ​</a></h2>
 <ul>
 <li class="">New <code>SelectAll</code> action: selects the entire terminal content, including the scrollback history, so it can be copied. Bound to <code>Command + A</code> on macOS by default, and available on every platform for custom <a class="" href="/pl/docs/key-bindings">key bindings</a> via <code>action = &quot;SelectAll&quot;</code>.</li>
 <li class="">Fixed hint label rendering: keyboard hint labels (hyperlink hints) are now drawn as proper grid overlays using the configured hint foreground/background colors, with the leading character of each label highlighted.</li>
@@ -1578,7 +1581,7 @@ codepoint-width table, fused validate+decode).</li>
 <li class="">Fix for MacOS deadzone changing cursor to draggable on window buttons.</li>
 <li class="">Fix for scroll using tmux.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0011">0.0.11<a href="#0011" class="hash-link" aria-label="Bezpośredni link do 0.0.11" title="Bezpośredni link do 0.0.11" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0011">0.0.11<a href="#0011" class="hash-link" aria-label="Bezpośredni link do 0.0.11" title="Bezpośredni link do 0.0.11" translate="no">  ​</a></h2>
 <ul>
 <li class="">Fix for font styles using CachedSugar.</li>
 </ul>

@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&amp;display=swap"><link rel="stylesheet" href="/zh-hans/assets/css/styles.bda0a122.css">
-<script src="/zh-hans/assets/js/runtime~main.95ea6749.js" defer="defer"></script>
+<script src="/zh-hans/assets/js/runtime~main.490abe09.js" defer="defer"></script>
 <script src="/zh-hans/assets/js/main.490bcfe2.js" defer="defer"></script>
 </head>
 <body>
@@ -49,6 +49,9 @@
 </li>
 <li class="">
 <p>Fixed the tab bar overlapping the last terminal lines after opening a tab (and the leftover gap after closing back to one tab). Margin changes from the tab bar appearing or disappearing never reached the layout engine until a window resize; they now trigger a full relayout of every tab (closes <a href="https://github.com/raphamorim/rio/issues/1495" target="_blank" rel="noopener noreferrer" class="">#1495</a>, <a href="https://github.com/raphamorim/rio/issues/1528" target="_blank" rel="noopener noreferrer" class="">#1528</a>).</p>
+</li>
+<li class="">
+<p>Tabs grow up to 240px wide (was 180px) so titles crop later, and the cap is now configurable via <a class="" href="/zh-hans/docs/config#navigationmax-tab-width"><code>navigation.max-tab-width</code></a>.</p>
 </li>
 <li class="">
 <p>Dropped file paths are now shell escaped: paths containing spaces, parentheses, quotes or other shell metacharacters get each sensitive character prefixed with a backslash instead of being pasted raw (closes <a href="https://github.com/raphamorim/rio/issues/1730" target="_blank" rel="noopener noreferrer" class="">#1730</a>).</p>
@@ -869,7 +872,7 @@ codepoint-width table, fused validate+decode).</li>
 <li class="">Fix: Looking forward to having a color converter <a href="https://github.com/raphamorim/rio/issues/850" target="_blank" rel="noopener noreferrer" class="">#850</a>.</li>
 <li class="">Fix: Unexpected basic 16 terminal colors displayed on some apps <a href="https://github.com/raphamorim/rio/issues/464" target="_blank" rel="noopener noreferrer" class="">#464</a>.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="024">0.2.4<a href="#024" class="hash-link" aria-label="0.2.4的直接链接" title="0.2.4的直接链接" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="024">0.2.4<a href="#024" class="hash-link" aria-label="0.2.4的直接链接" title="0.2.4的 直接链接" translate="no">​</a></h2>
 <ul>
 <li class="">Breaking: Rio now doesn&#x27;t allow anymore disable kitty keyboard protocol.</li>
 <li class="">Fullwidth semantic escape characters.</li>
@@ -1191,7 +1194,7 @@ codepoint-width table, fused validate+decode).</li>
 <li class="">Wayland: avoid crashing when compositor is misbehaving. (ref: raphamorim/winit 22522c9b37e9734c9a2408fae8d34b2599ff4574).</li>
 <li class="">Performance upgrades for lines rendered previously.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="011">0.1.1<a href="#011" class="hash-link" aria-label="0.1.1的直接链接" title="0.1.1的直接链接" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="011">0.1.1<a href="#011" class="hash-link" aria-label="0.1.1的直接 链接" title="0.1.1的直接链接" translate="no">​</a></h2>
 <ul>
 <li class="">Fix the validation errors whenever a surface is used with the vulkan backend.</li>
 <li class="">Clean up weak references to texture views and bind groups to prevent memory leaks.</li>
@@ -1407,7 +1410,7 @@ codepoint-width table, fused validate+decode).</li>
 <li class="">Actions <code>ScrollLineUp</code> and <code>ScrollLineDown</code> have been removed in favor of the new Scroll API:</li>
 </ul>
 <div class="language-toml codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-toml codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><div class="token-line" style="color:#F8F8F2"><span class="token punctuation" style="color:rgb(248, 248, 242)">[</span><span class="token table class-name">bindings</span><span class="token punctuation" style="color:rgb(248, 248, 242)">]</span><span class="token plain"></span><br></div><div class="token-line" style="color:#F8F8F2"><span class="token plain"></span><span class="token key property">keys</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(248, 248, 242)">=</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(248, 248, 242)">[</span><span class="token plain"></span><br></div><div class="token-line" style="color:#F8F8F2"><span class="token plain">    </span><span class="token comment" style="color:rgb(98, 114, 164)"># Scroll up 8 lines</span><span class="token plain"></span><br></div><div class="token-line" style="color:#F8F8F2"><span class="token plain">    </span><span class="token punctuation" style="color:rgb(248, 248, 242)">{</span><span class="token plain"> </span><span class="token key property">key</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(248, 248, 242)">=</span><span class="token plain"> </span><span class="token string" style="color:rgb(255, 121, 198)">&quot;up&quot;</span><span class="token punctuation" style="color:rgb(248, 248, 242)">,</span><span class="token plain"> </span><span class="token key property">with</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(248, 248, 242)">=</span><span class="token plain"> </span><span class="token string" style="color:rgb(255, 121, 198)">&quot;super&quot;</span><span class="token punctuation" style="color:rgb(248, 248, 242)">,</span><span class="token plain"> </span><span class="token key property">action</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(248, 248, 242)">=</span><span class="token plain"> </span><span class="token string" style="color:rgb(255, 121, 198)">&quot;Scroll(8)&quot;</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(248, 248, 242)">}</span><span class="token punctuation" style="color:rgb(248, 248, 242)">,</span><span class="token plain"></span><br></div><div class="token-line" style="color:#F8F8F2"><span class="token plain">    </span><span class="token comment" style="color:rgb(98, 114, 164)"># Scroll down 5 lines</span><span class="token plain"></span><br></div><div class="token-line" style="color:#F8F8F2"><span class="token plain">    </span><span class="token punctuation" style="color:rgb(248, 248, 242)">{</span><span class="token plain"> </span><span class="token key property">key</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(248, 248, 242)">=</span><span class="token plain"> </span><span class="token string" style="color:rgb(255, 121, 198)">&quot;down&quot;</span><span class="token punctuation" style="color:rgb(248, 248, 242)">,</span><span class="token plain"> </span><span class="token key property">with</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(248, 248, 242)">=</span><span class="token plain"> </span><span class="token string" style="color:rgb(255, 121, 198)">&quot;super&quot;</span><span class="token punctuation" style="color:rgb(248, 248, 242)">,</span><span class="token plain"> </span><span class="token key property">action</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(248, 248, 242)">=</span><span class="token plain"> </span><span class="token string" style="color:rgb(255, 121, 198)">&quot;Scroll(-5)&quot;</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(248, 248, 242)">}</span><span class="token plain"></span><br></div><div class="token-line" style="color:#F8F8F2"><span class="token plain"></span><span class="token punctuation" style="color:rgb(248, 248, 242)">]</span><br></div></code></pre></div></div>
-<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="other-changes">Other changes<a href="#other-changes" class="hash-link" aria-label="Other changes的直接链接" title="Other changes的直接链接" translate="no">​</a></h4>
+<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="other-changes">Other changes<a href="#other-changes" class="hash-link" aria-label="Other changes的直  接链接" title="Other changes的直接链接" translate="no">​</a></h4>
 <ul>
 <li class="">Rendering performance small improvements towards to Sugar text for regular font, dropped in redundancy processing (avg 68ms to 22ms with tests using 155x94 without repetition like <code>vim Cargo.lock</code>).</li>
 <li class="">Rendering performance small improvements towards to Sugar rect calculation, dropped in redundancy processing. Now Sugarloaf computes better Rects duplication in a line. It gains significant performance for large screens (avg ~12ms).</li>
@@ -1714,7 +1717,7 @@ codepoint-width table, fused validate+decode).</li>
 <li class="">Hide cursor when typing and make it visible again with scroll and cursor interactions.</li>
 <li class="">Implementation of paste files to string path.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="003">0.0.3<a href="#003" class="hash-link" aria-label="0.0.3的直接链接" title="0.0.3的直 接链接" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="003">0.0.3<a href="#003" class="hash-link" aria-label="0.0.3的直接链接" title="0.0.3的直接链接" translate="no">​</a></h2>
 <ul>
 <li class="">Added Input Method Engine (IME) support. Note: only works for preedit with single character now, which means that still need to fix for other keyboards as Japanese, Chinese [...].</li>
 <li class="">Common Keybindings and keybindings for MacOS.</li>
