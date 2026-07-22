@@ -21,8 +21,10 @@ function HomepageHeader() {
         <Heading as="h1" className={styles.title}>
           {siteConfig.title}
         </Heading>
-        <p className={styles.subtitle}>A modern terminal for the 21st century.</p>
-        <p className={styles.tagline}>{siteConfig.tagline}</p>
+        <p className={styles.subtitle}>{siteConfig.tagline}</p>
+        <p className={styles.tagline}>
+          <Translate>Open source and trusted by thousands of developers.</Translate>
+        </p>
         <div className={styles.actions}>
           <Link to="/docs/install" className={styles.actionButton}>
             <Translate>Get Started</Translate>
