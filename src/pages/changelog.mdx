@@ -5,6 +5,18 @@ language: 'en'
 
 <h1 style={{fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(-120deg, #fb43fe 30%, #00dbe5)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", borderBottom: "none", paddingBottom: "1rem", marginBottom: "2rem"}}>Changelog</h1>
 
+## 0.4.13 (unreleased)
+
+- Fixed `copy-on-select` silently doing nothing when a selection ends on top of a hyperlink or hint: the hint fired first and its early return skipped the copy. Finishing a selection now copies it and no longer activates whatever sits under the release point, so sweeping a selection across a URL doesn't open it; plain clicks trigger hints exactly as before (closes [#1494](https://github.com/raphamorim/rio/issues/1494)).
+
+- Hints rules now accept the TOML shapes the docs always showed. `[hints.rules.action]` with `command = "open"` parses (it previously failed with "missing field action" and silently reverted the whole `[hints]` table to defaults), and both keys can be written inline on the rule: `action = "Copy"` or `command = { program = "code", args = ["--goto"] }`. Misconfigured rules produce a clear error message (closes [#1407](https://github.com/raphamorim/rio/issues/1407), [#1618](https://github.com/raphamorim/rio/issues/1618)).
+
+- Fixed dead ctrl+c and ctrl+\ in shells when Rio was launched as a background job (`rio &` from a script, some desktop launchers): ignored signal dispositions survive exec and the fork pty child never reset them. The child now resets the full set before exec, which also restores default `SIGPIPE` handling (the Rust runtime ignores it in the parent), fixing pipeline semantics like `yes | head` for every shell spawned through the default Linux/BSD fork path (closes [#1120](https://github.com/raphamorim/rio/issues/1120)).
+
+- Windows: hyperlinks open through `ShellExecuteW` instead of `cmd /c start`, whose argument re-quoting corrupted URLs (`https://` became `tps://`) or made clicks silently do nothing (closes [#1457](https://github.com/raphamorim/rio/issues/1457), [#1278](https://github.com/raphamorim/rio/issues/1278)).
+
+- OSC 52 clipboard support is now advertised in the primary device attributes response, so applications that probe DA1 before enabling remote clipboard writes (tcell-based tools over ssh, for example) will use it (closes [#1398](https://github.com/raphamorim/rio/issues/1398)).
+
 ## 0.4.12
 
 - Quake mode: bind `ToggleQuake` and a dropdown terminal slides in from the top of the monitor under your cursor. The binding also works as a system wide hotkey while Rio is unfocused (no accessibility permission needed on macOS), hiding it restores focus to the app you were in, and the size is configurable via [`window.quake-width-percentage`](/docs/config#windowquake-width-percentage) and [`window.quake-height-percentage`](/docs/config#windowquake-height-percentage). Binding changes live reload (closes [#89](https://github.com/raphamorim/rio/issues/89)).
@@ -27,6 +39,8 @@ language: 'en'
 - Sixel and iTerm2 inline images are back (broken across 0.4.x, closes [#1591](https://github.com/raphamorim/rio/issues/1591)), rebuilt so images behave as grid content: they scroll with the text including inside scroll regions, are clipped by characters printed over them and by erase/delete sequences, survive in scrollback until their rows scroll off, and stay inside their split panel. Cursor movement after an image follows each protocol: sixel lands on the image's last row (with mode 8452 and DECSDM honored), iTerm2 moves right of the image and supports `doNotMoveCursor`.
 
 - Kitty graphics protocol fixes: images no longer drift once scrollback saturates, they expire when their rows leave scrollback instead of lingering forever, deletions repaint immediately, and images no longer bleed across split panel borders. Images also render on the CPU fallback renderer now, and GPU image textures are bounded by a least recently used budget instead of growing without limit.
+
+- Fixed yazi image previews collapsing into a tiny single-cell thumbnail: kitty virtual placements transmitted without the `c=`/`r=` grid parameters (what yazi's kitty protocol driver emits) now imply their grid from the image and cell size, instead of squeezing the whole image into a 1×1 placement box ([#1314](https://github.com/raphamorim/rio/issues/1314), [#1530](https://github.com/raphamorim/rio/issues/1530)).
 
 - Fixed `[shell] args` being silently dropped on Linux and BSD: the fork pty path (the default there via `use-fork = true`) never passed the configured arguments to the shell. This also fixes `OpenConfigEditor` launching the editor without the config file (closes [#1016](https://github.com/raphamorim/rio/issues/1016), [#1423](https://github.com/raphamorim/rio/issues/1423)).
 

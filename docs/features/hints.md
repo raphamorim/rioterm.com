@@ -114,7 +114,7 @@ command = "xdg-open"  # Simple command
 command = { program = "code", args = ["--goto"] }
 ```
 
-Since 0.4.12 both keys can also be written inline on the rule itself,
+Since 0.4.13 both keys can also be written inline on the rule itself,
 without the nested table:
 
 ```toml
