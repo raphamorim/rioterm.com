@@ -1006,6 +1006,17 @@ hide-if-single = true
 
 Use same path whenever a new tab is created (Note: requires use-fork to be set to false).
 
+## navigation.max-tab-width
+
+Maximum width of a tab in logical pixels. Tabs shrink below this as more of them open; the cap only limits how wide a tab grows when few are open. Values are clamped to `[80, 2000]`.
+
+Default is `240`.
+
+```toml
+[navigation]
+max-tab-width = 240
+```
+
 ## option-as-alt
 
 This config only works on MacOS.

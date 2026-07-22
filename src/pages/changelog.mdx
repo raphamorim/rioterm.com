@@ -34,6 +34,8 @@ language: 'en'
 
 - Fixed the tab bar overlapping the last terminal lines after opening a tab (and the leftover gap after closing back to one tab). Margin changes from the tab bar appearing or disappearing never reached the layout engine until a window resize; they now trigger a full relayout of every tab (closes [#1495](https://github.com/raphamorim/rio/issues/1495), [#1528](https://github.com/raphamorim/rio/issues/1528)).
 
+- Tabs grow up to 240px wide (was 180px) so titles crop later, and the cap is now configurable via [`navigation.max-tab-width`](/docs/config#navigationmax-tab-width).
+
 - Dropped file paths are now shell escaped: paths containing spaces, parentheses, quotes or other shell metacharacters get each sensitive character prefixed with a backslash instead of being pasted raw (closes [#1730](https://github.com/raphamorim/rio/issues/1730)).
 
 - Fixed `[shell] args` containing spaces being word split on macOS: custom commands are now passed directly to `login(1)` instead of going through an intermediate shell string, so arguments like `args = ["-c", "tmux attach || tmux"]` survive intact.
