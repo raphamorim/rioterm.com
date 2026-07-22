@@ -1,0 +1,150 @@
+.installSection {
+  padding-top: 2rem;
+  padding-bottom: 7rem;
+}
+
+.sectionHeader {
+  max-width: 36rem;
+  margin-bottom: 3rem;
+}
+
+.sectionEyebrow {
+  margin: 0 0 0.75rem 0;
+
+  font-family: 'Cascadia Code', monospace;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #7c7c85;
+}
+
+[data-theme='dark'] .sectionEyebrow {
+  color: #8b8b94;
+}
+
+.sectionTitle {
+  margin: 0;
+
+  font-size: 1.75rem;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #18181b;
+}
+
+[data-theme='dark'] .sectionTitle {
+  color: #fafafa;
+}
+
+@media (min-width: 640px) {
+  .sectionTitle {
+    font-size: 2rem;
+  }
+}
+
+.platforms {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .platforms {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.platformCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+
+  padding: 1.5rem;
+  border: 1px solid #e4e4e7;
+  border-radius: 0.75rem;
+  background-color: #fafafa;
+
+  text-decoration: none;
+
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.platformCard:hover {
+  border-color: #a1a1aa;
+  text-decoration: none;
+}
+
+[data-theme='dark'] .platformCard {
+  border-color: rgba(255, 255, 255, 0.08);
+  background-color: #101013;
+}
+
+[data-theme='dark'] .platformCard:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+  background-color: #131317;
+}
+
+.platformName {
+  font-family: 'Cascadia Code', monospace;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #64646b;
+}
+
+[data-theme='dark'] .platformName {
+  color: #a1a1aa;
+}
+
+.platformCommand {
+  display: block;
+
+  padding: 0.875rem 1rem;
+  border: 1px solid #e4e4e7;
+  border-radius: 0.5rem;
+  background-color: #101013;
+
+  font-family: 'Cascadia Code', monospace;
+  font-size: 0.875rem;
+  color: #e4e4e7;
+
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+[data-theme='dark'] .platformCommand {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.commandPrompt {
+  color: #00dbe5;
+  user-select: none;
+}
+
+.moreOptions {
+  margin: 2rem 0 0 0;
+
+  font-family: 'Cascadia Code', monospace;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.moreOptions a {
+  color: #64646b;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.moreOptions a:hover {
+  color: #18181b;
+}
+
+[data-theme='dark'] .moreOptions a {
+  color: #a1a1aa;
+}
+
+[data-theme='dark'] .moreOptions a:hover {
+  color: #fff;
+}

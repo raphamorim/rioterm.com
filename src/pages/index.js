@@ -2,7 +2,7 @@
 
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import FeaturesSection from '@site/src/components/FeaturesSection/index';
+import DownloadSection from '@site/src/components/DownloadSection/index';
 import Heading from '@theme/Heading';
 import Layout from '@theme/Layout';
 import clsx from 'clsx';
@@ -60,7 +60,7 @@ export default function Home() {
     >
       <HomepageHeader />
       <main>
-        <FeaturesSection />
+        <DownloadSection />
       </main>
     </Layout>
   );
