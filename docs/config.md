@@ -824,7 +824,7 @@ persist = false
 [hints.rules.action]
 command = "xdg-open"  # Linux/BSD
 # command = "open"    # macOS
-# command = { program = "cmd", args = ["/c", "start", ""] }  # Windows
+# command = "explorer"  # Windows
 
 [hints.rules.binding]
 key = "O"

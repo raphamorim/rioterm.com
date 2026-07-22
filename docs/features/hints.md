@@ -59,7 +59,7 @@ persist = false
 [hints.rules.action]
 command = "xdg-open"  # Linux/BSD
 # command = "open"    # macOS  
-# command = { program = "cmd", args = ["/c", "start", ""] }  # Windows
+# command = "explorer"  # Windows
 
 [hints.rules.mouse]
 enabled = true
@@ -112,6 +112,18 @@ command = "xdg-open"  # Simple command
 
 # Or with arguments
 command = { program = "code", args = ["--goto"] }
+```
+
+Since 0.4.12 both keys can also be written inline on the rule itself,
+without the nested table:
+
+```toml
+[[hints.rules]]
+regex = "..."
+action = "Copy"
+# or
+# command = "xdg-open"
+# command = { program = "code", args = ["--goto"] }
 ```
 
 ### Key Bindings
