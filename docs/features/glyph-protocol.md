@@ -32,7 +32,7 @@ Messages ride APC escape sequences (`ESC _ 25a1 ; ... ESC \`) with four verbs:
 
 Registrations describe how the outline maps onto the cell, so the same bytes render correctly at any font size. Every glyph passes through three transforms at render time: **pad** (compute the effective render span), **size** (pick scale factors), **align** (position the scaled outline within the span).
 
-- `width` declares the codepoint's width as 1 (narrow) or 2 (wide) cells. It is authoritative for every terminal layout decision: cursor advance, wrapping, and selection geometry.
+- `width` declares the glyph's render span as 1 (narrow) or 2 (wide) cells. It is honored purely at render time: a wide glyph paints across two cells, but the codepoint's logical width stays at one cell (its `wcwidth`), so cursor advance, wrapping, and selection never desync from width-unaware applications. Authors of wide glyphs emit a trailing space so the overflow lands on an empty cell.
 - `aw` and `lh` declare the authored extent (advance width and line height, in `upm` units), so the terminal scales by glyph intent instead of by bounding box.
 - `size` picks the scale policy: `height` (default, line-height drives, like regular characters), `advance`, `contain` (fits entirely inside the span), `cover` (fills the span), or `stretch` (each axis independent, useful for box-drawing).
 - `align` positions the scaled outline in the span (`start`/`center`/`end` per axis), including `baseline` vertical alignment for character-like glyphs that must sit on the text baseline, with descenders extending below it naturally.
