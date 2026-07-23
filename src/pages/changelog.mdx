@@ -7,6 +7,14 @@ language: 'en'
 
 ## 0.4.13 (unreleased)
 
+- Glyph Protocol registrations accept a `width` parameter again (`1` or `2`), honored purely at render time: a wide glyph paints across two cells while the codepoint's logical width stays at one cell (its `wcwidth`), so cursor position, wrapping and selection never desync from width-unaware applications like shells and line editors. Authors of wide glyphs emit a trailing space so the overflow lands on an empty cell. Registrations and clears now also repaint cells already showing the codepoint, and glyph rasterization is hardened against hostile payloads (a bounding-box contain guard plus a hard raster dimension ceiling make degenerate `upm` values harmless). This settles [#1649](https://github.com/raphamorim/rio/issues/1649) by keeping `width` in the spec at render level only ([#1650](https://github.com/raphamorim/rio/pull/1650)).
+
+- Fixed the mouse wheel needing two notches per scrolled line with notched mice: wheel ticks were converted to pixels with the font size but consumed in cell-height units, so a single notch floored to zero lines. One notch is now exactly one line before the configured [`scroll.multiplier`](/docs/config#scroll), so the default scrolls the conventional three lines per notch (closes [#1350](https://github.com/raphamorim/rio/issues/1350)).
+
+- macOS: clicking the dock icon while every Rio window is minimized now restores and focuses one, instead of doing nothing (closes [#1151](https://github.com/raphamorim/rio/issues/1151)).
+
+- Fixed a stale selection surviving panel switches: clicking into an unfocused split never reached the click handler that resets selections, so the next drag in that panel extended a leftover anchor instead of starting fresh (closes [#1638](https://github.com/raphamorim/rio/issues/1638)).
+
 - Fixed `copy-on-select` silently doing nothing when a selection ends on top of a hyperlink or hint: the hint fired first and its early return skipped the copy. Finishing a selection now copies it and no longer activates whatever sits under the release point, so sweeping a selection across a URL doesn't open it; plain clicks trigger hints exactly as before (closes [#1494](https://github.com/raphamorim/rio/issues/1494)).
 
 - Hints rules now accept the TOML shapes the docs always showed. `[hints.rules.action]` with `command = "open"` parses (it previously failed with "missing field action" and silently reverted the whole `[hints]` table to defaults), and both keys can be written inline on the rule: `action = "Copy"` or `command = { program = "code", args = ["--goto"] }`. Misconfigured rules produce a clear error message (closes [#1407](https://github.com/raphamorim/rio/issues/1407), [#1618](https://github.com/raphamorim/rio/issues/1618)).
