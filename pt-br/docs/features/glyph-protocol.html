@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&amp;display=swap"><link rel="stylesheet" href="/pt-br/assets/css/styles.b28bd4ee.css">
-<script src="/pt-br/assets/js/runtime~main.ef1c6106.js" defer="defer"></script>
+<script src="/pt-br/assets/js/runtime~main.8cdcdfe9.js" defer="defer"></script>
 <script src="/pt-br/assets/js/main.b84d9780.js" defer="defer"></script>
 </head>
 <body>
@@ -45,7 +45,7 @@
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="sizing-and-placement">Sizing and placement<a href="#sizing-and-placement" class="hash-link" aria-label="Sizing and placementlink direto para" title="Sizing and placementlink direto para" translate="no">​</a></h2>
 <p>Registrations describe how the outline maps onto the cell, so the same bytes render correctly at any font size. Every glyph passes through three transforms at render time: <strong>pad</strong> (compute the effective render span), <strong>size</strong> (pick scale factors), <strong>align</strong> (position the scaled outline within the span).</p>
 <ul>
-<li class=""><code>width</code> declares the codepoint&#x27;s width as 1 (narrow) or 2 (wide) cells. It is authoritative for every terminal layout decision: cursor advance, wrapping, and selection geometry.</li>
+<li class=""><code>width</code> declares the glyph&#x27;s render span as 1 (narrow) or 2 (wide) cells. It is honored purely at render time: a wide glyph paints across two cells, but the codepoint&#x27;s logical width stays at one cell (its <code>wcwidth</code>), so cursor advance, wrapping, and selection never desync from width-unaware applications. Authors of wide glyphs emit a trailing space so the overflow lands on an empty cell.</li>
 <li class=""><code>aw</code> and <code>lh</code> declare the authored extent (advance width and line height, in <code>upm</code> units), so the terminal scales by glyph intent instead of by bounding box.</li>
 <li class=""><code>size</code> picks the scale policy: <code>height</code> (default, line-height drives, like regular characters), <code>advance</code>, <code>contain</code> (fits entirely inside the span), <code>cover</code> (fills the span), or <code>stretch</code> (each axis independent, useful for box-drawing).</li>
 <li class=""><code>align</code> positions the scaled outline in the span (<code>start</code>/<code>center</code>/<code>end</code> per axis), including <code>baseline</code> vertical alignment for character-like glyphs that must sit on the text baseline, with descenders extending below it naturally.</li>
