@@ -54,3 +54,27 @@ To make Windows utilize a GPU for a specific application through Windows display
 6. Click on the Options button to display the GPU selection window.
 7. Choose the GPU you want to prioritize for the selected application.
 8. Click on the Save button.
+
+## Image support (Sixel, iTerm2, Kitty graphics)
+
+Terminal image protocols require a modern Windows pseudoconsole (ConPTY
+1.22 or newer, from the Windows Terminal project). The ConPTY that ships
+in-box with most Windows builds is older and rewrites or strips the escape
+sequences image protocols use, so tools like Yazi render previews
+incorrectly ([#1759](https://github.com/raphamorim/rio/issues/1759)).
+
+Rio uses a newer ConPTY when its two files are deployed **next to
+`rio.exe`**:
+
+1. `conpty.dll` — must match Rio's architecture (x64 or arm64).
+2. `OpenConsole.exe` — must match your system architecture.
+
+Both must be present; `conpty.dll` alone silently falls back to the in-box
+console host. They are redistributable (MIT) via the
+[`Microsoft.Windows.Console.ConPTY`](https://www.nuget.org/packages/Microsoft.Windows.Console.ConPTY)
+NuGet package — download it (a `.nupkg` is a zip), then copy
+`runtimes/win-x64/native/conpty.dll` and
+`build/native/runtimes/x64/OpenConsole.exe` beside `rio.exe`.
+
+With both files in place, Rio loads the newer ConPTY automatically and
+image previews work.
