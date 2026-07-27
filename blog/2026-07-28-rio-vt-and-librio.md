@@ -1,8 +1,8 @@
 ---
 layout: post
 title: "rio-vt and librio: Rio's terminal engine, now embeddable"
-date: 2026-08-26 12:00
-description: "Rio's terminal core is now a standalone, dependency-light engine you can embed anywhere: rio-vt as a safe Rust crate, librio as a C ABI, and canario as the native app built on top."
+date: 2026-07-28 12:00
+description: "Rio's terminal core is now a standalone, dependency-light engine you can embed anywhere: rio-vt as a safe Rust crate and librio as a C ABI."
 categories: macos linux windows
 authors: raphamorim
 ---
@@ -11,7 +11,7 @@ Hey folks!
 
 For a while now Rio's terminal core has been tangled up with its renderer, its config, and the app around it. That made it hard for anyone (including me) to reuse the parts that took years to get right: the VT state machine, the grid, scrollback, selection, search, and the image protocols.
 
-With Rio 0.5 that changes. The engine is now split into clean, embeddable layers, and I want to walk you through them: **rio-vt**, **librio**, and the native app I've been building on top, **canario**.
+With Rio 0.5 that changes. The engine is now split into clean, embeddable layers, and I want to walk you through them: **rio-vt** and **librio**.
 
 <!-- truncate -->
 
@@ -20,7 +20,7 @@ With Rio 0.5 that changes. The engine is now split into clean, embeddable layers
 The idea is simple. Most projects that want a terminal don't want a whole terminal app, they want the *engine*. So the engine now ships as two layers you can pick from:
 
 - **`rio-vt`** is a safe Rust crate. The VT state machine, ANSI/escape parser, grid with scrollback, selection, search, PTY driver, and the sixel / Kitty / iTerm2 image protocols. No rendering, no GPU, no font shaping. If you write Rust, you depend on this directly. Think of it as a modern alternative to `alacritty_terminal`.
-- **`librio`** is the same core behind a C ABI, in the spirit of [libghostty](https://ghostty.org). If you're writing Swift, C, Go, Python, or anything that speaks C, you link this. All the `unsafe` lives here; `rio-vt` itself stays safe Rust.
+- **`librio`** is the same core behind a C ABI, in the spirit of [libghostty](https://ghostty.org). If you're writing Swift, C, Go, Python, or anything that speaks C, you link this: it ships as a prebuilt static library, no Rust toolchain required. All the `unsafe` lives here; `rio-vt` itself stays safe Rust.
 
 Both are lean by default. Building `rio-vt` with no features pulls in **no** renderer, GPU, or font-shaping dependencies, it's just the terminal.
 
@@ -102,7 +102,7 @@ cargo run -p rio-vt --example kitty_image
 `librio` wraps that engine in a small C ABI: create an engine, create a surface (which spawns a PTY under the hood), write to it, and pull a render state that tells you which rows changed and what each cell holds.
 
 ```c
-#include "librio-vt.h"
+#include "librio.h"
 
 rio_engine_t  *engine  = rio_engine_new(&config);
 rio_surface_t *surface = rio_surface_new(engine, &desc);
@@ -124,50 +124,47 @@ for (uint16_t line = 0; line < rio_render_state_lines(state); line++) {
 rio_render_state_reset_dirty(state);
 ```
 
-That's the exact surface Swift consumes in canario, cell for cell.
-
-## canario: a native app on librio
-
-To prove the engine really is self-contained, I've been building **canario** (the project I previously teased as *Super Rio*), a fully native macOS frontend written in SwiftUI. It's driven entirely by `librio` through that C ABI, and does all of its drawing on the Swift side with CPU rendering, no GPU renderer from Rio involved at all. Rio's Rust frontend and canario's Swift frontend now run the *same* terminal core, one via the crate, one via the C boundary.
-
-The dirty-row render state above is exactly what makes CPU rendering practical: canario only repaints the cells the terminal says changed, so the Swift side stays cheap without reimplementing a single escape sequence.
+That's the exact surface a native Swift or C frontend consumes, cell for cell. The dirty-row render state is what makes CPU rendering practical: a consumer only repaints the cells the terminal says changed, without reimplementing a single escape sequence.
 
 ## Already in production
 
-This isn't a science project. **`rio-vt` is already running in production at [Lovable](https://lovable.dev)**, powering real terminal workloads. Extracting the core into its own crate wasn't just cleanup, it was so other products could build on the same engine Rio ships.
+This isn't a science project. **`rio-vt` is already used in production by companies like [Lovable](https://lovable.dev)**, powering real terminal workloads. Extracting the core into its own crate wasn't just cleanup, it was so other products could build on the same engine Rio ships.
 
-## rio-vt vs. vt100
+## How it performs
 
-The closest thing in the Rust ecosystem is [`vt100`](https://crates.io/crates/vt100), doy's excellent parser. It's worth being clear about how they differ, because they aim at different problems.
+I keep a standalone benchmark, [rio-vt-benchmark](https://github.com/raphamorim/rio-vt-benchmark), that pits `rio-vt` against [`vt100`](https://crates.io/crates/vt100) (doy's excellent parser) and [`alacritty_terminal`](https://crates.io/crates/alacritty_terminal) on the same workloads: parse a byte stream, serialize a filled screen, and resize one, all at a fixed 80x24. The numbers below are Criterion medians on an Apple Silicon Mac (rio-vt 0.5, vt100 0.15, alacritty_terminal 0.26). They depend on the CPU and the input, so run it yourself.
 
-`vt100` is a **parser and screen model**: you feed it bytes and read back a screen with cells, colors, and a cursor. It's minimal, well-documented, and ideal for scraping or asserting on terminal output (multiplexers, tests, automation).
+**Parsing** a byte stream into the screen (throughput, higher is better):
 
-`rio-vt` is a **complete terminal engine**: the parser is one piece, alongside a PTY driver, scrollback, selection, search, image protocols, damage tracking, and a C ABI, all of it battle-tested by shipping in Rio.
+| Workload | rio-vt | vt100 | alacritty | winner |
+| --- | --- | --- | --- | --- |
+| mixed | 302 MiB/s | 221 MiB/s | 254 MiB/s | rio-vt |
+| ascii_plain | 835 MiB/s | 196 MiB/s | 279 MiB/s | rio-vt 3.0× |
+| sgr_churn | 235 MiB/s | 349 MiB/s | 332 MiB/s | vt100 |
+| scroll_storm | 274 MiB/s | 101 MiB/s | 266 MiB/s | rio-vt |
+| alt_screen_redraw | 588 MiB/s | 231 MiB/s | 282 MiB/s | rio-vt 2.1× |
+| unicode_wide | 248 MiB/s | 203 MiB/s | 337 MiB/s | alacritty |
 
-| | `vt100` | `rio-vt` |
-| --- | --- | --- |
-| Role | ANSI parser + screen model | full terminal engine |
-| Parse ANSI / VT | ✅ | ✅ |
-| PTY driver | ❌ (bring your own) | ✅ (built in) |
-| Scrollback | ❌ | ✅ |
-| Reflow on resize | ❌ | ✅ |
-| Selection | ❌ | ✅ |
-| Regex search | ❌ | ✅ |
-| Sixel / Kitty / iTerm2 images | ❌ | ✅ |
-| Damage model | screen diff | per-row dirty + pull API |
-| Mouse | ✅ | ✅ |
-| Colors & attributes | ✅ | ✅ (palette + truecolor) |
-| C ABI for other languages | ❌ | ✅ (`librio`) |
-| Dependency footprint | very small | larger (a real terminal) |
-| License | MIT | MIT |
+**Serializing** the filled screen back out (lower is better; only rio-vt and vt100 expose a screen dump):
 
-If you want the smallest possible thing that turns bytes into a screen, `vt100` is a great pick and I'd genuinely recommend it. If you want the engine a real terminal runs on, PTY and images and selection included, without wiring five crates together, that's `rio-vt`.
+| Operation | rio-vt | vt100 | winner |
+| --- | --- | --- | --- |
+| contents_formatted (ANSI) | 4.3 µs | 18.6 µs | rio-vt 4.3× |
+| contents_plain (text) | 3.8 µs | 13.9 µs | rio-vt 3.7× |
+
+**Resizing** 80x24 to 100x40 and back (lower is better):
+
+| Operation | rio-vt | vt100 | alacritty | winner |
+| --- | --- | --- | --- | --- |
+| resize | 5.0 µs | 7.5 µs | 227 µs | rio-vt |
+
+rio-vt parses faster on most shapes, and by a wide margin when the work is plain glyphs (`ascii_plain`) or full-screen repaints (`alt_screen_redraw`). It serializes a screen several times faster, and resizes far quicker than either, while still reflowing wrapped lines (vt100 skips reflow, so it clips content on shrink; alacritty reflows but is two orders of magnitude slower here). It's not a clean sweep: vt100 takes `sgr_churn`, where rio-vt's per-cell style interning costs more than a plain per-cell style, and alacritty takes `unicode_wide`. Different engines, different trade-offs, which is exactly why the benchmark is public.
 
 ## Where this is going
 
-- `rio-vt` and `librio` are versioned alongside Rio (0.5) and will be published so anyone can depend on them.
-- The C header ships with the library; a universal xcframework makes the Swift path a drop-in.
-- canario is the flagship consumer today, but the whole point is that it doesn't have to be the only one.
+- `rio-vt` is on crates.io, versioned alongside Rio (0.5), so any Rust project can depend on it today.
+- `librio` isn't a crate you install: each GitHub release carries a `RioKit.xcframework` for Swift, plus the bare `librio.a` + `librio.h` for C, so the Swift/C path is a drop-in with no Rust toolchain.
+- Companies like Lovable are already building on it, but the whole point is that it doesn't have to stop there.
 
 If you've ever wanted to embed a real terminal, in a Rust app, a native macOS app, or something exotic behind the C ABI, this is for you. And if you build something on it, I'd love to hear about it.
 
