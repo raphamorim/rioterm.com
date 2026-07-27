@@ -1646,7 +1646,7 @@ mode = "Windowed"
 
 ## window.quake-width-percentage
 
-Width of the quake dropdown window as a fraction of the monitor width. See the `ToggleQuake` [key binding action](/docs/key-bindings#actions) for how to open it.
+Width of the quake dropdown window as a fraction of the monitor width. See the `ToggleQuake` [key binding action](/docs/key-bindings#action) for how to open it.
 
 - Default: `1.0`
 
