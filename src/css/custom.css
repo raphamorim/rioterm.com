@@ -177,6 +177,10 @@ div[class*="announcementBar"] button svg {
 
 /* Search bar styling */
 .navbar .DocSearch-Button {
+  /* Re-assert flex: cssnano merges DocSearch's own `display:flex` into an
+     earlier shared rule, letting its later `all:unset` reset the button to
+     inline and wrap the ⌘K keys onto a second line (prod-only). */
+  display: flex;
   border-radius: 2rem;
   background-color: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.08);
