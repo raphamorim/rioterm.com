@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "rio-vt and librio: Rio's terminal engine, now embeddable"
-date: 2026-07-28 12:00
+date: 2026-07-27 18:32
 description: "Rio's terminal core is now a standalone, dependency-light engine you can embed anywhere: rio-vt as a safe Rust crate and librio as a C ABI."
 categories: macos linux windows
 authors: raphamorim
