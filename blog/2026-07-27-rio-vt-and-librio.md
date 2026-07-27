@@ -120,6 +120,8 @@ rio_render_state_reset_dirty(state);
 
 That's the exact surface a native Swift or C frontend consumes, cell for cell. The dirty-row render state is what makes CPU rendering practical: a consumer only repaints the cells the terminal says changed, without reimplementing a single escape sequence.
 
+And it's cross-platform: the same C ABI builds and runs on macOS, Linux, and Windows, spawning a real shell through the platform's PTY (ConPTY on Windows).
+
 ## Already in production
 
 This isn't a science project. **`rio-vt` is already used in production by companies like [Lovable](https://lovable.dev)**, powering real terminal workloads. Extracting the core into its own crate wasn't just cleanup, it was so other products could build on the same engine Rio ships.
@@ -159,7 +161,7 @@ It's not a clean sweep: vt100 takes `sgr_churn`, where rio-vt's per-cell style i
 ## Where this is going
 
 - `rio-vt` is on crates.io, versioned alongside Rio (0.5), so any Rust project can depend on it today.
-- `librio` isn't a crate you install: each GitHub release carries a `RioKit.xcframework` for Swift, plus the bare `librio.a` + `librio.h` for C, so the Swift/C path is a drop-in with no Rust toolchain.
+- `librio` isn't a crate you install: each GitHub release carries a `RioKit.xcframework` for Swift, plus the bare `librio.a` + `librio.h` for C, so the macOS Swift/C path is a drop-in with no Rust toolchain. On Linux and Windows it builds from source with `cargo build -p librio`.
 - WebAssembly support.
 
 If you've ever wanted to embed a real terminal, in a Rust app, a native macOS app, or something different behind the C ABI, this is for you. And if you build something on it, I'd love to hear about it.
