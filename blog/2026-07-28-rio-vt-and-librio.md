@@ -20,7 +20,7 @@ With Rio 0.5 that changes. The engine is now split into clean, embeddable layers
 The idea is simple. Most projects that want a terminal don't want a whole terminal app, they want the *engine*. So the engine now ships as two layers you can pick from:
 
 - **`rio-vt`** is a safe Rust crate. The VT state machine, ANSI/escape parser, grid with scrollback, selection, search, PTY driver, and the sixel / Kitty / iTerm2 image protocols. No rendering, no GPU, no font shaping. If you write Rust, you depend on this directly. Think of it as a modern alternative to `alacritty_terminal`.
-- **`librio`** is the same core behind a C ABI, in the spirit of [libghostty](https://ghostty.org). If you're writing Swift, C, Go, Python, or anything that speaks C, you link this: it ships as a prebuilt static library, no Rust toolchain required. All the `unsafe` lives here; `rio-vt` itself stays safe Rust.
+- **`librio`** is the same core behind a C ABI, in the spirit of [libghostty](https://ghostty.org). If you're writing Swift, C, Go, Python, or anything that speaks C, you link this: it ships as a prebuilt static library, no Rust toolchain required. All the `unsafe` lives here and `rio-vt` itself stays safe Rust.
 
 Both are lean by default. Building `rio-vt` with no features pulls in **no** renderer, GPU, or font-shaping dependencies, it's just the terminal.
 
@@ -91,12 +91,6 @@ parser.advance(&mut term, b"\x1b_Gf=32,s=2,v=2,a=T;/wAA//8AAP//AAD//wAA/w==\x1b\
 // -> kitty image: id=..., 2x2px, 16 rgba bytes
 ```
 
-The crate ships runnable versions of all of these (`quickstart`, `sixel`, `kitty_image`, `selection`, `resize`):
-
-```bash
-cargo run -p rio-vt --example kitty_image
-```
-
 ## librio: the same core, from any language
 
 `librio` wraps that engine in a small C ABI: create an engine, create a surface (which spawns a PTY under the hood), write to it, and pull a render state that tells you which rows changed and what each cell holds.
@@ -158,14 +152,20 @@ I keep a standalone benchmark, [rio-vt-benchmark](https://github.com/raphamorim/
 | --- | --- | --- | --- | --- |
 | resize | 5.0 µs | 7.5 µs | 227 µs | rio-vt |
 
-rio-vt parses faster on most shapes, and by a wide margin when the work is plain glyphs (`ascii_plain`) or full-screen repaints (`alt_screen_redraw`). It serializes a screen several times faster, and resizes far quicker than either, while still reflowing wrapped lines (vt100 skips reflow, so it clips content on shrink; alacritty reflows but is two orders of magnitude slower here). It's not a clean sweep: vt100 takes `sgr_churn`, where rio-vt's per-cell style interning costs more than a plain per-cell style, and alacritty takes `unicode_wide`. Different engines, different trade-offs, which is exactly why the benchmark is public.
+rio-vt parses faster on most shapes, and by a wide margin when the work is plain glyphs (`ascii_plain`) or full-screen repaints (`alt_screen_redraw`). It serializes a screen several times faster, and resizes far quicker than either, while still reflowing wrapped lines (vt100 skips reflow, so it clips content on shrink, alacritty reflows but is two orders of magnitude slower here).
+
+It's not a clean sweep: vt100 takes `sgr_churn`, where rio-vt's per-cell style interning costs more than a plain per-cell style, and alacritty takes `unicode_wide`. Different engines, different trade-offs, which is exactly why the benchmark is public.
 
 ## Where this is going
 
 - `rio-vt` is on crates.io, versioned alongside Rio (0.5), so any Rust project can depend on it today.
 - `librio` isn't a crate you install: each GitHub release carries a `RioKit.xcframework` for Swift, plus the bare `librio.a` + `librio.h` for C, so the Swift/C path is a drop-in with no Rust toolchain.
-- Companies like Lovable are already building on it, but the whole point is that it doesn't have to stop there.
+- WebAssembly support.
 
-If you've ever wanted to embed a real terminal, in a Rust app, a native macOS app, or something exotic behind the C ABI, this is for you. And if you build something on it, I'd love to hear about it.
+If you've ever wanted to embed a real terminal, in a Rust app, a native macOS app, or something different behind the C ABI, this is for you. And if you build something on it, I'd love to hear about it.
 
-As always, happy hacking!
+That being said. Thanks for following and using Rio!
+
+All the best,
+
+Raphael.
