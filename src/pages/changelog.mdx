@@ -5,7 +5,9 @@ language: 'en'
 
 <h1 style={{fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(-120deg, #fb43fe 30%, #00dbe5)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", borderBottom: "none", paddingBottom: "1rem", marginBottom: "2rem"}}>Changelog</h1>
 
-## 0.4.13 (unreleased)
+## 0.5.0
+
+- Rio's terminal core is now an embeddable library, split out of the app. **`rio-vt`** is a standalone, dependency-light Rust crate: the VT state machine, ANSI/escape parser, grid with scrollback, selection, search, PTY driver, and the sixel / Kitty / iTerm2 image protocols, with no renderer, GPU, or font-shaping code, so building it with no features is just the terminal. **`librio`** wraps that same core behind a C ABI for Swift, C, and any language that speaks C, shipped as a `RioKit.xcframework` plus a bare `librio.a` + `librio.h` on each release rather than a published crate. Rio's own frontend and other products now run the same engine; `rio-vt` is already in production at [Lovable](https://lovable.dev). Full write-up in the [announcement post](/blog/2026/07/28/rio-vt-and-librio).
 
 - Glyph Protocol registrations accept a `width` parameter again (`1` or `2`), honored purely at render time: a wide glyph paints across two cells while the codepoint's logical width stays at one cell (its `wcwidth`), so cursor position, wrapping and selection never desync from width-unaware applications like shells and line editors. Authors of wide glyphs emit a trailing space so the overflow lands on an empty cell. Registrations and clears now also repaint cells already showing the codepoint, and glyph rasterization is hardened against hostile payloads (a bounding-box contain guard plus a hard raster dimension ceiling make degenerate `upm` values harmless). This settles [#1649](https://github.com/raphamorim/rio/issues/1649) by keeping `width` in the spec at render level only ([#1650](https://github.com/raphamorim/rio/pull/1650)).
 
