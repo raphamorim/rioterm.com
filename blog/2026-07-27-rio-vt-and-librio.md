@@ -53,7 +53,7 @@ let line: String = (0..cols).map(|x| rows[0][Column(x)].c()).collect();
 assert!(line.starts_with("hello world"));
 ```
 
-That "pull the grid back out" model is the whole point: `rio-vt` never draws anything, so you can pair it with any renderer, or none at all.
+Since `rio-vt` never draws anything, you decide what happens with the grid: pair it with any renderer, or none at all.
 
 ### Selection and search come for free
 
@@ -127,6 +127,8 @@ And it's cross-platform: the same C ABI builds and runs on macOS, Linux, and Win
 This isn't a science project. **`rio-vt` is already used in production by companies like [Lovable](https://lovable.dev)**, powering real terminal workloads. Extracting the core into its own crate wasn't just cleanup, it was so other products could build on the same engine Rio ships.
 
 ## How it performs
+
+A caveat before the numbers: benchmarks are tricky, and I'm sure rio-vt does poorly in plenty of areas this suite doesn't measure. The workloads are based on real production cases users brought to me, not a synthetic tour of every code path. For example, I'd expect [libghostty](https://ghostty.org) to beat rio-vt on larger scrollback (around >8-10k lines) and probably on resize too, but I haven't benched it since I decided to keep this suite focused on Rust crates. Eventually I'll do a proper bench of `librio` against libghostty.
 
 I keep a standalone benchmark, [rio-vt-benchmark](https://github.com/raphamorim/rio-vt-benchmark), that pits `rio-vt` against [`vt100`](https://crates.io/crates/vt100) (doy's excellent parser) and [`alacritty_terminal`](https://crates.io/crates/alacritty_terminal) on the same workloads: parse a byte stream, serialize a filled screen, and resize one, all at a fixed 80x24. The numbers below are Criterion medians on an Apple Silicon Mac (rio-vt 0.5, vt100 0.15, alacritty_terminal 0.26). They depend on the CPU and the input, so run it yourself.
 
