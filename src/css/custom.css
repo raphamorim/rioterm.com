@@ -75,12 +75,21 @@ div[class*="announcementBar"] button svg {
 }
 
 .navbar {
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  background-color: rgba(24, 24, 27, 0.85);
+  background-color: rgba(24, 24, 27, 0.98);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow: none;
   padding: 0.5rem 1.5rem;
+}
+
+/* Desktop only: backdrop-filter makes .navbar the containing block for
+   fixed-position descendants, which traps the mobile hamburger sidebar
+   (.navbar-sidebar, rendered inside the navbar) in the navbar's box. */
+@media (min-width: 997px) {
+  .navbar {
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    background-color: rgba(24, 24, 27, 0.85);
+  }
 }
 
 .navbar__title {
