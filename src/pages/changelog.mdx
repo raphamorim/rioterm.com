@@ -5,6 +5,12 @@ language: 'en'
 
 <h1 style={{fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(-120deg, #fb43fe 30%, #00dbe5)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", borderBottom: "none", paddingBottom: "1rem", marginBottom: "2rem"}}>Changelog</h1>
 
+## 0.5.1
+
+- Windows: resizing the window while the terminal sat idle could leave the newly exposed area unpainted — the desktop showed through behind Rio — until the next keystroke or output. A resize reflows the grid, but presenting a frame was gated on terminal damage, so an idle resize produced no repaint into the freshly reconfigured swapchain; the resize path now marks the grid dirty so it always presents (closes [#1773](https://github.com/raphamorim/rio/issues/1773), and the resize symptom in [#1759](https://github.com/raphamorim/rio/issues/1759)).
+
+- The bundled `corcovado` event-loop crate now uses `socket2` in place of the unmaintained `net2`, clearing the RUSTSEC-2020-0016 advisory for every project that depends on `rio-vt` or `teletypewriter`.
+
 ## 0.5.0
 
 - Rio's terminal core is now an embeddable library, split out of the app. **`rio-vt`** is a standalone, dependency-light Rust crate: the VT state machine, ANSI/escape parser, grid with scrollback, selection, search, PTY driver, and the sixel / Kitty / iTerm2 image protocols, with no renderer, GPU, or font-shaping code, so building it with no features is just the terminal. **`librio`** wraps that same core behind a C ABI for Swift, C, and any language that speaks C, shipped as a `RioKit.xcframework` plus a bare `librio.a` + `librio.h` on each release rather than a published crate. Rio's own frontend and other products now run the same engine; `rio-vt` is already in production at [Lovable](https://lovable.dev). Full write-up in the [announcement post](/blog/2026/07/27/rio-vt-and-librio).
