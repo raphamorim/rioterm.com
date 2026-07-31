@@ -5,6 +5,18 @@ language: 'en'
 
 <h1 style={{fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(-120deg, #fb43fe 30%, #00dbe5)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", borderBottom: "none", paddingBottom: "1rem", marginBottom: "2rem"}}>Changelog</h1>
 
+## 0.5.3
+
+- The terminal engine (`rio-vt`) is substantially faster across the board. Plain text and scrolling-heavy output parse ~2.7x faster (865 → 2305 MiB/s on plain ASCII, 266 → 725 MiB/s on scroll-dominated streams), CJK and emoji text 3x (243 → 723 MiB/s), color-change-heavy streams 1.6x, and full-screen TUI redraws 1.5x. Under the hood: scrolling no longer pays per-row dirty and damage bookkeeping (a full-screen scroll marks damage once), recycled rows reset only their occupied cells, printable runs and CSI parameters are scanned a word at a time instead of a byte at a time, SGR dispatch no longer heap-allocates per sequence, wide characters are written as bulk cell pairs the way ASCII runs already were, UTF-8 decodes in large chunks instead of per-fragment, and the character width table covers emoji directly. Measured with [rio-vt-benchmark](https://github.com/raphamorim/rio-vt-benchmark).
+
+- `rio-vt` now exposes its VT parser and the `Perform` trait, so embedders can drive the escape-sequence parser with their own handler instead of the built-in grid. The `Handler` trait also gained a provided `input_ascii_str` method that carries the parser's printable-ASCII guarantee, letting implementations skip revalidating the bytes.
+
+- macOS: quake mode now opens with the right size and position on setups with mixed-DPI monitors. The window geometry was computed in physical pixels for the monitor under the cursor but applied using the window's own backing scale, so the dropdown came out mis-sized when the two differed; it is now converted through the target monitor's scale factor.
+
+## 0.5.2
+
+- Maintenance release fixing the release pipeline: the `rio-vt` crate publish and the macOS dmg artifact were both missing from the 0.5.1 release.
+
 ## 0.5.1
 
 - Windows: resizing the window while the terminal sat idle could leave the newly exposed area unpainted — the desktop showed through behind Rio — until the next keystroke or output. A resize reflows the grid, but presenting a frame was gated on terminal damage, so an idle resize produced no repaint into the freshly reconfigured swapchain; the resize path now marks the grid dirty so it always presents (closes [#1773](https://github.com/raphamorim/rio/issues/1773), and the resize symptom in [#1759](https://github.com/raphamorim/rio/issues/1759)).
