@@ -5,25 +5,35 @@ language: 'en'
 
 <h1 style={{fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(-120deg, #fb43fe 30%, #00dbe5)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", borderBottom: "none", paddingBottom: "1rem", marginBottom: "2rem"}}>Changelog</h1>
 
-## 0.5.3
+## 0.5.5 — 2026-08-01
 
-- The terminal engine (`rio-vt`) is substantially faster across the board. Plain text and scrolling-heavy output parse ~2.7x faster (865 → 2305 MiB/s on plain ASCII, 266 → 725 MiB/s on scroll-dominated streams), CJK and emoji text 3x (243 → 723 MiB/s), color-change-heavy streams 1.6x, and full-screen TUI redraws 1.5x. Under the hood: scrolling no longer pays per-row dirty and damage bookkeeping (a full-screen scroll marks damage once), recycled rows reset only their occupied cells, printable runs and CSI parameters are scanned a word at a time instead of a byte at a time, SGR dispatch no longer heap-allocates per sequence, wide characters are written as bulk cell pairs the way ASCII runs already were, UTF-8 decodes in large chunks instead of per-fragment, and the character width table covers emoji directly. Measured with [rio-vt-benchmark](https://github.com/raphamorim/rio-vt-benchmark).
+- Fixed typing echo in synchronized-output TUIs arriving ~150-200 ms late through Windows ConPTY. ConPTY coalesces output, so a frame's begin/end synchronized-update pair (mode 2026) often arrives inside one chunk; the begin armed Rio's 150 ms timeout but the inline end never disarmed it, so every following frame waited out the timer. An inline end now disarms the timeout, and replaying a buffered update re-arms it when a new begin is still pending (closes [#1753](https://github.com/raphamorim/rio/issues/1753) — thanks to @cmoron for the original diagnosis and fix in [#1754](https://github.com/raphamorim/rio/pull/1754), ported to `rio-vt` by @marc2332 in [#1788](https://github.com/raphamorim/rio/pull/1788), landed via [#1789](https://github.com/raphamorim/rio/pull/1789)).
+
+- `rio-vt`: synchronized updates whose 150 ms deadline has passed now flush on the next `advance()` call. Rio's event loop already flushed at the deadline, but embedders that drive the processor straight from a read loop had no timeout driver at all — a client that armed mode 2026 and stalled could freeze their screen until 2 MB of output accumulated. The latency cap now works out of the box for every embedder.
+
+## 0.5.4 — 2026-08-01
+
+- `rio-vt`: inserting a sixel/iTerm2 image with unset cell dimensions no longer panics. Headless embedders never report a cell size, so arbitrary input containing image sequences could hit a `step_by(0)` panic in the row-fill loop; it is now a no-op, matching the existing guard on the kitty placement path. Found by atuin's property tests during its vt100 → `rio-vt` migration.
+
+## 0.5.3 — 2026-07-31
+
+- The terminal engine (`rio-vt`) is substantially faster across the board. Plain text and scrolling-heavy output parse ~2.7x faster (865 → 2340 MiB/s on plain ASCII, 266 → 772 MiB/s on scroll-dominated streams), CJK and emoji text 3x (243 → 726 MiB/s), color-change-heavy streams 1.6x, and full-screen TUI redraws 1.6x. Under the hood: scrolling no longer pays per-row dirty and damage bookkeeping (a full-screen scroll marks damage once), recycled rows reset only their occupied cells, printable runs and CSI parameters are scanned a word at a time instead of a byte at a time, SGR dispatch no longer heap-allocates per sequence, wide characters are written as bulk cell pairs the way ASCII runs already were, UTF-8 decodes in large chunks instead of per-fragment, and the character width table covers emoji directly. Measured with [rio-vt-benchmark](https://github.com/raphamorim/rio-vt-benchmark).
 
 - `rio-vt` now exposes its VT parser and the `Perform` trait, so embedders can drive the escape-sequence parser with their own handler instead of the built-in grid. The `Handler` trait also gained a provided `input_ascii_str` method that carries the parser's printable-ASCII guarantee, letting implementations skip revalidating the bytes.
 
 - macOS: quake mode now opens with the right size and position on setups with mixed-DPI monitors. The window geometry was computed in physical pixels for the monitor under the cursor but applied using the window's own backing scale, so the dropdown came out mis-sized when the two differed; it is now converted through the target monitor's scale factor.
 
-## 0.5.2
+## 0.5.2 — 2026-07-28
 
 - Maintenance release fixing the release pipeline: the `rio-vt` crate publish and the macOS dmg artifact were both missing from the 0.5.1 release.
 
-## 0.5.1
+## 0.5.1 — 2026-07-28
 
 - Windows: resizing the window while the terminal sat idle could leave the newly exposed area unpainted — the desktop showed through behind Rio — until the next keystroke or output. A resize reflows the grid, but presenting a frame was gated on terminal damage, so an idle resize produced no repaint into the freshly reconfigured swapchain; the resize path now marks the grid dirty so it always presents (closes [#1773](https://github.com/raphamorim/rio/issues/1773), and the resize symptom in [#1759](https://github.com/raphamorim/rio/issues/1759)).
 
 - The bundled `corcovado` event-loop crate now uses `socket2` in place of the unmaintained `net2`, clearing the RUSTSEC-2020-0016 advisory for every project that depends on `rio-vt` or `teletypewriter`.
 
-## 0.5.0
+## 0.5.0 — 2026-07-27
 
 - Rio's terminal core is now an embeddable library, split out of the app. **`rio-vt`** is a standalone, dependency-light Rust crate: the VT state machine, ANSI/escape parser, grid with scrollback, selection, search, PTY driver, and the sixel / Kitty / iTerm2 image protocols, with no renderer, GPU, or font-shaping code, so building it with no features is just the terminal. **`librio`** wraps that same core behind a C ABI for Swift, C, and any language that speaks C, shipped as a `RioKit.xcframework` plus a bare `librio.a` + `librio.h` on each release rather than a published crate. Rio's own frontend and other products now run the same engine; `rio-vt` is already in production at [Lovable](https://lovable.dev). Full write-up in the [announcement post](/blog/2026/07/27/rio-vt-and-librio).
 
