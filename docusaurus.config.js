@@ -123,11 +123,6 @@ const config = {
             position: 'right',
           },
           {
-            href: 'https://discord.gg/zRvJjmKGwS',
-            label: 'Discord',
-            position: 'right',
-          },
-          {
             href: 'https://github.com/raphamorim/rio',
             position: 'right',
             className: 'header-github-link',
@@ -158,10 +153,6 @@ const config = {
           {
             title: 'Community',
             items: [
-              {
-                label: 'Discord',
-                href: 'https://discord.gg/zRvJjmKGwS',
-              },
               {
                 label: 'Twitter',
                 href: 'https://twitter.com/raphamorims',
