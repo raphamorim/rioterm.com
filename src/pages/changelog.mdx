@@ -5,6 +5,28 @@ language: 'en'
 
 <h1 style={{fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(-120deg, #fb43fe 30%, #00dbe5)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", borderBottom: "none", paddingBottom: "1rem", marginBottom: "2rem"}}>Changelog</h1>
 
+## 0.5.7 — 2026-08-03
+
+- OSC 7 working directories with characters outside `[A-Za-z0-9/._-]` now resolve correctly. Shells percent-encode the path they report (that is what `vte-urlencode-cwd` and its equivalents are for), but Rio read it back through a URL parser whose `path()` hands the encoding straight through, so `/home/My Files` arrived as `/home/My%20Files` and anything downstream of the reported directory — the title, opening a new tab in the same place — was working from a path that did not exist. The path is now decoded, with a malformed escape passed through literally rather than dropping the directory over one stray `%`.
+
+- OSC 7 payloads that are not `file://` are no longer accepted. The URL parser took whatever path came back for any scheme, so `OSC 7 ; http://elsewhere/tmp` would move Rio's idea of the working directory. Both foot and Ghostty require the `file` scheme; Rio now does too.
+
+- A shell on the far side of an ssh session can no longer set the local working directory. Anything at the other end of the PTY can emit OSC 7, and Rio applied it unconditionally, so a remote prompt would report a directory that only exists on the remote machine. The host is now checked against this machine's hostname, accepting `localhost` and the empty host that `file://$PWD` produces (RFC 8089 defines that as the local machine, and rejecting it would break a common shell setup). A refused payload is logged with the host so a working directory that stops updating can be diagnosed rather than guessed at. This follows what foot and Ghostty already do — Ghostty's own note calls validating the host the best practice terminals follow.
+
+- Vi mode gained the `{` and `}` paragraph motions, which skip any blank lines under the cursor and then run to the far side of the paragraph they land in. A line of spaces or tabs delimits a paragraph the same way an untouched one does, matching the other motions.
+
+- macOS: a shell you configure yourself with [`shell.program`](/docs/config#shell) is now started directly rather than through `/usr/bin/login`. Rio wrapped every spawn, so a named program collected a utmp entry and a `Last login` banner it never asked for. Only the default shell — no `shell.program` set, which is what Rio ships with — still goes through `login` for its login-session environment, so a default configuration behaves exactly as before. Alacritty draws the line in the same place.
+
+- `shell.program` is now optional rather than an empty string standing in for "use my default shell"; an existing `program = ""` in a config keeps working and still means the default.
+
+- A command that writes and exits in the same breath no longer loses its last chunk of output. The PTY reader broke out of its loop as soon as the child-exit event arrived, which races the final readable event, so the tail of a short-lived command could be dropped before it was parsed. The PTY is now drained once more after the child exits.
+
+- `rio-vt` is a little over a third smaller: 84 crates to 54. `url` accounted for 29 of them — it pulled `idna`, the ICU normalizer and collections, `zerovec`, `yoke` and a handful of proc-macro crates that also serialize the build, all to parse the one URL the terminal core ever looks at. `bytemuck` and `lazy_static` were declared but never referenced anywhere in the crate.
+
+- `rio-vt`: `ChildEvent::Exited` now carries the child's raw wait status (`waitpid` on unix, `GetExitCodeProcess` on Windows) and `Machine` forwards it as `RioEvent::ChildExited`, so an embedder can report the exit code of whatever it ran. `create_pty_with_spawn` and `create_pty` take an optional set of environment variables to apply on top of the inherited environment, and "no program configured" is now `None` instead of an empty string across the config type and all three `create_pty` entry points.
+
+- `rio-vt`: the child's signal mask is reset before `exec`. Ignored signal dispositions were already reset, but a *blocked* mask survives `exec` too, so a shell spawned from a thread that had `SIGINT` blocked came up unable to see ctrl+c. Rio spawns from the main thread and was unaffected; embedders that build their terminal off-thread were not.
+
 ## 0.5.6 — 2026-08-03
 
 - macOS: waking from sleep no longer leaves the font, grid, or scale wrong. Rio read the display scale once at window creation and then relied on a single AppKit notification to learn about changes — but wake sequences rebuild the backing store without the numeric scale changing, so nothing ever fired. The scale is now re-checked at cheap checkpoints (window focus, un-occlusion, screen changes, and a new app-level display-reconfiguration observer that sweeps every window), the Metal layer's `contentsScale` is re-asserted on every rescale instead of trusting its creation-time value, and the first frame after wake — which can fail to acquire a drawable — is retried instead of silently dropped (closes [#1506](https://github.com/raphamorim/rio/issues/1506)). Idle terminals also repaint immediately when the window becomes visible again, rather than waiting for shell output ([#1792](https://github.com/raphamorim/rio/pull/1792)).
