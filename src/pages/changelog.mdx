@@ -5,6 +5,14 @@ language: 'en'
 
 <h1 style={{fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(-120deg, #fb43fe 30%, #00dbe5)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", borderBottom: "none", paddingBottom: "1rem", marginBottom: "2rem"}}>Changelog</h1>
 
+## 0.5.6 — 2026-08-03
+
+- macOS: waking from sleep no longer leaves the font, grid, or scale wrong. Rio read the display scale once at window creation and then relied on a single AppKit notification to learn about changes — but wake sequences rebuild the backing store without the numeric scale changing, so nothing ever fired. The scale is now re-checked at cheap checkpoints (window focus, un-occlusion, screen changes, and a new app-level display-reconfiguration observer that sweeps every window), the Metal layer's `contentsScale` is re-asserted on every rescale instead of trusting its creation-time value, and the first frame after wake — which can fail to acquire a drawable — is retried instead of silently dropped (closes [#1506](https://github.com/raphamorim/rio/issues/1506)). Idle terminals also repaint immediately when the window becomes visible again, rather than waiting for shell output ([#1792](https://github.com/raphamorim/rio/pull/1792)).
+
+- Switching to a tab that wasn't visible no longer shows glyphs at a stale size after a DPI change. Background tabs always received the new dimensions, but nothing forced their rendered cells to rebuild: a scale change now invalidates every pane in every tab, tab switches reliably trigger a full refresh (the change detector compared layout node ids across tabs' separate layout trees, which collide by construction), and per-pane events — damage marks, titles, color requests — now reach panes in background tabs instead of being dropped until that pane's own shell produced output.
+
+- Split paddings, gaps, and divider hit-boxes now follow the current display scale; they previously kept the DPI of the display the tab was created on.
+
 ## 0.5.5 — 2026-08-01
 
 - Fixed typing echo in synchronized-output TUIs arriving ~150-200 ms late through Windows ConPTY. ConPTY coalesces output, so a frame's begin/end synchronized-update pair (mode 2026) often arrives inside one chunk; the begin armed Rio's 150 ms timeout but the inline end never disarmed it, so every following frame waited out the timer. An inline end now disarms the timeout, and replaying a buffered update re-arms it when a new begin is still pending (closes [#1753](https://github.com/raphamorim/rio/issues/1753) — thanks to @cmoron for the original diagnosis and fix in [#1754](https://github.com/raphamorim/rio/pull/1754), ported to `rio-vt` by @marc2332 in [#1788](https://github.com/raphamorim/rio/pull/1788), landed via [#1789](https://github.com/raphamorim/rio/pull/1789)).
