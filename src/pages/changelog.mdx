@@ -5,7 +5,7 @@ language: 'en'
 
 <h1 style={{fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(-120deg, #fb43fe 30%, #00dbe5)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", borderBottom: "none", paddingBottom: "1rem", marginBottom: "2rem"}}>Changelog</h1>
 
-## 0.5.6 — 2026-08-04
+## 0.5.6 — 2026-08-03
 
 - macOS: waking from sleep no longer leaves the font, grid, or scale wrong. Rio read the display scale once at window creation and then relied on a single AppKit notification to learn about changes — but wake sequences rebuild the backing store without the numeric scale changing, so nothing ever fired. The scale is now re-checked at cheap checkpoints (window focus, un-occlusion, screen changes, and a new app-level display-reconfiguration observer that sweeps every window), the Metal layer's `contentsScale` is re-asserted on every rescale instead of trusting its creation-time value, and the first frame after wake — which can fail to acquire a drawable — is retried instead of silently dropped (closes [#1506](https://github.com/raphamorim/rio/issues/1506)). Idle terminals also repaint immediately when the window becomes visible again, rather than waiting for shell output ([#1792](https://github.com/raphamorim/rio/pull/1792)).
 
