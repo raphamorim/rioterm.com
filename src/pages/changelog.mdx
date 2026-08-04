@@ -5,6 +5,12 @@ language: 'en'
 
 <h1 style={{fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(-120deg, #fb43fe 30%, #00dbe5)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", borderBottom: "none", paddingBottom: "1rem", marginBottom: "2rem"}}>Changelog</h1>
 
+## 0.5.11 (2026-08-04)
+
+- The tab strip stays visible with a single tab, drawn as the tab title centred with nothing behind it, and `navigation.hide-if-single` defaults to `false` to match. A lone tab has nothing to be distinguished from, so the tab shape carried no information worth the space, and dropping it hands the title the width of the window rather than one tab slot, which is where long titles used to lose their ends. A custom tab colour, whether from colour automation or the picker, has no fill left to sit in and colours the title text instead. Set `navigation.hide-if-single = true` to keep the strip hidden on a single tab as before ([#1817](https://github.com/raphamorim/rio/pull/1817)).
+
+- With a single tab, right-clicking anywhere on the strip opens the colour picker for it. The whole strip belongs to that tab now that its title is centred, where before only the first tab slot responded.
+
 ## 0.5.10 (2026-08-04)
 
 - Windows: opening a hint could run arbitrary commands. The default hint launched `cmd /c start` with the matched text appended as an argument, and Rust quotes an argument only when it contains whitespace or a quote, so cmd metacharacters in the match reached cmd's parser as syntax: everything after an `&` in a URL ran as its own command. Nothing needed to be configured for this. The shipped hint rule covers OSC 8 hyperlinks, binds ctrl+shift+O, and enables mouse hints, so the requirements were that text arrived in the terminal (`cat` of a file, `curl` output, a log tail, an ssh banner) and that it was opened once. With OSC 8 the visible link text is chosen by whoever sent it, so it need not resemble what runs. Matches now go to the Windows default handler through `ShellExecuteW`, which takes the target as a single string rather than a command line, and `open` and `xdg-open` receive it as one argument with no shell involved. Nothing changes on macOS or Linux, which were never affected ([#1816](https://github.com/raphamorim/rio/pull/1816), reported by [@lalvarezt](https://github.com/lalvarezt) in [#1811](https://github.com/raphamorim/rio/issues/1811)).
