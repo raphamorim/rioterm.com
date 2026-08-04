@@ -5,6 +5,12 @@ language: 'en'
 
 <h1 style={{fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(-120deg, #fb43fe 30%, #00dbe5)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", borderBottom: "none", paddingBottom: "1rem", marginBottom: "2rem"}}>Changelog</h1>
 
+## 0.5.10 (2026-08-04)
+
+- Windows: opening a hint could run arbitrary commands. The default hint launched `cmd /c start` with the matched text appended as an argument, and Rust quotes an argument only when it contains whitespace or a quote, so cmd metacharacters in the match reached cmd's parser as syntax: everything after an `&` in a URL ran as its own command. Nothing needed to be configured for this. The shipped hint rule covers OSC 8 hyperlinks, binds ctrl+shift+O, and enables mouse hints, so the requirements were that text arrived in the terminal (`cat` of a file, `curl` output, a log tail, an ssh banner) and that it was opened once. With OSC 8 the visible link text is chosen by whoever sent it, so it need not resemble what runs. Matches now go to the Windows default handler through `ShellExecuteW`, which takes the target as a single string rather than a command line, and `open` and `xdg-open` receive it as one argument with no shell involved. Nothing changes on macOS or Linux, which were never affected ([#1816](https://github.com/raphamorim/rio/pull/1816), reported by [@lalvarezt](https://github.com/lalvarezt) in [#1811](https://github.com/raphamorim/rio/issues/1811)).
+
+- Windows: a hint that fails to open now says so in the log. `ShellExecuteW` reports failure in its return value, which was discarded, so the only symptom was a click that did nothing at all.
+
 ## 0.5.9 (2026-08-04)
 
 - Applications that narrow the scroll region no longer lose rows from the screen. Rio derived the visible viewport from the DECSTBM scroll region rather than the screen height, so once vim, less, htop, top, tmux or man narrowed it, the snapshot the renderer draws from was short by however many rows the region excluded, while the terminal kept reporting its full height. The usual `CSI 1;Nr` shape showed up as the bottom row or two going stale; a region narrowed at the top (`CSI 2;8r`) shifted the whole viewport up. The region bounds where scrolling happens, not what is displayed, which is how alacritty and Ghostty both draw the line ([#1805](https://github.com/raphamorim/rio/pull/1805), reported by ratty).
