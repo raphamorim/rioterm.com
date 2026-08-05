@@ -5,6 +5,12 @@ language: 'en'
 
 <h1 style={{fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(-120deg, #fb43fe 30%, #00dbe5)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", borderBottom: "none", paddingBottom: "1rem", marginBottom: "2rem"}}>Changelog</h1>
 
+## 0.5.13 (2026-08-05)
+
+- `librio`: shells now spawn with a TERM that actually resolves. The child inherited the host process's environment, which for an app launched from Finder contains no TERM at all, and for one launched from another terminal contains whatever that terminal used, such as `rio` on a machine where rio's terminfo was never installed. Either way programs that query terminfo got nothing back, which showed up as prompt frameworks drawing fragments of their glyphs, and ssh forwarding a TERM the remote host answered with "unknown terminal type". TERM is now resolved at spawn the way Rio resolves it: `xterm-rio` when that terminfo is installed, `rio` when only the older entry is, and `xterm-256color` otherwise, which is the case for a fresh Canario install and is known to every local terminfo database and every ssh host. `COLORTERM=truecolor` rides along.
+
+- Canario: shells receive `TERM_PROGRAM=canario` and `TERM_PROGRAM_VERSION`, the same convention Rio follows, so shell integrations can tell which frontend they are running in.
+
 ## 0.5.12 (2026-08-05)
 
 - Canario: the cursor no longer floats over whichever history row happens to occupy its grid position while the view is scrolled up. It is drawn at its viewport-relative position, sliding down as you scroll and not drawn at all once it leaves the viewport, which is where Ghostty draws the line too. `librio` gained `rio_render_state_display_offset()` so any renderer can make the same call.
