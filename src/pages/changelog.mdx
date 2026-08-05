@@ -5,7 +5,23 @@ language: 'en'
 
 <h1 style={{fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(-120deg, #fb43fe 30%, #00dbe5)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", borderBottom: "none", paddingBottom: "1rem", marginBottom: "2rem"}}>Changelog</h1>
 
-## 0.5.11 (2026-08-04)
+## 0.5.12 (2026-08-05)
+
+- Canario: the cursor no longer floats over whichever history row happens to occupy its grid position while the view is scrolled up. It is drawn at its viewport-relative position, sliding down as you scroll and not drawn at all once it leaves the viewport, which is where Ghostty draws the line too. `librio` gained `rio_render_state_display_offset()` so any renderer can make the same call.
+
+- `librio`: input snaps a scrolled view back to the live screen and drops any selection, the scroll-to-bottom-on-input behaviour of every terminal. It lives in the one path all keys, text and paste go through, so it only fires when a key actually produced PTY bytes (Ghostty gates its equivalent the same way), and every embedder gets it rather than each frontend reimplementing it.
+
+- Canario: ⌘W closes the focused panel rather than the whole terminal, falling back to closing the terminal when the panel is the last one, and to the window when nothing is open. ⇧⌘W closes the terminal with all its splits.
+
+## 0.5.11 (2026-08-05)
+
+- Canario, an experimental macOS frontend built on `librio`, ships from this release as `Canario.dmg`. It borrows its workflow from browsers: terminals live in coloured spaces with ⌘1 to ⌘9 to jump between them, ⌘K opens a command bar that finds any terminal or pane by title and runs app actions, hovering a tab or pane in the sidebar shows a live preview, ⌥⌘T summons a floating quick terminal over whatever app is frontmost, new shells can be routed into spaces by working directory, and quitting asks first. Sessions restore in full: the sidebar tree, splits, scrollback and each pane's working directory.
+
+- `librio`: cells that carry only a background colour (the fills erase-to-end-of-line leaves behind, htop's header bar, blank lines after `clear`) resolved their colour through the style table, misreading the inline colour bits as a style id, so erase fills rendered with the wrong colour or none. The snapshot accessors now decode them as the bg-only cells they are. The same cells previously leaked NULs into persisted scrollback text, which now records them as trimmable spaces.
+
+- `librio`: `Surface::working_dir()` no longer requires OSC 7. When the shell has not reported a directory, the kernel's view of the foreground process's cwd is used instead (proc_pidinfo on macOS, /proc elsewhere, via the same helper Rio already used for spawning daemons), so session restore and directory-based routing work with entirely unconfigured shells.
+
+- `librio`: named and low-indexed colours resolve from Rio's default theme (`rio-vt`'s `Colors::default()`) rather than a hardcoded xterm palette, so an embedder's terminal matches Rio's look out of the box, pink cursor included, and the two can never drift apart. Everything downstream reads through one resolved table, which is where theme-file loading will plug in.
 
 - The tab strip stays visible with a single tab, drawn as the tab title centred with nothing behind it, and `navigation.hide-if-single` defaults to `false` to match. A lone tab has nothing to be distinguished from, so the tab shape carried no information worth the space, and dropping it hands the title the width of the window rather than one tab slot, which is where long titles used to lose their ends. A custom tab colour, whether from colour automation or the picker, has no fill left to sit in and colours the title text instead. Set `navigation.hide-if-single = true` to keep the strip hidden on a single tab as before ([#1817](https://github.com/raphamorim/rio/pull/1817)).
 
