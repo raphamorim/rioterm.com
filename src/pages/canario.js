@@ -42,7 +42,7 @@ function Hero() {
   );
 }
 
-function Feature({ title, keys, image, video, pair, alt, children }) {
+function Feature({ title, keys, image, video, pair, code, alt, children }) {
   return (
     <div className={styles.feature}>
       <div className={styles.featureCopy}>
@@ -58,7 +58,19 @@ function Feature({ title, keys, image, video, pair, alt, children }) {
           </div>
         )}
       </div>
-      {pair ? (
+      {code ? (
+        <div className={`${styles.shot} ${styles.codeShot}`}>
+          <pre>
+            {code.map((line) => (
+              <div key={line.text} className={styles.codeLine}>
+                <span className={styles.codePrompt}>$ </span>
+                <span>{line.text.split(line.link)[0]}</span>
+                <span className={styles.codeLink}>{line.link}</span>
+              </div>
+            ))}
+          </pre>
+        </div>
+      ) : pair ? (
         <div className={styles.shotPair}>
           {pair.map((item) => (
             <div key={item.src} className={styles.shot}>
@@ -184,6 +196,51 @@ export default function Canario() {
             Canario carries it beyond the window: a spinner on the tab, a
             live percentage on the Dock icon, and a menu bar pill that
             jumps you back to the terminal when you click it.
+          </Feature>
+
+          <Feature
+            title="A URL scheme for your shell"
+            keys={['canario://']}
+            code={[
+              { text: 'open "canario://quick"', link: 'canario://quick' },
+              {
+                text: 'open "canario://new?space=Work&cwd=~/api"',
+                link: 'canario://new?space=Work&cwd=~/api',
+              },
+              {
+                text: 'open "canario://terminal?title=htop"',
+                link: 'canario://terminal?title=htop',
+              },
+              {
+                text: 'open "canario://run?cmd=cargo+test"',
+                link: 'canario://run?cmd=cargo+test',
+              },
+            ]}
+          >
+            Deep links, like the launchers have. Raycast, Shortcuts, other
+            apps and plain hyperlinks can summon the quick terminal, open a
+            space, jump to a session or run a command. Commands always
+            confirm before they execute, with the exact command shown.
+          </Feature>
+
+          <Feature
+            title="Breakpoints for your output"
+            keys={['select', 'right click']}
+            pair={[
+              {
+                src: '/assets/canario/watchers-menu.png',
+                alt: 'Selected text in terminal output with a context menu offering Watch for "the characters below"',
+              },
+              {
+                src: '/assets/canario/watchers-badge.png',
+                alt: "A sidebar tab with an eye badge showing a watcher is armed",
+              },
+            ]}
+          >
+            Select any text and watch for it. When it next appears in the
+            output, the tab badges with a hit count and the Dock asks for
+            attention. Tail the log, walk away, and know the moment the
+            error shows up.
           </Feature>
 
           <Feature

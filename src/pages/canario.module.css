@@ -166,6 +166,36 @@
   height: auto;
 }
 
+.codeShot {
+  background: #0f0d0e;
+  padding: 1.5rem 1.75rem;
+
+  display: flex;
+  align-items: center;
+}
+
+.codeShot pre {
+  margin: 0;
+  padding: 0;
+  background: none;
+
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.85rem;
+  line-height: 2.1;
+  color: #f8f8f2;
+
+  overflow-x: auto;
+  width: 100%;
+}
+
+.codePrompt {
+  color: #44c9f0;
+}
+
+.codeLink {
+  color: #fb43fe;
+}
+
 .shotPair {
   display: flex;
   align-items: center;
