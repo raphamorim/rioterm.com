@@ -5,6 +5,18 @@ language: 'en'
 
 <h1 style={{fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(-120deg, #fb43fe 30%, #00dbe5)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", borderBottom: "none", paddingBottom: "1rem", marginBottom: "2rem"}}>Changelog</h1>
 
+## 0.5.16 (2026-08-06)
+
+- Canario: images render in the terminal via the kitty graphics protocol. `chafa -f kitty`, `kitten icat`, yazi's previews and every other kitty-speaking tool now draw real pixels instead of character art: chunked transmissions reassemble, RGB and RGBA payloads both decode, retransmissions of the same image id refresh in place, and placements are anchored to the scrollback like every kitty terminal anchors them, so an image scrolls away with its prompt and comes back when you scroll up. Layering follows the protocol's z-index rules the way ghostty's renderer splits them: below cell backgrounds, below text (a chart can sit under its own axis labels), or above everything.
+
+- Canario: virtual placements (`U=1`, the Unicode-placeholder mode `kitten icat` uses under multiplexers) work too. The renderer collapses runs of U+10EEEE placeholder cells, whose foreground color and combining diacritics say which image and which slice each cell shows, into image draws, with the aspect-fit and centering rules matching kitty's and ghostty's.
+
+- Canario: images are objects, not just pixels. Click one and it opens in an Image Peek: an Arc-style lightbox that springs out of the cell rect, dims the window, and pinch-zooms up to 12x, with Esc or Space to close and arrow keys to walk every image in the buffer. Inside the peek, Live Text runs on the image (the same interface Photos uses), so text inside a matplotlib chart or a screenshot of an error is selectable and copyable, and QR codes a CLI prints are clickable. Right-click an image in the terminal for Copy Image, Save to Downloads, Open in Preview and Share, or press and drag it straight out into Finder, Slack or Figma as a PNG, the way images drag out of Messages.
+
+- `librio`: the kitty pipeline is exposed over the C ABI for any embedder drawing its own cells: `rio_render_state_kitty_count()` and `rio_render_state_kitty_placement()` iterate placements as viewport-resolved pixel rectangles (z-sorted, with normalized source rects for crops), `rio_render_state_kitty_image_info()` carries dimensions plus a change stamp so decoded bitmaps can be cached until a retransmission, and `rio_render_state_kitty_image_rgba()` copies pixels out as tightly-packed RGBA. Virtual placeholder runs surface through the same iterator, so an embedder that draws direct placements gets `icat` under tmux for free.
+
+- `librio`: two placement bugs found on the way. Surfaces created through the C API reported zero cell dimensions to the graphics subsystem, which silently dropped every kitty placement (the reason no embedder had images until now); cell metrics now derive from the surface's pixel size. And placement rows are absolute counting lines evicted from the scrollback ring, so once a long-lived session filled its scrollback, every image quietly culled as off-screen; the viewport math now accounts for evicted lines, with a regression test that forces eviction.
+
 ## 0.5.15 (2026-08-06)
 
 - Canario: a settings window (⌘,), in the shape Arc uses: native preference tabs over dark grouped sections. The Text tab holds the terminal font: a size slider and every monospace family installed on the machine, each row rendered in its own typeface above a live sample, applied to running terminals as you click and persisted across launches. Families are found by asking each font whether it is fixed-pitch, so the list is exactly what a terminal can use.

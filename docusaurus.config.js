@@ -115,6 +115,12 @@ const config = {
               { to: '/docs/key-bindings', label: 'Key Bindings' },
             ],
           },
+          {
+            to: '/canario',
+            label: 'Canario',
+            position: 'left',
+            className: 'navbar-canario',
+          },
           { to: '/changelog', label: 'Changelog', position: 'left' },
           { to: '/blog', label: 'Blog', position: 'left' },
           { to: '/contributing', label: 'Contributing', position: 'left' },

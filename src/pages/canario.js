@@ -1,0 +1,255 @@
+// @ts-check
+
+import Link from '@docusaurus/Link';
+import Layout from '@theme/Layout';
+
+import styles from './canario.module.css';
+
+const DOWNLOAD_URL =
+  'https://github.com/raphamorim/rio/releases/latest/download/Canario.dmg';
+
+function Hero() {
+  return (
+    <header className={styles.hero}>
+      <h1 className={styles.title}>
+        Canario<span className={styles.betaPill}>beta</span>
+      </h1>
+      <p className={styles.subtitle}>
+        The terminal that thinks like a browser. Spaces, splits, a command
+        bar, live tab previews and a summonable quick terminal, for macOS.
+      </p>
+      <p className={styles.spinoff}>
+        Canario is a <Link to="/">Rio</Link> spin-off: a more modern take on
+        the terminal, built on the same engine (librio). Same VT handling,
+        same rendering core, same colors, wrapped in a browser-grade
+        workflow.
+      </p>
+      <div className={styles.actions}>
+        <Link className={styles.actionButton} href={DOWNLOAD_URL}>
+          Download for macOS
+        </Link>
+        <Link
+          className={styles.actionButtonSecondary}
+          href="https://github.com/raphamorim/rio"
+        >
+          View source →
+        </Link>
+      </div>
+      <p className={styles.finePrint}>
+        beta · macOS 14+ · Apple silicon · free &amp; open source
+      </p>
+    </header>
+  );
+}
+
+function Feature({ title, keys, image, video, pair, alt, children }) {
+  return (
+    <div className={styles.feature}>
+      <div className={styles.featureCopy}>
+        <h2>{title}</h2>
+        <p>{children}</p>
+        {keys && (
+          <div className={styles.keycaps}>
+            {keys.map((key) => (
+              <span key={key} className={styles.key}>
+                {key}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+      {pair ? (
+        <div className={styles.shotPair}>
+          {pair.map((item) => (
+            <div key={item.src} className={styles.shot}>
+              <img src={item.src} alt={item.alt} loading="lazy" />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className={styles.shot}>
+          {video ? (
+            <video src={video} autoPlay loop muted playsInline />
+          ) : (
+            <img src={image} alt={alt} loading="lazy" />
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Cell({ glyph, glyphClass, title, children }) {
+  return (
+    <div className={styles.cell}>
+      <h3>
+        <span className={`${styles.glyph} ${glyphClass}`}>{glyph}</span>
+        {title}
+      </h3>
+      <p>{children}</p>
+    </div>
+  );
+}
+
+export default function Canario() {
+  return (
+    <Layout
+      title="Canario"
+      description="Canario is a Rio spin-off for macOS: spaces, splits, a command bar, live tab previews and a summonable quick terminal, built on Rio's terminal engine."
+    >
+      <main>
+        <Hero />
+
+        <div className={styles.marquee}>
+          <div className={styles.shot}>
+            <img
+              src="/assets/canario/quick-terminal.png"
+              alt="Canario with its salmon sidebar of spaces and the floating quick terminal summoned over it"
+            />
+          </div>
+        </div>
+
+        <section className={styles.features}>
+          <Feature
+            title="See a tab before you switch to it"
+            keys={['hover']}
+            image="/assets/canario/tab-preview.png"
+            alt="Hovering a tab in the sidebar shows a live preview of that terminal"
+          >
+            Hover any tab or pane in the sidebar and a live preview appears.
+            Watch the build finish, check on the agent, confirm the prompt is
+            back, all without leaving what you're doing.
+          </Feature>
+
+          <Feature
+            title="Splits that keep up with real work"
+            keys={['⌘ D', '⇧ ⌘ D']}
+            image="/assets/canario/splits.png"
+            alt="Three panes split in one Canario tab: Claude Code, Codex and htop"
+          >
+            Columns and rows, resizable by feel. Run your agent, your editor
+            and htop side by side. Each pane keeps its own working directory
+            and comes back after a restart, scrollback included.
+          </Feature>
+
+          <Feature
+            title="⌘K for everything"
+            keys={['⌘ K']}
+            image="/assets/canario/command-palette.png"
+            alt="Canario's dark command palette listing terminals and actions"
+          >
+            One input finds any terminal or pane by title, or runs a command:
+            split, new tab, quick terminal, font size. Fuzzy-matched, keyboard
+            first, tinted with your space's color.
+          </Feature>
+
+          <Feature
+            title="Copy text out of any image"
+            keys={['click']}
+            image="/assets/canario/image-peek.png"
+            alt="A kitty image opened in Canario's Image Peek with Live Text highlighting the selectable text inside it"
+          >
+            Images print in the terminal with the kitty graphics protocol,
+            and clicking one opens it in a lightbox where Live Text runs on
+            the pixels: select the text in a chart or a screenshot, copy it,
+            scan the QR code a CLI just printed.
+          </Feature>
+
+          <Feature
+            title="Drag an image anywhere"
+            keys={['drag']}
+            video="/assets/canario/drag-image.webm"
+            alt="Dragging an image from the terminal into a chat"
+          >
+            Any image in the terminal drags out as a real PNG: drop the
+            chart into Slack, the screenshot into Figma, the diff into a
+            chat with your agent. Right-click for copy, save and share.
+          </Feature>
+
+          <Feature
+            title="Progress follows you out"
+            keys={['OSC 9;4']}
+            pair={[
+              {
+                src: '/assets/canario/progress-tab.png',
+                alt: "A sidebar tab with a spinner showing a command's progress",
+              },
+              {
+                src: '/assets/canario/progress-dock.png',
+                alt: "Canario's Dock icon badged with 80% while a command runs",
+              },
+            ]}
+          >
+            Long commands report progress with the OSC 9;4 sequence, and
+            Canario carries it beyond the window: a spinner on the tab, a
+            live percentage on the Dock icon, and a menu bar pill that
+            jumps you back to the terminal when you click it.
+          </Feature>
+
+          <Feature
+            title="Picture in picture, for panes"
+            keys={['right click']}
+            image="/assets/canario/pip.png"
+            alt="A pane popped out into a small always-on-top panel while its tile shows an In Picture in Picture placeholder"
+          >
+            Pop a running pane out into a small always-on-top panel, the
+            way videos pop out of a browser. Watch the deploy from any
+            app; close the panel and the pane slides back into its tab.
+          </Feature>
+
+          <Feature
+            title="Your terminal, your colors"
+            keys={['⌘ ,']}
+            image="/assets/canario/theming.png"
+            alt="Canario themed in ultramarine beside its Appearance settings and the macOS color wheel"
+          >
+            Window, text, selection and borders: pick each one, or grab a
+            whole preset in a click. Fonts too, with every monospace family
+            previewed in itself. Everything applies live and stays put.
+          </Feature>
+        </section>
+
+        <section>
+          <div className={styles.gridHead}>
+            <h2>Borrowed from browsers. Built for the shell.</h2>
+          </div>
+          <div className={styles.grid}>
+            <Cell glyph="⌘1" glyphClass={styles.gEmber} title="Spaces">
+              Group terminals into folders with their own color. Jump with
+              ⌘1–9; the whole window tints to match where you are.
+            </Cell>
+            <Cell glyph="⚡︎" glyphClass={styles.gTide} title="Quick terminal">
+              A floating shell over everything, summoned with ⌥⌘T from any
+              app. Run the thing, click away, gone.
+            </Cell>
+            <Cell glyph="↻" glyphClass={styles.gInk} title="Session restore">
+              Quit and relaunch into the same tree: folders, splits,
+              scrollback, and every pane's working directory.
+            </Cell>
+            <Cell glyph="✈" glyphClass={styles.gInk} title="Auto-filing">
+              Route new terminals into the right space by their working
+              directory. Air traffic control for your shells.
+            </Cell>
+            <Cell glyph="🎨" glyphClass={styles.gIris} title="Rio's engine">
+              Rendering and palette come from Rio's terminal core: the same
+              VT handling, the same look, theme files on the roadmap.
+            </Cell>
+            <Cell glyph="🖼" glyphClass={styles.gDune} title="Image protocols">
+              Kitty graphics, Sixel and iTerm2 images render right in the
+              grid, from chafa, icat, yazi and friends.
+            </Cell>
+          </div>
+        </section>
+
+        <section className={styles.closer}>
+          <h2>Give your shell a home.</h2>
+          <div className={styles.actions}>
+            <Link className={styles.actionButton} href={DOWNLOAD_URL}>
+              Download for macOS
+            </Link>
+          </div>
+        </section>
+      </main>
+    </Layout>
+  );
+}

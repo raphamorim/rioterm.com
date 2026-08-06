@@ -518,3 +518,64 @@ small[class*="authorTitle"] {
 [data-theme='dark'] small[class*="authorTitle"] {
   color: #a1a1aa;
 }
+
+/* The Canario navbar item gets the site gradient with a slow shimmer
+   sweep and a "new" pill, so the spin-off is discoverable from any page. */
+.navbar-canario {
+  font-weight: 700;
+
+  color: transparent;
+  background: linear-gradient(
+    -120deg,
+    #fb43fe 20%,
+    #00dbe5 40%,
+    #fb43fe 60%,
+    #00dbe5 80%
+  );
+  background-size: 300% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+
+  animation: canario-shimmer 6s linear infinite;
+}
+
+.navbar-canario:hover {
+  color: transparent;
+}
+
+.navbar-canario::after {
+  content: 'new';
+
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1;
+
+  color: #fff;
+  background: linear-gradient(-120deg, #fb43fe 30%, #00dbe5);
+  border-radius: 6px;
+  padding: 2px 5px;
+
+  display: inline-block;
+  vertical-align: super;
+  margin-left: 6px;
+
+  /* The parent clips its background to the text; the pill needs its own
+     painted background back. */
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  -webkit-text-fill-color: #fff;
+}
+
+@keyframes canario-shimmer {
+  to {
+    background-position: 300% center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navbar-canario {
+    animation: none;
+  }
+}
