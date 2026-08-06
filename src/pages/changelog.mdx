@@ -5,7 +5,11 @@ language: 'en'
 
 <h1 style={{fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(-120deg, #fb43fe 30%, #00dbe5)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", borderBottom: "none", paddingBottom: "1rem", marginBottom: "2rem"}}>Changelog</h1>
 
-## 0.5.15 (2026-08-05)
+## 0.5.15 (2026-08-06)
+
+- Canario: a settings window (⌘,), in the shape Arc uses: native preference tabs over dark grouped sections. The Text tab holds the terminal font: a size slider and every monospace family installed on the machine, each row rendered in its own typeface above a live sample, applied to running terminals as you click and persisted across launches. Families are found by asking each font whether it is fixed-pitch, so the list is exactly what a terminal can use.
+
+- Canario: the Appearance tab makes the window's colors yours: window, text, selection and focused-panel border each get a picker, applied live and persisted. Text is picked once and the interface derives its opacity tiers from it, so a dark window with light text stays legible everywhere without adjusting five shades by hand. The preset swatches (salmon, blush, rosewood, cocoa, ultramarine, from the chrome study) each carry a complete four-color palette rather than just a window color, so one click can't strand black text on a dark window.
 
 - Canario: Nerd Font icons render out of the box, sized and positioned like a patched font. Two things had to be true at once. First, the glyphs have to exist: the symbols-only Nerd Font is embedded in `librio` itself, the way libghostty embeds it, and Canario cascades to it from the terminal font, so Powerline separators, Font Awesome and Material icons resolve on a machine with no patched font installed and no font file in the app bundle. Second, they have to be placed correctly: raw icon glyphs are designed against wildly different boxes, which is what the Nerd Fonts patcher's per-glyph scaling rules are for. Rio carries a port of that table (by way of ghostty's generated version); Canario now applies it at render time, so Powerline triangles stretch to the full cell and butt seamlessly against their coloured background, icons centre on the patcher's icon height, and an icon with a free cell beside it may span two. Private-use glyphs the table doesn't know are fitted to their cells so nothing bleeds into the neighbour.
 
