@@ -15,14 +15,13 @@ function Hero() {
         Canario<span className={styles.betaPill}>beta</span>
       </h1>
       <p className={styles.subtitle}>
-        The terminal that thinks like a browser. Spaces, splits, a command
-        bar, live tab previews and a summonable quick terminal, for macOS.
+        The terminal that thinks like a browser. Spaces, splits, a command bar,
+        live tab previews and a summonable quick terminal, for macOS.
       </p>
       <p className={styles.spinoff}>
-        Canario is a <Link to="/">Rio</Link> spin-off: a more modern take on
-        the terminal, built on the same engine (librio). Same VT handling,
-        same rendering core, same colors, wrapped in a browser-grade
-        workflow.
+        Canario is a <Link to="/">Rio</Link> spin-off: a more modern take on the
+        terminal, built on the same engine (librio). Same VT handling, same
+        rendering core, same colors, wrapped in a browser-grade workflow.
       </p>
       <div className={styles.actions}>
         <Link className={styles.actionButton} href={DOWNLOAD_URL}>
@@ -139,9 +138,9 @@ export default function Canario() {
             image="/assets/canario/splits.png"
             alt="Three panes split in one Canario tab: Claude Code, Codex and htop"
           >
-            Columns and rows, resizable by feel. Run your agent, your editor
-            and htop side by side. Each pane keeps its own working directory
-            and comes back after a restart, scrollback included.
+            Columns and rows, resizable by feel. Run your agent, your editor and
+            htop side by side. Each pane keeps its own working directory and
+            comes back after a restart, scrollback included.
           </Feature>
 
           <Feature
@@ -161,10 +160,10 @@ export default function Canario() {
             image="/assets/canario/image-peek.png"
             alt="A kitty image opened in Canario's Image Peek with Live Text highlighting the selectable text inside it"
           >
-            Images print in the terminal with the kitty graphics protocol,
-            and clicking one opens it in a lightbox where Live Text runs on
-            the pixels: select the text in a chart or a screenshot, copy it,
-            scan the QR code a CLI just printed.
+            Images print in the terminal with the kitty graphics protocol, and
+            clicking one opens it in a lightbox where Live Text runs on the
+            pixels: select the text in a chart or a screenshot, copy it, scan
+            the QR code a CLI just printed.
           </Feature>
 
           <Feature
@@ -173,9 +172,9 @@ export default function Canario() {
             video="/assets/canario/drag-image.webm"
             alt="Dragging an image from the terminal into a chat"
           >
-            Any image in the terminal drags out as a real PNG: drop the
-            chart into Slack, the screenshot into Figma, the diff into a
-            chat with your agent. Right-click for copy, save and share.
+            Any image in the terminal drags out as a real PNG: drop the chart
+            into Slack, the screenshot into Figma, the diff into a chat with
+            your agent. Right-click for copy, save and share.
           </Feature>
 
           <Feature
@@ -192,10 +191,10 @@ export default function Canario() {
               },
             ]}
           >
-            Long commands report progress with the OSC 9;4 sequence, and
-            Canario carries it beyond the window: a spinner on the tab, a
-            live percentage on the Dock icon, and a menu bar pill that
-            jumps you back to the terminal when you click it.
+            Long commands report progress with the OSC 9;4 sequence, and Canario
+            carries it beyond the window: a spinner on the tab, a live
+            percentage on the Dock icon, and a menu bar pill that jumps you back
+            to the terminal when you click it.
           </Feature>
 
           <Feature
@@ -217,10 +216,10 @@ export default function Canario() {
               },
             ]}
           >
-            Deep links, like the launchers have. Raycast, Shortcuts, other
-            apps and plain hyperlinks can summon the quick terminal, open a
-            space, jump to a session or run a command. Commands always
-            confirm before they execute, with the exact command shown.
+            Deep links, like the launchers have. Raycast, Shortcuts, other apps
+            and plain hyperlinks can summon the quick terminal, open a space,
+            jump to a session or run a command. Commands always confirm before
+            they execute, with the exact command shown.
           </Feature>
 
           <Feature
@@ -233,14 +232,14 @@ export default function Canario() {
               },
               {
                 src: '/assets/canario/watchers-badge.png',
-                alt: "A sidebar tab with an eye badge showing a watcher is armed",
+                alt: 'A sidebar tab with an eye badge showing a watcher is armed',
               },
             ]}
           >
             Select any text and watch for it. When it next appears in the
             output, the tab badges with a hit count and the Dock asks for
-            attention. Tail the log, walk away, and know the moment the
-            error shows up.
+            attention. Tail the log, walk away, and know the moment the error
+            shows up.
           </Feature>
 
           <Feature
@@ -249,9 +248,21 @@ export default function Canario() {
             image="/assets/canario/pip.png"
             alt="A pane popped out into a small always-on-top panel while its tile shows an In Picture in Picture placeholder"
           >
-            Pop a running pane out into a small always-on-top panel, the
-            way videos pop out of a browser. Watch the deploy from any
-            app; close the panel and the pane slides back into its tab.
+            Pop a running pane out into a small always-on-top panel, the way
+            videos pop out of a browser. Watch the deploy from any app; close
+            the panel and the pane slides back into its tab.
+          </Feature>
+
+          <Feature
+            title="Every classic theme, previewed live"
+            keys={['⇧ ⌘ T']}
+            image="/assets/canario/theme-picker.png"
+            alt="Canario's theme picker floating over a terminal, with live mini-terminal preview cards for Rio, Lucario, Dracula and Catppuccin"
+          >
+            Dracula, Catppuccin, Nord, Solarized, Tokyo Night, Lucario: every
+            card a mini terminal rendered from the scheme's real colors. Arrow
+            through the list and the whole app recolors as you move. Enter keeps
+            it, Esc puts everything back.
           </Feature>
 
           <Feature
@@ -260,9 +271,9 @@ export default function Canario() {
             image="/assets/canario/theming.png"
             alt="Canario themed in ultramarine beside its Appearance settings and the macOS color wheel"
           >
-            Window, text, selection and borders: pick each one, or grab a
-            whole preset in a click. Fonts too, with every monospace family
-            previewed in itself. Everything applies live and stays put.
+            Window, text, selection and borders: pick each one, or grab a whole
+            preset in a click. Fonts too, with every monospace family previewed
+            in itself. Everything applies live and stays put.
           </Feature>
         </section>
 
@@ -272,28 +283,28 @@ export default function Canario() {
           </div>
           <div className={styles.grid}>
             <Cell glyph="⌘1" glyphClass={styles.gEmber} title="Spaces">
-              Group terminals into folders with their own color. Jump with
-              ⌘1–9; the whole window tints to match where you are.
+              Group terminals into folders with their own color. Jump with ⌘1–9;
+              the whole window tints to match where you are.
             </Cell>
             <Cell glyph="⚡︎" glyphClass={styles.gTide} title="Quick terminal">
-              A floating shell over everything, summoned with ⌥⌘T from any
-              app. Run the thing, click away, gone.
+              A floating shell over everything, summoned with ⌥⌘T from any app.
+              Run the thing, click away, gone.
             </Cell>
             <Cell glyph="↻" glyphClass={styles.gInk} title="Session restore">
-              Quit and relaunch into the same tree: folders, splits,
-              scrollback, and every pane's working directory.
+              Quit and relaunch into the same tree: folders, splits, scrollback,
+              and every pane's working directory.
             </Cell>
             <Cell glyph="✈" glyphClass={styles.gInk} title="Auto-filing">
               Route new terminals into the right space by their working
               directory. Air traffic control for your shells.
             </Cell>
             <Cell glyph="🎨" glyphClass={styles.gIris} title="Rio's engine">
-              Rendering and palette come from Rio's terminal core: the same
-              VT handling, the same look, theme files on the roadmap.
+              Rendering and palette come from Rio's terminal core: the same VT
+              handling, the same look, the classic themes built in.
             </Cell>
             <Cell glyph="🖼" glyphClass={styles.gDune} title="Image protocols">
-              Kitty graphics, Sixel and iTerm2 images render right in the
-              grid, from chafa, icat, yazi and friends.
+              Kitty graphics, Sixel and iTerm2 images render right in the grid,
+              from chafa, icat, yazi and friends.
             </Cell>
           </div>
         </section>
