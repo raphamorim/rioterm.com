@@ -198,6 +198,31 @@ export default function Canario() {
           </Feature>
 
           <Feature
+            title="Your agent knows how to reach you"
+            keys={['automatic']}
+            pair={[
+              {
+                src: '/assets/canario/agent-tab.png',
+                alt: 'A sidebar tab with an orange dot and a Waiting title, badged with the number of agents waiting',
+              },
+              {
+                src: '/assets/canario/agent-menubar.png',
+                alt: "A needs-you pill in the macOS menu bar next to Canario's icon",
+              },
+              {
+                src: '/assets/canario/agent-dock.png',
+                alt: "Canario's Dock icon badged with a red 1 while an agent waits for input",
+              },
+            ]}
+          >
+            Kick off Claude Code, Codex or any agent and go do something else.
+            The moment it finishes a task or stops to ask you something, the
+            tab badges with a waiting count, the menu bar says needs you, and
+            the Dock keeps score. One click on any of them drops you back at
+            the right terminal.
+          </Feature>
+
+          <Feature
             title="A URL scheme for your shell"
             keys={['canario://']}
             code={[
