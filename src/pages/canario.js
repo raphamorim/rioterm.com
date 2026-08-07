@@ -6,7 +6,7 @@ import Layout from '@theme/Layout';
 import styles from './canario.module.css';
 
 const DOWNLOAD_URL =
-  'https://github.com/raphamorim/rio/releases/latest/download/Canario.dmg';
+  'https://github.com/canarioterm/releases/releases/latest/download/Canario.dmg';
 
 function Hero() {
   return (
