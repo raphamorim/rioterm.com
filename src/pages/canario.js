@@ -144,6 +144,20 @@ export default function Canario() {
           </Feature>
 
           <Feature
+            title="Every key, yours to change"
+            keys={['⌥ ⌘ ←', '⌘ ]']}
+            image="/assets/canario/keys.png"
+            alt="Canario's Keys settings listing terminal and pane actions beside their shortcuts"
+          >
+            Every action lives in one searchable list, by name or by the key
+            it sits on, so you can find out what already has ⌘D. Click a
+            keycap, press the chord you want, and if something else owns it
+            Canario names that action and offers to take it over instead of
+            leaving two bindings to fight. Move between panes with ⌥⌘ and an
+            arrow, or cycle them with ⌘[ and ⌘].
+          </Feature>
+
+          <Feature
             title="⌘K for everything"
             keys={['⌘ K']}
             image="/assets/canario/command-palette.png"
