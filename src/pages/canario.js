@@ -237,6 +237,21 @@ export default function Canario() {
           </Feature>
 
           <Feature
+            title="See where a link really goes"
+            keys={['⌘ click', '⇧ ⌘ U']}
+            image="/assets/canario/link-peek.png"
+            alt="A link in the terminal underlined on hover, with a card showing the resolved punycode host and a lookalike domain warning"
+          >
+            Hold ⌘ to underline the links in your scrollback and click to open
+            one, or press ⇧⌘U and type a letter to open one without touching
+            the mouse. Pause on a link and Canario shows the host it actually
+            resolves to. A domain spelled with lookalike characters cannot
+            hide: the card names the real destination and says so plainly.
+            Output you did not write is the most common place to meet a URL
+            you should not trust.
+          </Feature>
+
+          <Feature
             title="A URL scheme for your shell"
             keys={['canario://']}
             code={[
