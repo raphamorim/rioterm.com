@@ -29,13 +29,13 @@ function Hero() {
         </Link>
         <Link
           className={styles.actionButtonSecondary}
-          href="https://github.com/canarioterm/canario"
+          href="https://github.com/canarioterm/releases/releases"
         >
-          View source →
+          All releases →
         </Link>
       </div>
       <p className={styles.finePrint}>
-        beta · macOS 14+ · Apple silicon · free &amp; open source
+        beta · macOS 14+ · Apple silicon · free
       </p>
     </header>
   );
