@@ -29,7 +29,7 @@ function Hero() {
         </Link>
         <Link
           className={styles.actionButtonSecondary}
-          href="https://github.com/raphamorim/rio"
+          href="https://github.com/canarioterm/canario"
         >
           View source →
         </Link>
