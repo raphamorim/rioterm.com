@@ -237,14 +237,26 @@ export default function Canario() {
           </Feature>
 
           <Feature
+            title="Open a link without the mouse"
+            keys={['⇧ ⌘ U']}
+            image="/assets/canario/link-hints.png"
+            alt="Every link on screen labelled with a yellow single-letter chip after pressing shift command U"
+          >
+            Press ⇧⌘U and every link on screen gets a letter from the home
+            row. Type it and the link opens. Nothing to aim at, nothing to
+            hover: the hand is already on the keyboard, which is the whole
+            reason you are in a terminal. Escape backs out, and past
+            twenty-six links the labels grow to two keys.
+          </Feature>
+
+          <Feature
             title="See where a link really goes"
             keys={['⌘ click', '⇧ ⌘ U']}
             image="/assets/canario/link-peek.png"
             alt="A link in the terminal underlined on hover, with a card showing the resolved punycode host and a lookalike domain warning"
           >
             Hold ⌘ to underline the links in your scrollback and click to open
-            one, or press ⇧⌘U and type a letter to open one without touching
-            the mouse. Pause on a link and Canario shows the host it actually
+            one. Pause on a link and Canario shows the host it actually
             resolves to. A domain spelled with lookalike characters cannot
             hide: the card names the real destination and says so plainly.
             Output you did not write is the most common place to meet a URL
