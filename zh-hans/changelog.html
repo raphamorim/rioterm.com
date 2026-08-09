@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&amp;display=swap"><link rel="stylesheet" href="/zh-hans/assets/css/styles.873bf78b.css">
-<script src="/zh-hans/assets/js/runtime~main.94751f61.js" defer="defer"></script>
+<script src="/zh-hans/assets/js/runtime~main.286f1012.js" defer="defer"></script>
 <script src="/zh-hans/assets/js/main.1d90c0a9.js" defer="defer"></script>
 </head>
 <body>
@@ -50,6 +50,15 @@
 </li>
 <li class="">
 <p>Wayland: a compositor that drives key repeat itself no longer crashes Rio. <code>wl_keyboard</code> v10 lets the compositor take over repeat: it disables client-side repeat with <code>repeat_info { rate: 0 }</code>, then delivers held keys in a third <code>repeated</code> key state, which landed in a <code>_ =&gt; unreachable!()</code> arm and aborted the whole process. Repeated keys are now forwarded exactly as the client-side repeat timer forwards them, and unhandled keyboard events log a warning instead of taking the terminal down with them (<a href="https://github.com/raphamorim/rio/pull/1774" target="_blank" rel="noopener noreferrer" class="">#1774</a>, by <a href="https://github.com/nikicat" target="_blank" rel="noopener noreferrer" class="">@nikicat</a>).</p>
+</li>
+<li class="">
+<p>Color emoji render correctly from bitmap fonts. Every strike format was pushed through Swash as if it were the same thing, and none of them were: PNG strikes (Noto Color Emoji) decode to straight RGBA that Rio&#x27;s premultiplied atlas then over-darkened, raw CBDT strikes arrive as premultiplied <em>BGRA</em> that drew with red and blue swapped, and the packed CBDT formats make Swash under-allocate its decode buffer and panic outright. Each path is now handled for what it is: PNG premultiplied after decode, raw strikes channel-swapped and taken only at their exact strike size (resampling premultiplied data is what corrupted them), packed formats skipped before Swash can crash on them. The strike selection walks the font&#x27;s CBLC table with the same nearest-size logic Swash uses, so the format decision always matches the strike Swash actually renders — and a synthetic-font test suite assembles real CBLC tables byte by byte to prove it, including truncated and lying ones. For the record: cosmic-text, the largest Swash consumer, still has all three bugs (<a href="https://github.com/raphamorim/rio/pull/1843" target="_blank" rel="noopener noreferrer" class="">#1843</a>, by <a href="https://github.com/mirsella" target="_blank" rel="noopener noreferrer" class="">@mirsella</a>).</p>
+</li>
+<li class="">
+<p>macOS: SKK works. Its hiragana mode commits text directly without a preedit — input Rio dropped on the floor — and its mode-switch keys (Ctrl+J, <code>q</code>) reached the shell as control sequences because the IME consumes them through <code>selectMode()</code> without any text callback Rio could see. Direct commits are now detected by comparing what the IME inserts against what the key actually says, callback-less consumption is respected instead of second-guessed, and a new <code>keyboard.forward-to-ime-modifier-mask</code> decides which modifier combinations go to the IME at all — matched as a subset, so listing <code>ctrl</code> doesn&#x27;t drag Cmd+Ctrl combos along. The default forwards everything, exactly as before (<a href="https://github.com/raphamorim/rio/pull/1845" target="_blank" rel="noopener noreferrer" class="">#1845</a>, by <a href="https://github.com/shiena" target="_blank" rel="noopener noreferrer" class="">@shiena</a>).</p>
+</li>
+<li class="">
+<p>The OSC 9;4 progress bar sits at the top of the window when the tab strip is hidden, instead of floating at the strip&#x27;s height below nothing. With <code>hide-if-single</code> now the macOS default, a lone tab is exactly when this matters (<a href="https://github.com/raphamorim/rio/pull/1844" target="_blank" rel="noopener noreferrer" class="">#1844</a>, by <a href="https://github.com/mirsella" target="_blank" rel="noopener noreferrer" class="">@mirsella</a>).</p>
 </li>
 <li class="">
 <p><code>navigation.hide-if-single</code> now defaults per platform: <code>true</code> on macOS, where hiding the strip for a lone tab is the native-app feel, and <code>false</code> on Linux and Windows, where the strip stays as a centred title. Either value can still be set explicitly, globally or per platform.</p>
