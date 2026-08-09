@@ -1702,7 +1702,7 @@ opacity-cells = true
 Background blur for the window. Accepts a bool or one of the macOS liquid-glass styles. Changing this setting requires restarting Rio to take effect.
 
 - `false` (default) — no blur.
-- `true` — standard system blur (CGS backdrop on macOS, KWin blur on Wayland, DWM acrylic on Windows 11+).
+- `true` — standard system blur (CGS backdrop on macOS, DWM acrylic on Windows 11+; on Wayland the cross-desktop `ext-background-effect-v1` protocol where the compositor offers it — COSMIC, KWin ≥ 6.4 — falling back to the KDE-specific blur protocol on older Plasma).
 - `"macos-glass-regular"` — macOS 26 (Tahoe) and later. Native liquid-glass effect with the *regular* style (some opacity).
 - `"macos-glass-clear"` — macOS 26 and later. Native liquid-glass effect with the *clear* style (highly transparent).
 
