@@ -995,7 +995,7 @@ Enable split for open configuration file.
 
 The property `hide-if-single` hides navigation UI if there is only one tab. It does not work for `NativeTab`.
 
-Default is `false`. A single tab is drawn as its title centred on the strip, with no tab behind it, so the strip stays out of the way without being hidden.
+The default is platform-dependent: `true` on macOS (a lone tab hides the strip, the native-app feel) and `false` on Linux and Windows, where a single tab is drawn as its title centred on the strip, with no tab behind it, so the strip stays out of the way without being hidden.
 
 ```toml
 [navigation]

@@ -23,6 +23,8 @@ language: 'en'
 
 - Wayland: a compositor that drives key repeat itself no longer crashes Rio. `wl_keyboard` v10 lets the compositor take over repeat: it disables client-side repeat with `repeat_info { rate: 0 }`, then delivers held keys in a third `repeated` key state, which landed in a `_ => unreachable!()` arm and aborted the whole process. Repeated keys are now forwarded exactly as the client-side repeat timer forwards them, and unhandled keyboard events log a warning instead of taking the terminal down with them ([#1774](https://github.com/raphamorim/rio/pull/1774), by [@nikicat](https://github.com/nikicat)).
 
+- `navigation.hide-if-single` now defaults per platform: `true` on macOS, where hiding the strip for a lone tab is the native-app feel, and `false` on Linux and Windows, where the strip stays as a centred title. Either value can still be set explicitly, globally or per platform.
+
 - Windows: no flash of blank window at startup. Rio could show the bare native window before the first frame was ready, a white blink that made launch feel slower than it was. The window now stays cloaked (DWM's mechanism for exactly this) until the first frame has rendered, so it appears with content already in place ([#1814](https://github.com/raphamorim/rio/pull/1814), by [@lalvarezt](https://github.com/lalvarezt)).
 
 - An unfocused window shows a hollow cursor. The cursor style decision consulted panel focus but not window focus, so the active panel kept drawing a solid block after you switched apps; it now checks both, giving an unfocused window the same hollow outline an unfocused split gets: steady, not blinking, until focus returns ([#1835](https://github.com/raphamorim/rio/pull/1835), by [@mirsella](https://github.com/mirsella)).
