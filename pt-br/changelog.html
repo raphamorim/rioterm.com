@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&amp;display=swap"><link rel="stylesheet" href="/pt-br/assets/css/styles.873bf78b.css">
-<script src="/pt-br/assets/js/runtime~main.590a6e00.js" defer="defer"></script>
+<script src="/pt-br/assets/js/runtime~main.27180065.js" defer="defer"></script>
 <script src="/pt-br/assets/js/main.86587fe0.js" defer="defer"></script>
 </head>
 <body>
@@ -46,6 +46,15 @@
 <p><code>corcovado</code>, Rio&#x27;s fork of mio 0.6, went on a diet: about 7,700 lines gone. The timer, the Fuchsia backend, the Windows TCP/UDP sample bindings and a directory of tests that were already commented out served nobody; the fork exists to poll a PTY, a signal pipe and a channel. With them went <code>iovec</code> (unmaintained since 2018), <code>cfg-if 0.1</code>, <code>slab</code>, <code>socket2</code> and the <code>windows</code> crate. Migrating to mio 1.x or smol&#x27;s <code>polling</code> was on the table first, and the benchmarks closed it: mio 1.x removed the pollable channel, the user-space readiness the Windows pipes are built on and level-triggered mode outright, and with the loop fixes above corcovado matches or beats both crates on every shape Rio&#x27;s loop actually runs. The only thing a migration had left to offer was less fork to maintain, and the trim delivered that without one.</p>
 </li>
 <li class="">
+<p>Wayland: background blur, beyond KDE. <code>window.blur = true</code> now works through <code>ext-background-effect-v1</code>, the cross-desktop staging protocol COSMIC and KWin ≥ 6.4 implement, so a translucent Rio gets frosted glass behind it on those compositors instead of only under the KDE-specific blur protocol, which stays as the fallback for older Plasma. The protocol starts every surface with an <em>empty</em> blur region, so Rio sets a full-surface one explicitly and lets the compositor clip it (<a href="https://github.com/raphamorim/rio/pull/1841" target="_blank" rel="noopener noreferrer" class="">#1841</a>, by <a href="https://github.com/milkowski" target="_blank" rel="noopener noreferrer" class="">@milkowski</a>).</p>
+</li>
+<li class="">
+<p>Wayland: a compositor that drives key repeat itself no longer crashes Rio. <code>wl_keyboard</code> v10 lets the compositor take over repeat: it disables client-side repeat with <code>repeat_info { rate: 0 }</code>, then delivers held keys in a third <code>repeated</code> key state, which landed in a <code>_ =&gt; unreachable!()</code> arm and aborted the whole process. Repeated keys are now forwarded exactly as the client-side repeat timer forwards them, and unhandled keyboard events log a warning instead of taking the terminal down with them (<a href="https://github.com/raphamorim/rio/pull/1774" target="_blank" rel="noopener noreferrer" class="">#1774</a>, by <a href="https://github.com/nikicat" target="_blank" rel="noopener noreferrer" class="">@nikicat</a>).</p>
+</li>
+<li class="">
+<p><code>navigation.hide-if-single</code> now defaults per platform: <code>true</code> on macOS, where hiding the strip for a lone tab is the native-app feel, and <code>false</code> on Linux and Windows, where the strip stays as a centred title. Either value can still be set explicitly, globally or per platform.</p>
+</li>
+<li class="">
 <p>Windows: no flash of blank window at startup. Rio could show the bare native window before the first frame was ready, a white blink that made launch feel slower than it was. The window now stays cloaked (DWM&#x27;s mechanism for exactly this) until the first frame has rendered, so it appears with content already in place (<a href="https://github.com/raphamorim/rio/pull/1814" target="_blank" rel="noopener noreferrer" class="">#1814</a>, by <a href="https://github.com/lalvarezt" target="_blank" rel="noopener noreferrer" class="">@lalvarezt</a>).</p>
 </li>
 <li class="">
@@ -55,7 +64,7 @@
 <p><code>librio</code> builds on Windows again. <code>Surface::foreground_process_name</code> leaned on a process lookup and PTY fields that only exist on Unix, which broke the Windows build the moment it landed. On Windows it now returns an empty name, the same unavailable-result convention <code>working_dir</code> already follows there, with the Rust and C APIs unchanged (<a href="https://github.com/raphamorim/rio/pull/1838" target="_blank" rel="noopener noreferrer" class="">#1838</a>, by <a href="https://github.com/mirsella" target="_blank" rel="noopener noreferrer" class="">@mirsella</a>).</p>
 </li>
 <li class="">
-<p>The Nix package build skips its check phase. The check re-ran the whole test suite inside the Nix sandbox on a 7 GB ARM runner, which the kernel OOM killer ended partway through the test binary on every single run; the same tests already run in the Test workflow on runners with room to breathe, so the Nix job goes back to answering the question it exists for: does the package build (<a href="https://github.com/raphamorim/rio/pull/1828" target="_blank" rel="noopener noreferrer" class="">#1828</a>, by <a href="https://github.com/bet4it" target="_blank" rel="noopener noreferrer" class="">@bet4it</a>).</p>
+<p>The Nix package build works again, and the OOM theory was wrong. Every Nix build died with exit code 129 partway through the test suite, which read as the kernel reclaiming a 7 GB runner; but 129 is SIGHUP, not the OOM killer&#x27;s SIGKILL, and the death always landed on the context tests. The real cause: a dead context stores <code>1</code> as its placeholder <code>shell_pid</code>, and dropping it SIGHUPed that pid unconditionally — and in the Nix sandbox the builder shell <em>is</em> PID 1, so <code>cargo test</code> killed its own parent. The kill is now guarded against placeholder pids, the check phase that was briefly skipped as a stopgap (<a href="https://github.com/raphamorim/rio/pull/1828" target="_blank" rel="noopener noreferrer" class="">#1828</a>, by <a href="https://github.com/bet4it" target="_blank" rel="noopener noreferrer" class="">@bet4it</a>) is back on, and the rio 0.5.x update in nixpkgs is unblocked (<a href="https://github.com/raphamorim/rio/pull/1842" target="_blank" rel="noopener noreferrer" class="">#1842</a>, by <a href="https://github.com/pinpox" target="_blank" rel="noopener noreferrer" class="">@pinpox</a>).</p>
 </li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0519-2026-08-07">0.5.19 (2026-08-07)<a href="#0519-2026-08-07" class="hash-link" aria-label="0.5.19 (2026-08-07)link direto para" title="0.5.19 (2026-08-07)link direto para" translate="no">​</a></h2>
