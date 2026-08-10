@@ -801,6 +801,18 @@ fonts.use-drawable-chars = true
 </p>
 </details>
 
+## grapheme-clustering
+
+Use Unicode extended grapheme clusters as the unit of cell layout (Default: `true`). This presets [DEC private mode 2027](https://github.com/contour-terminal/terminal-unicode-core): a ZWJ emoji like 🧑‍🌾 occupies one wide cell instead of one per codepoint, flag pairs take exactly two columns, Indic conjuncts join across their linker, and variation selectors flip a cluster between wide and narrow presentation. Equivalent to ghostty's `grapheme-width-method = unicode`.
+
+A running program stays in charge: DECSET/DECRST 2027 wins at runtime and DECRQM reports the current state, so mode-aware programs behave identically either way. Set it to `false` for legacy wcwidth cell layout, matching terminals without mode 2027 — the compatible choice if a program you rely on assumes one cell per codepoint and cannot be told otherwise.
+
+This is a top-level option — it must appear before any `[section]` header in your config file.
+
+```toml
+grapheme-clustering = true
+```
+
 ## hints
 
 The hints system allows you to quickly interact with text patterns in your terminal by displaying keyboard shortcuts over matching content. When activated, Rio scans the visible terminal content for configured patterns and displays keyboard shortcuts over each match.
