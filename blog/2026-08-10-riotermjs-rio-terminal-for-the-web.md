@@ -42,6 +42,18 @@ Wire those two lines to a WebSocket bridging a real shell, or to anything else t
 
 You pick the renderer per instance: a canvas painter or DOM rows of styled spans, with identical input, selection, and clipboard behavior. There is also a React wrapper, published as `react-rioterm`, and a fully headless mode if you bring your own renderer or want to run the engine in Node for tests.
 
+## The demo runs real software, in your tab
+
+The [demo site](https://riotermjs.pages.dev) has no server behind it. Everything you type runs client-side, and the point is to prove that rioterm is a real terminal by driving it with real programs rather than a scripted echo. Two toggles sit above the terminal: PROGRAM switches between bash and Linux, RENDERER switches between the canvas and DOM painters live, on the same running session.
+
+![The rioterm demo running bash under WASIX, with the program and renderer toggles](/assets/rioterm-demo.png)
+
+**Bash is a real bash.** It is `sharrattj/bash` from the Wasmer registry, the same binary you would install, compiled to [WASIX](https://wasmer.io/posts/announcing-wasix) and running under the Wasmer SDK in the browser. rioterm feeds it exactly the way it feeds any backend: keystrokes go to the program's stdin, the program's stdout comes back through `terminal.write`. That is why the screenshot above works the way you would expect a shell to, `ls` and `echo` run, an unknown command gives you `command not found`, and reverse-i-search over your history is there because it is bash's own line editor doing it, not something the page faked. WASIX needs cross-origin isolation for `SharedArrayBuffer`, so the demo serves COOP/COEP headers; the bash webc is self-hosted and fetched in parallel with the runtime init to keep the cold start down to a couple of seconds.
+
+**Linux is a real kernel.** Flip PROGRAM to Linux and the terminal is wired to the serial console of a [v86](https://github.com/copy/v86) virtual machine, an x86-to-WebAssembly JIT running a Buildroot image. Booting a kernel in the visitor's tab would be slow, so instead the VM boots once during the build, its state is snapshotted and zstd-compressed, and the page restores that snapshot; v86 decompresses zstd states natively, so you land at a prompt in well under a second instead of watching init messages scroll. The serial port is just another byte transport to rioterm, `onData` in, `terminal.write` out, no `SharedArrayBuffer` required, which is why Linux is also the fallback anywhere the isolation headers are missing.
+
+The renderer toggle is the quiet part worth noticing: it swaps the terminal between canvas and DOM while bash or Linux keeps running underneath, buffered scrollback replayed onto the new terminal, because the engine and the session outlive whichever renderer is drawing them.
+
 ## The numbers
 
 Byte-identical workloads, fixed 120x40 grid, medians of three runs in Chrome on Apple Silicon: xterm.js with its WebGL addon (its fastest renderer), and [wterm](https://github.com/vercel-labs/wterm) with its DOM renderer, run on both of its VT cores, the default Zig core and the libghostty core. The benchmark suite lives in the repo under [`benchmark/`](https://github.com/raphamorim/riotermjs/tree/main/benchmark), so run your own.
