@@ -5,7 +5,7 @@ language: 'en'
 
 <h1 style={{fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(-120deg, #fb43fe 30%, #00dbe5)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", borderBottom: "none", paddingBottom: "1rem", marginBottom: "2rem"}}>Changelog</h1>
 
-## 0.5.20 (unreleased)
+## 0.5.20 (2026-08-12)
 
 - **rioterm: Rio's terminal engine, on the web.** `librio` now compiles to WebAssembly and ships as [`rioterm`](https://github.com/raphamorim/riotermjs) on npm, with a `react-rioterm` wrapper. It is the same Rust VT core the desktop app runs, parsing your bytes in the browser, with a canvas or DOM renderer selectable per instance, and it is not a JavaScript reimplementation of a terminal: `rio-vt` and `librio` cross-compile to `wasm32-unknown-unknown` unchanged behind a wasm-bindgen `RioTerm` class, and the browser is handed the transport (a WebSocket to a real shell, an in-page interpreter) instead of a PTY. On byte-identical 120x40 workloads against xterm.js with its WebGL renderer it parses and paints plain text about 3x faster and cold-inits ~1.8x faster, with headless VT parsing 6x faster; the benchmark suite is in the [repo](https://github.com/raphamorim/riotermjs/tree/main/benchmark). It runs in production in Lovable's admin terminal, and there is a [write-up](/blog/2026/08/10/riotermjs-rio-terminal-for-the-web).
 
