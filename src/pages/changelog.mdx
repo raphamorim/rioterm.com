@@ -5,7 +5,11 @@ language: 'en'
 
 <h1 style={{fontSize: "2.25rem", fontWeight: 800, letterSpacing: "-0.02em", background: "linear-gradient(-120deg, #fb43fe 30%, #00dbe5)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", borderBottom: "none", paddingBottom: "1rem", marginBottom: "2rem"}}>Changelog</h1>
 
-## 0.5.21 (unreleased)
+## 0.5.22 (2026-08-12)
+
+- The release that actually shipped 0.5.21: identical fixes, plus the repair of the crates.io publish pipeline that burned the 0.5.21 tag. The new `rio-unicode` crate had its own frozen version number, and a fixed version can only be published once while the release pipeline republishes every workspace member per release; it now rides the shared workspace version like every other published crate, so `cargo publish --workspace` goes through cleanly on this and every future tag. Along the way the crate lost its `unicode-width` alias: manifests, imports, and the published metadata all say `rio-unicode` now, so the code and the crates.io dependency list finally tell the same story.
+
+## 0.5.21 (2026-08-12, tag superseded by 0.5.22)
 
 - Stale glyphs no longer linger until you scroll. Attaching a combining mark, ZWJ continuation, or variation selector to an already-painted cell mutated the cell without recording damage, so the renderer was never told the row changed: in Emacs, NeoTree hover kept showing the previous directory name and stray characters survived until a scroll forced a full repaint. The gap had been latent in the legacy zero-width path for years and became hot when 0.5.20 turned grapheme clustering on by default, since TUI icon fonts lean on exactly those sequences and a chunked redisplay routinely lands an attach in its own damage window. The attach path now marks the row, and a new property test guards the whole bug class: randomized VT streams, with bare continuation codepoints arriving in their own damage windows on purpose, asserting that every row whose content changed is covered by reported damage.
 
