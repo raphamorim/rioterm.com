@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&amp;display=swap"><link rel="stylesheet" href="/ko/assets/css/styles.873bf78b.css">
-<script src="/ko/assets/js/runtime~main.d30594c9.js" defer="defer"></script>
+<script src="/ko/assets/js/runtime~main.746cab3f.js" defer="defer"></script>
 <script src="/ko/assets/js/main.80e67468.js" defer="defer"></script>
 </head>
 <body>
@@ -106,7 +106,7 @@ Updates to the configuration file automatically triggers Rio to render the termi
 <ul>
 <li class=""><code>custom-mouse-cursor</code>: Enables a custom mouse cursor effect. Default: <code>false</code></li>
 <li class=""><code>trail-cursor</code>: Enables a trail animation when the terminal cursor moves: the cursor stretches into a smear that catches up with its new position, and fades out when a program hides the cursor. Default: <code>false</code></li>
-<li class=""><code>trail-cursor-color</code>: Trail color as a hex string (e.g. <code>&quot;#F07178&quot;</code>). Unset, the trail takes the cursor color.</li>
+<li class=""><code>trail-cursor-color</code>: Trail color as a hex string (e.g. <code>&quot;#F07178&quot;</code>). Unset, the trail takes the cursor color. Note: while a trail is in flight it passes over the cursor cell, so a custom color briefly tints the cursor during the animation.</li>
 <li class=""><code>trail-cursor-opacity</code>: Trail opacity, from <code>0.0</code> to <code>1.0</code>. Lower values make the trail subtler. Default: <code>1.0</code></li>
 <li class=""><code>trail-cursor-decay</code>: A <code>[fast, slow]</code> pair in milliseconds: how long the leading and the trailing edge of the trail take to catch up with the cursor. The gap between the two is what stretches the trail; smaller values make it snappier. Default: <code>[100, 400]</code></li>
 <li class=""><code>trail-cursor-start-threshold</code>: Cursor jumps at or under this many cells (on both axes) don&#x27;t start a trail, so ordinary typing stays trail-free. <code>0</code> animates every movement. Default: <code>2</code></li>
@@ -215,7 +215,7 @@ will always look for regular font bounds whene</p>
 <li class=""><code>╬</code> - DoubleCross</li>
 <li class=""><code>╠</code> - DoubleVerticalRight</li>
 <li class=""><code>╣</code> - DoubleVerticalLeft</li>
-<li class=""><code>╦</code> - DoubleHorizontalDown</li>
+<li class=""><code> ╦</code> - DoubleHorizontalDown</li>
 <li class=""><code>╩</code> - DoubleHorizontalUp</li>
 <li class=""><code>╫</code> - VerticalDoubleAndHorizontalSingle</li>
 <li class=""><code>╓</code> - DownDoubleAndRightSingle</li>
@@ -406,7 +406,7 @@ will always look for regular font bounds whene</p>
 <li class=""><code>⡶</code> BrailleDots23567</li>
 <li class=""><code>⡷</code> BrailleDots123567</li>
 <li class=""><code>⡸</code> BrailleDots4567</li>
-<li class=""><code> ⡹</code> BrailleDots14567</li>
+<li class=""><code>⡹</code> BrailleDots14567</li>
 <li class=""><code>⡺</code> BrailleDots24567</li>
 <li class=""><code>⡻</code> BrailleDots124567</li>
 <li class=""><code>⡼</code> BrailleDots34567</li>
@@ -732,7 +732,7 @@ will always look for regular font bounds whene</p>
 <li class="">Corner radii</li>
 </ul>
 <div class="language-toml codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-toml codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><div class="token-line" style="color:#F8F8F2"><span class="token punctuation" style="color:rgb(248, 248, 242)">[</span><span class="token table class-name">renderer</span><span class="token punctuation" style="color:rgb(248, 248, 242)">]</span><span class="token plain"></span><br></div><div class="token-line" style="color:#F8F8F2"><span class="token plain"></span><span class="token key property">use-cpu</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(248, 248, 242)">=</span><span class="token plain"> </span><span class="token boolean">false</span><br></div></code></pre></div></div>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="scroll">scroll<a href="#scroll" class="hash-link" aria-label="scroll에 대한 직접  링크" title="scroll에 대한 직접 링크" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="scroll">scroll<a href="#scroll" class="hash-link" aria-label="scroll에 대한 직접 링크" title="scroll에 대한 직접 링크" translate="no">​</a></h2>
 <p>You can change how many lines are scrolled each time by setting this option. Scroll calculation for canonical mode will be based on <code>lines = (accumulated scroll * multiplier / divider)</code>.</p>
 <p>If you want a quicker scroll, keep increasing the multiplier. If you want to reduce scroll speed you will need to increase the divider.</p>
 <p>You can combine both properties to find the best scroll for you.</p>
@@ -912,7 +912,7 @@ Default on Windows: <code>{{ title || program }}</code></p>
 <ul>
 <li class=""><code>false</code> (default) — no blur.</li>
 <li class=""><code>true</code> — standard system blur (CGS backdrop on macOS, DWM acrylic on Windows 11+; on Wayland the cross-desktop <code>ext-background-effect-v1</code> protocol where the compositor offers it — COSMIC, KWin ≥ 6.4 — falling back to the KDE-specific blur protocol on older Plasma).</li>
-<li class=""><code>&quot;macos-glass-regular&quot;</code>  — macOS 26 (Tahoe) and later. Native liquid-glass effect with the <em>regular</em> style (some opacity).</li>
+<li class=""><code>&quot;macos-glass-regular&quot;</code> — macOS 26 (Tahoe) and later. Native liquid-glass effect with the <em>regular</em> style (some opacity).</li>
 <li class=""><code>&quot;macos-glass-clear&quot;</code> — macOS 26 and later. Native liquid-glass effect with the <em>clear</em> style (highly transparent).</li>
 </ul>
 <p>The macOS glass values imply a translucent window the same way <code>opacity &lt; 1</code> does — the layer is flipped to non-opaque for you. On platforms or macOS versions where a glass style isn&#x27;t available, Rio falls back to the standard system blur and logs a warning instead of failing.</p>
