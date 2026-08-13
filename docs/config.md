@@ -270,12 +270,20 @@ args = []
 Configure visual effects for the terminal.
 
 - `custom-mouse-cursor`: Enables a custom mouse cursor effect. Default: `false`
-- `trail-cursor`: Enables a smooth trail animation when the terminal cursor moves, using spring physics for natural motion. Default: `false`
+- `trail-cursor`: Enables a trail animation when the terminal cursor moves: the cursor stretches into a smear that catches up with its new position, and fades out when a program hides the cursor. Default: `false`
+- `trail-cursor-color`: Trail color as a hex string (e.g. `"#F07178"`). Unset, the trail takes the cursor color.
+- `trail-cursor-opacity`: Trail opacity, from `0.0` to `1.0`. Lower values make the trail subtler. Default: `1.0`
+- `trail-cursor-decay`: A `[fast, slow]` pair in milliseconds: how long the leading and the trailing edge of the trail take to catch up with the cursor. The gap between the two is what stretches the trail; smaller values make it snappier. Default: `[100, 400]`
+- `trail-cursor-start-threshold`: Cursor jumps at or under this many cells (on both axes) don't start a trail, so ordinary typing stays trail-free. `0` animates every movement. Default: `2`
 
 ```toml
 [effects]
 custom-mouse-cursor = true
 trail-cursor = true
+trail-cursor-color = "#F07178"
+trail-cursor-opacity = 0.6
+trail-cursor-decay = [100, 400]
+trail-cursor-start-threshold = 2
 ```
 
 ![Custom cursor](/assets/features/demo-custom-cursor.png)
