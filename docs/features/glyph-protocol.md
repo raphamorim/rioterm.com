@@ -57,7 +57,7 @@ Every terminal that renders OpenType text already links a `glyf` rasterizer, and
 - **Can't touch real text.** Registrations are restricted to the Unicode Private Use Areas, ranges users never type and existing text never contains. The rendered appearance of `a`, `ssh`, or any URL cannot be changed.
 - **Honest cell buffer.** Selection, copy, and search always return the codepoint the application emitted, never the rendered glyph.
 - **Graceful degradation.** Terminals that don't implement the protocol ignore the messages; applications detect support with a query and fall back.
-- **Bounded.** At most 1024 registrations per session, 64 KiB per payload, FIFO eviction. Registrations never leak between tabs, panes, or sessions.
+- **Bounded.** At most 1024 registrations per session, 64 KiB per payload on the wire and 64 KiB decoded, FIFO eviction. Registrations never leak between tabs, panes, or sessions.
 
 ## Try it
 
