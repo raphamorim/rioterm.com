@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&amp;display=swap"><link rel="stylesheet" href="/zh-hant/assets/css/styles.873bf78b.css">
-<script src="/zh-hant/assets/js/runtime~main.e464bdaf.js" defer="defer"></script>
+<script src="/zh-hant/assets/js/runtime~main.c621cb22.js" defer="defer"></script>
 <script src="/zh-hant/assets/js/main.07a76031.js" defer="defer"></script>
 </head>
 <body>
@@ -62,7 +62,7 @@
 <li class=""><strong>Can&#x27;t touch real text.</strong> Registrations are restricted to the Unicode Private Use Areas, ranges users never type and existing text never contains. The rendered appearance of <code>a</code>, <code>ssh</code>, or any URL cannot be changed.</li>
 <li class=""><strong>Honest cell buffer.</strong> Selection, copy, and search always return the codepoint the application emitted, never the rendered glyph.</li>
 <li class=""><strong>Graceful degradation.</strong> Terminals that don&#x27;t implement the protocol ignore the messages; applications detect support with a query and fall back.</li>
-<li class=""><strong>Bounded.</strong> At most 1024 registrations per session, 64 KiB per payload, FIFO eviction. Registrations never leak between tabs, panes, or sessions.</li>
+<li class=""><strong>Bounded.</strong> At most 1024 registrations per session, 64 KiB per payload on the wire and 64 KiB decoded, FIFO eviction. Registrations never leak between tabs, panes, or sessions.</li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="try-it">Try it<a href="#try-it" class="hash-link" aria-label="Try it的直接連結" title="Try it的直接連結" translate="no">​</a></h2>
 <p>The <a href="https://github.com/raphamorim/glyph-protocol-examples" target="_blank" rel="noopener noreferrer" class="">glyph-protocol-examples</a> repository contains example apps for ratatui, bubbletea v2, and ink that register real Nerd Font outlines and COLR emojis at empty PUA-B slots.</p>
