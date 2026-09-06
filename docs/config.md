@@ -1037,6 +1037,44 @@ Default is `240`.
 max-tab-width = 240
 ```
 
+## navigation.window-buttons
+
+Draw minimize, maximize and close buttons at the right end of the tab strip. Meant for `window.decorations = "Disabled"` on Linux and Windows, where the strip then stands in for the title bar. Tabs shrink to leave room for the buttons. Ignored on macOS, which keeps the native traffic lights.
+
+Closing through the button follows the same path as the window system's close request, so `confirm-before-quit` still applies.
+
+Default is `false`.
+
+```toml
+[window]
+decorations = "Disabled"
+
+[navigation]
+window-buttons = true
+```
+
+## navigation.drag-window
+
+Move the window by dragging an empty part of the tab strip with the left mouse button (Linux and Windows). Double-clicking the empty area toggles maximize. macOS always allows this, so the option is ignored there.
+
+Default is `false`.
+
+```toml
+[navigation]
+drag-window = true
+```
+
+## navigation.scroll-tabs
+
+Switch to the previous or next tab with the mouse wheel while the pointer is over the tab strip. Touchpad scrolling counts one tab per 40 logical pixels of travel.
+
+Default is `false`.
+
+```toml
+[navigation]
+scroll-tabs = true
+```
+
 ## option-as-alt
 
 This config only works on MacOS.
