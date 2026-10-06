@@ -201,6 +201,7 @@ visual = false
 Enable or disable the audio bell. When enabled, a sound will play when the bell is triggered.
 
 Default behavior:
+
 - **macOS**: `true` (uses system notification sound)
 - **Windows**: `true` (uses system notification sound)
 - **Linux/BSD**: `false` (requires `audio` feature during compilation)
@@ -873,11 +874,13 @@ mods = ["Control", "Shift"]
 ### Actions
 
 Built-in actions:
+
 - `"Copy"` - Copy to clipboard
 - `"Paste"` - Paste the matched text
 - `"Select"` - Select the matched text
 
 External commands:
+
 ```toml
 [hints.rules.action]
 command = "xdg-open"  # Simple command
@@ -944,6 +947,21 @@ Default is `false`
 hide-mouse-cursor-when-typing = false
 ```
 
+## margin
+
+Define margins around the entire window/tab area using CSS-like syntax (default is `[10]`)
+
+```toml
+# Apply 10px to all sides
+margin = [10]
+
+# top and bottom: 10px, right and left: 5px
+margin = [10, 5]
+
+# top: 10px, right: 5px, bottom: 15px, left: 20px
+margin = [10, 5, 15, 20]
+```
+
 ## navigation
 
 ## navigation.mode
@@ -974,7 +992,7 @@ mode = "NativeTab"
 
 #### Plain
 
-Plain navigation mode will simply turn off any tab key binding.
+Plain navigation mode will simply turn off any tab key binding, also hiding the title bar.
 
 This mode is perfect if you use Rio terminal with tmux or zellij.
 
@@ -1058,36 +1076,21 @@ Possible choices: `both`, `left` and `right`.
 option-as-alt = 'left'
 ```
 
-## padding
-
-Define outer padding around the entire window/tab area using CSS-like syntax (default is `[10]`)
-
-```toml
-# Apply 10px to all sides
-padding = [10]
-
-# top and bottom: 10px, right and left: 5px
-padding = [10, 5]
-
-# top: 10px, right: 5px, bottom: 15px, left: 20px
-padding = [10, 5, 15, 20]
-```
-
 ## panel
 
 Configure panel layout when using splits (vertical/horizontal terminal splits).
 
-### panel.padding
+### panel.margin
 
-Define inner padding inside each panel (around terminal content). Default is `[5]`
+Define margins inside each panel (around terminal content). Default is `[5]`
 
 ```toml
 [panel]
-# Apply 5px padding inside all panels
-padding = [5]
+# Apply 5px margin inside all panels
+margin = [5]
 
-# Different padding: top/bottom: 10px, left/right: 5px
-padding = [10, 5]
+# Different margin: top/bottom: 10px, left/right: 5px
+margin = [10, 5]
 ```
 
 ### panel.row-gap
@@ -1130,7 +1133,7 @@ border-radius = 8.0  # 8px rounded corners
 
 ```toml
 [panel]
-padding = [5]       # Inner padding inside each panel
+margin = [5]        # Margins inside each panel
 row-gap = 10        # Vertical gap when split down
 column-gap = 15     # Horizontal gap when split right
 border-width = 2.0  # Border width around panels
@@ -1775,8 +1778,8 @@ Background blur for the window. Accepts a bool or one of the macOS liquid-glass 
 
 - `false` (default) — no blur.
 - `true` — standard system blur (CGS backdrop on macOS, DWM acrylic on Windows 11+; on Wayland the cross-desktop `ext-background-effect-v1` protocol where the compositor offers it — COSMIC, KWin ≥ 6.4 — falling back to the KDE-specific blur protocol on older Plasma).
-- `"macos-glass-regular"` — macOS 26 (Tahoe) and later. Native liquid-glass effect with the *regular* style (some opacity).
-- `"macos-glass-clear"` — macOS 26 and later. Native liquid-glass effect with the *clear* style (highly transparent).
+- `"macos-glass-regular"` — macOS 26 (Tahoe) and later. Native liquid-glass effect with the _regular_ style (some opacity).
+- `"macos-glass-clear"` — macOS 26 and later. Native liquid-glass effect with the _clear_ style (highly transparent).
 
 The macOS glass values imply a translucent window the same way `opacity < 1` does — the layer is flipped to non-opaque for you. On platforms or macOS versions where a glass style isn't available, Rio falls back to the standard system blur and logs a warning instead of failing.
 
