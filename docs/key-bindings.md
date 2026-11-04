@@ -375,15 +375,15 @@ If you are missing a key binding that you believe that should be a default in th
 
 ### Search
 
-| Action                  | Key                                    |
-| ----------------------- | -------------------------------------- |
-| Quit search             | `Escape` (while search is open)        |
-| Quit search             | `Control + c` (while search is open)   |
-| Focus next              | `Enter` (while search is open)         |
-| Focus previous          | `Shift + Enter` (while search is open) |
-| Clear search word       | `Control + w` (while search is open)   |
-| Search history previous | `Control + p` (while search is open)   |
-| Search history previous | `ArrowUp` (while search is open)       |
-| Search history next     | `Control + n` (while search is open)   |
-| Search history next     | `ArrowDown` (while search is open)     |
+| Action                  | Key                                                              |
+| ----------------------- | ---------------------------------------------------------------- |
+| Quit search             | `Escape` (while search is open)                                  |
+| Quit search             | `Control + c` (while search is open)                             |
+| Focus next              | `Enter` or `numpad Enter` (while search is open)                 |
+| Focus previous          | `Shift + Enter` or `Shift + numpad Enter` (while search is open) |
+| Clear search word       | `Control + w` (while search is open)                             |
+| Search history previous | `Control + p` (while search is open)                             |
+| Search history previous | `ArrowUp` (while search is open)                                 |
+| Search history next     | `Control + n` (while search is open)                             |
+| Search history next     | `ArrowDown` (while search is open)                               |
 
