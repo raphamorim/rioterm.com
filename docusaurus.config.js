@@ -195,15 +195,6 @@ const config = {
             ],
           },
           {
-            title: 'Community',
-            items: [
-              {
-                label: 'Twitter',
-                href: 'https://twitter.com/raphamorims',
-              },
-            ],
-          },
-          {
             title: 'More',
             items: [
               {
