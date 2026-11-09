@@ -1,0 +1,29 @@
+.benchmarksSection {
+  max-width: 960px;
+  padding-bottom: 6rem;
+}
+
+.title {
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.subtitle {
+  max-width: 36rem;
+  margin: 0 auto;
+  color: #71717a;
+  text-align: center;
+}
+
+[data-theme='dark'] .subtitle {
+  color: #a1a1aa;
+}
+
+.moreLink {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
+}

@@ -1,0 +1,479 @@
+---
+title: librio
+description: librio is Rio's terminal engine as a C ABI. PTY, VT state, scrollback, selection, key encoding and image protocols behind a small C API, shipped as a static library for Swift, C and anything with an FFI.
+---
+
+import LibrioHero from '@site/src/components/LibrioHero';
+
+<LibrioHero />
+
+## What librio is
+
+librio is the terminal engine behind [Rio](/), extracted so other programs can embed it. It spawns the shell, parses everything the shell prints, keeps the grid and scrollback, encodes keys and mouse events the way the running program expects, and hands you a snapshot of the screen that says which rows changed. It never draws a pixel. You pair it with whatever renders text in your app: Core Text, Skia, a canvas, a GPU pipeline, or `printf`.
+
+It is the same code that runs inside Rio and [Canario](/canario), wrapped in `extern "C"` functions. All the `unsafe` lives in librio; the engine underneath, [rio-vt](/docs/rio-vt), stays safe Rust.
+
+### Pick the layer that matches your language
+
+| You write                                      | Use                                                              | Ships as                                                                                   |
+| ---------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Swift, Objective-C                             | **librio** via `RioKit.xcframework`                              | Static library plus header and module map, attached to each Rio release                    |
+| C, C++, Go, Zig, Python, anything with a C FFI | **librio** via `librio.a` and `librio.h`                         | Static library, attached to each release for macOS. Built from source on Linux and Windows |
+| Rust                                           | [rio-vt](/docs/rio-vt)                                           | Crate on crates.io                                                                         |
+| JavaScript, TypeScript                         | [rioterm](https://github.com/raphamorim/riotermjs) (librio-wasm) | npm package, same engine compiled to WebAssembly                                           |
+
+## Get it
+
+### Swift
+
+1. Download `RioKit.xcframework.zip` from the [latest release](https://github.com/raphamorim/rio/releases/latest) and unzip it.
+2. Drag `RioKit.xcframework` into your Xcode target under Frameworks, Libraries and Embedded Content. It is a static library, so choose "Do Not Embed".
+3. `import RioKit`. The module map inside the framework exposes every symbol from `librio.h`.
+
+The release framework currently contains one slice, `macos-arm64`. Intel Macs and iOS are not built yet.
+
+### C
+
+Grab `librio.a` and `librio.h` from the release, then link the library with the system frameworks it needs:
+
+```bash
+cc main.c librio.a -o myterm \
+  -framework CoreFoundation -framework Security -lc++   # macOS
+```
+
+```bash
+cc main.c liblibrio.a -o myterm -lpthread -ldl -lm       # Linux
+```
+
+### Linux and Windows: build from source
+
+The same C ABI compiles everywhere Rio runs. On Windows surfaces use ConPTY.
+
+```bash
+git clone https://github.com/raphamorim/rio
+cd rio
+cargo build -p librio --release
+# target/release/liblibrio.a  (librio.lib on Windows)
+# librio/include/librio.h
+```
+
+The Rio repo also has `make librio-xcframework` to produce the Apple framework yourself, and `make librio-ctest` to build and run the C smoke test in `librio/ctest/main.c`, which is a good starting point for your own host.
+
+## Three objects
+
+Everything in the API hangs off three opaque handles.
+
+| Handle               | Role                                                                                     | Lifetime                                                            |
+| -------------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `rio_engine_t`       | Process-wide runtime. Owns the callbacks you register and the IO thread that pumps PTYs. | One per process. Create first, free last.                           |
+| `rio_surface_t`      | One terminal: a PTY with a shell, a grid, scrollback, selection and modes.               | One per tab or pane. `rio_surface_free` hangs up the child for you. |
+| `rio_render_state_t` | A host-side snapshot of a surface's screen with per-row dirty flags.                     | One per surface, owned by your render thread.                       |
+
+The flow is: create an engine with your callbacks, create a surface per terminal, push input into the surface from your event handlers, and pull a render state whenever librio wakes you up.
+
+## Quick start in C
+
+A complete host that spawns the shell, runs a command and prints the rows that changed. The wakeup callback only flips a flag because it may fire on librio's IO thread.
+
+```c
+#include "librio.h"
+
+#include <stdatomic.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+
+static atomic_bool needs_redraw = false;
+
+static void on_wakeup(void *userdata, rio_surface_id_t surface) {
+  (void)userdata; (void)surface;
+  atomic_store(&needs_redraw, true);   /* schedule a redraw, nothing else */
+}
+
+static void on_action(void *userdata, rio_surface_id_t surface, rio_action_s a) {
+  (void)userdata; (void)surface;
+  if (a.tag == RIO_ACTION_SET_TITLE && a.title) printf("title: %s\n", a.title);
+  if (a.tag == RIO_ACTION_RING_BELL) printf("\a");
+}
+
+static void draw(rio_render_state_t *state) {
+  rio_render_state_update(state);
+  uint16_t lines = rio_render_state_lines(state);
+  uint16_t cols = rio_render_state_columns(state);
+  for (uint16_t line = 0; line < lines; line++) {
+    if (!rio_render_state_row_dirty(state, line)) continue;
+    for (uint16_t col = 0; col < cols; col++) {
+      rio_cell_s cell = rio_render_state_cell(state, line, col);
+      /* cell.codepoint, cell.fg.r/g/b, cell.bg.r/g/b, cell.style_flags */
+      putchar(cell.codepoint >= 32 && cell.codepoint < 127 ? (int)cell.codepoint : ' ');
+    }
+    putchar('\n');
+  }
+  rio_render_state_reset_dirty(state);
+}
+
+int main(void) {
+  rio_runtime_config_s runtime = {0};
+  runtime.wakeup_cb = on_wakeup;
+  runtime.action_cb = on_action;
+  rio_engine_t *engine = rio_engine_new(&runtime);
+
+  rio_surface_config_s desc = {0};
+  desc.cols = 80;
+  desc.rows = 24;
+  desc.pixel_width = 720;     /* lets programs compute cell size for images */
+  desc.pixel_height = 432;
+  desc.scrollback = 10000;    /* shell = NULL means $SHELL, then /bin/sh */
+  rio_surface_t *surface = rio_surface_new(engine, &desc);
+
+  rio_render_state_t *state = rio_render_state_new(surface);
+
+  const char *cmd = "ls -la\r";
+  rio_surface_text(surface, cmd, strlen(cmd));
+
+  for (int i = 0; i < 40; i++) {          /* your event loop goes here */
+    if (atomic_exchange(&needs_redraw, false)) draw(state);
+    usleep(25 * 1000);
+  }
+
+  rio_render_state_free(state);
+  rio_surface_free(surface);   /* hangs up and reaps the shell */
+  rio_engine_free(engine);
+  return 0;
+}
+```
+
+Build it against the release artifacts with the link line from the Get it section.
+
+## Quick start in Swift
+
+Callbacks are C function pointers, so they cannot capture Swift context. Pass your host object through `userdata` and unwrap it inside the callback.
+
+```swift
+import RioKit
+
+final class TerminalHost {
+    private var engine: OpaquePointer!
+    private var surface: OpaquePointer!
+    private var state: OpaquePointer!
+    var onWakeup: (() -> Void)?
+
+    init(cols: UInt16, rows: UInt16) {
+        var runtime = rio_runtime_config_s()
+        runtime.userdata = Unmanaged.passUnretained(self).toOpaque()
+        runtime.wakeup_cb = { userdata, _ in
+            // May run on librio's IO thread. Hop to main before touching UI
+            // and never call rio_* from inside here.
+            let host = Unmanaged<TerminalHost>.fromOpaque(userdata!).takeUnretainedValue()
+            DispatchQueue.main.async { host.onWakeup?() }
+        }
+        engine = rio_engine_new(&runtime)
+
+        var desc = rio_surface_config_s()
+        desc.cols = cols
+        desc.rows = rows
+        desc.scrollback = 10_000
+        surface = rio_surface_new(engine, &desc)
+        state = rio_render_state_new(surface)
+    }
+
+    func send(_ text: String) {
+        text.withCString { rio_surface_text(surface, $0, strlen($0)) }
+    }
+
+    func resize(cols: UInt16, rows: UInt16, pixelWidth: UInt16, pixelHeight: UInt16) {
+        rio_surface_resize(surface, cols, rows, pixelWidth, pixelHeight)
+    }
+
+    /// Call from your view's draw path, always on the same thread.
+    func forEachDirtyRow(_ body: (UInt16, [rio_cell_s]) -> Void) {
+        rio_render_state_update(state)
+        let lines = rio_render_state_lines(state)
+        let cols = rio_render_state_columns(state)
+        for line in 0..<lines where rio_render_state_row_dirty(state, line) {
+            let cells = (0..<cols).map { rio_render_state_cell(state, line, $0) }
+            body(line, cells)
+        }
+        rio_render_state_reset_dirty(state)
+    }
+
+    deinit {
+        rio_render_state_free(state)
+        rio_surface_free(surface)
+        rio_engine_free(engine)
+    }
+}
+```
+
+For a real app you would create one engine for the process and one surface plus render state per tab. The `rio_key_event_s` struct in the Input section is how `keyDown(with:)` reaches the terminal.
+
+## Rendering
+
+Rendering is a pull. librio never pushes cells at you; it calls `wakeup_cb` and you decide when to snapshot.
+
+### The frame loop
+
+1. `rio_render_state_update(state)` copies the current screen into the snapshot.
+2. Loop over `rio_render_state_lines` rows and skip any where `rio_render_state_row_dirty` is false.
+3. Read each cell with `rio_render_state_cell`. Draw it.
+4. `rio_render_state_reset_dirty(state)` once the frame is painted.
+
+Dirty tracking is what makes a CPU renderer practical: a busy `htop` repaints a handful of rows, not the screen.
+
+### Cells
+
+`rio_cell_s` carries a base `codepoint`, a foreground and a background `rio_color_s`, and `style_flags`.
+
+| Flag                                                                                               | Meaning                                                                                                                                        |
+| -------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `RIO_STYLE_INVERSE`                                                                                | Swap fg and bg when drawing. Colors are exported pre-swap, as Rio's own renderer expects.                                                      |
+| `RIO_STYLE_BOLD`, `RIO_STYLE_ITALIC`, `RIO_STYLE_DIM`, `RIO_STYLE_HIDDEN`, `RIO_STYLE_STRIKEOUT`   | SGR attributes.                                                                                                                                |
+| `RIO_STYLE_UNDERLINE`, `_DOUBLE_UNDERLINE`, `_UNDERCURL`, `_DOTTED_UNDERLINE`, `_DASHED_UNDERLINE` | Underline kind. At most one is set.                                                                                                            |
+| `RIO_STYLE_SLOW_BLINK`, `RIO_STYLE_RAPID_BLINK`                                                    | Blink. At most one is set.                                                                                                                     |
+| `RIO_CELL_HAS_UNDERLINE_COLOR`                                                                     | Bit 14. The cell has an SGR 58 underline color; fetch it with `rio_render_state_cell_underline_color`. Otherwise underline in the glyph color. |
+| `RIO_CELL_HAS_CLUSTER`                                                                             | Bit 15. The cell has combining marks or a grapheme cluster beyond `codepoint`; fetch the full text with `rio_render_state_cell_cluster`.       |
+
+### Colors
+
+Every `rio_color_s` comes with the resolved `r`, `g`, `b` already filled in, so a renderer does not need to own a palette. The `kind` field tells you the original form (`RIO_COLOR_NAMED`, `RIO_COLOR_INDEXED`, `RIO_COLOR_RGB`) in case you want to treat theme colors differently. `RIO_COLOR_NONE` means no color at all: it is what you get for a missing cell or a cell without an underline color, and nothing should be drawn from it.
+
+To swap the theme, call `rio_set_colors` with a `rio_colors_s` holding the 16 ANSI slots plus foreground, background and cursor. It is process-wide. Cells re-resolve on the next `rio_render_state_cell` read, so repaint every surface after the call. Pass `NULL` to go back to Rio's default theme.
+
+Programs can also set colors at runtime with OSC 10, 11 and 12. `rio_render_state_dynamic_color(state, which, &out)` returns true and fills `out` when the program has done so (`which` is 0 for foreground, 1 for background, 2 for cursor), and false when you should use your own scheme.
+
+### Grapheme clusters and wide characters
+
+librio lays out text with grapheme clustering (DEC mode 2027) on by default. When a cell has `RIO_CELL_HAS_CLUSTER` set, call `rio_render_state_cell_cluster` to get the full UTF-32 text and shape that instead of the base codepoint. The call returns the total codepoint count, which may exceed your buffer; call again with a larger one. `rio_cluster_width` measures the first cluster in a UTF-32 buffer and reports its cell width (2 for wide, 1 for narrow, 0 for bare zero-width marks). If your renderer assumes legacy `wcwidth` layout, turn clustering off per surface with `rio_surface_set_grapheme_clustering(surface, false)`.
+
+### Cursor, scroll position, alt screen
+
+- `rio_render_state_cursor` gives the cursor line and column.
+- `rio_render_state_cursor_shape` returns `RIO_CURSOR_BLOCK`, `_UNDERLINE`, `_BEAM`, or `_HIDDEN`. Hidden covers both DECTCEM and a viewport scrolled into history, so you can draw it as is.
+- `rio_render_state_display_offset` is how many lines into scrollback the view is. Zero means the live screen.
+- `rio_render_state_alt_screen` is true when a full-screen program owns the display.
+- `rio_render_state_selection` returns the active selection as a start and end position plus `is_block`.
+
+### Kitty graphics
+
+Images transmitted with the Kitty graphics protocol are decoded by the engine and exposed as placements. Each frame:
+
+1. `rio_render_state_kitty_count(state)` tells you how many placements are visible.
+2. `rio_render_state_kitty_placement(state, index, cell_width, cell_height, &out)` resolves one to pixels. `x` and `y` are relative to the grid origin, `src_*` is the normalized crop rectangle, and `z_index` says whether it sits above or below text.
+3. `rio_render_state_kitty_image_info(state, image_id, &w, &h, &stamp)` gives dimensions and a stamp that changes when the pixels do, so you can cache uploaded textures.
+4. `rio_render_state_kitty_image_rgba(state, image_id, buf, cap)` copies the RGBA pixels when you need to upload them.
+
+Sixel and iTerm2 inline images go through the same pipeline. Image decoding needs the `graphics` feature, which is on by default in the native build and off in the wasm build.
+
+### Nerd Font helpers
+
+Rio bundles the Symbols Nerd Font so icons in prompts and file listings look right without the user installing anything. `rio_symbols_nerd_font(&len)` hands you the font bytes to load into your text stack. `rio_nerd_constrain` applies Rio's icon fitting rules: give it the codepoint, the glyph's natural box, the cell size and your preferred icon height and it returns the box to draw the icon in.
+
+## Input
+
+The host reports what happened and librio decides what bytes the program receives, because that depends on state only the engine tracks: application cursor mode, the Kitty keyboard protocol flags, modifyOtherKeys, bracketed paste and mouse modes. Input entry points are safe to call from any thread.
+
+### Text and paste
+
+- `rio_surface_text(surface, bytes, len)` sends raw UTF-8 as if typed.
+- `rio_surface_paste(surface, bytes, len)` pastes, wrapping in bracketed paste markers when the program enabled mode 2004.
+
+### Keys
+
+Fill a `rio_key_event_s` from your platform key event and call `rio_surface_key`. It returns true when the event was consumed and encoded to the PTY, so you know whether to also insert text yourself.
+
+| Field              | What to put there                                                                                                                                                                                                       |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `action`           | `RIO_KEY_ACTION_PRESS`, `_REPEAT` or `_RELEASE`. Releases are dropped unless the program asked for them via the Kitty protocol, so report them anyway.                                                                  |
+| `tag`              | The key with no shift applied: `RIO_KEY_CHAR` for printable keys, or one of the named keys (`RIO_KEY_ENTER`, `RIO_KEY_UP`, `RIO_KEY_F`, and so on). `RIO_KEY_NONE` for text-only events such as an input method commit. |
+| `codepoint`        | The unshifted character when `tag` is `RIO_KEY_CHAR`. Shift+a is `'a'` here and `"A"` in `text`.                                                                                                                        |
+| `function_key`     | 1 to 12 when `tag` is `RIO_KEY_F`.                                                                                                                                                                                      |
+| `mods`             | Every modifier held, as `RIO_MOD_SHIFT`, `_CTRL`, `_ALT`, `_SUPER` bits.                                                                                                                                                |
+| `consumed_mods`    | Modifiers the platform already spent producing `text`, so they are not encoded twice. Zero if the platform cannot say.                                                                                                  |
+| `composing`        | True while an input method owns the key. Nothing is encoded; the text arrives on commit.                                                                                                                                |
+| `text`, `text_len` | What the platform produced after dead keys and input methods. May be `NULL`.                                                                                                                                            |
+
+Modifier keys themselves (`RIO_KEY_SHIFT_LEFT`, `RIO_KEY_CONTROL_LEFT`, and so on) are only reported to programs that opted into Kitty report-all mode. By default Alt acts as Meta and prefixes with ESC, which is what makes Alt+D delete a word in a shell. Hosts that want Alt to insert the platform's composed character instead call `rio_surface_set_alt_is_meta(surface, false)`.
+
+### Mouse and wheel
+
+- `rio_surface_scroll_wheel(surface, lines, col, row, mods)` dispatches a wheel event the way a terminal should: a mouse report if the program asked for mouse events, cursor keys on the alt screen with alternate scroll on, otherwise scrollback. Returns true when the program consumed it.
+- `rio_surface_mouse_button(surface, col, row, button, pressed, mods)` reports a press or release when the program enabled mouse modes 1000, 1002 or 1003. Returns true when a report reached the program, so you should skip your own selection handling. Returns false when nothing grabs the mouse or Shift bypasses to local selection.
+- `rio_surface_mouse_motion(surface, col, row, button, mods)` reports drags and bare motion for modes 1002 and 1003. `button` is 3 when none is held.
+- `rio_surface_scroll(surface, delta_lines)` moves the scrollback view directly, for scrollbars and keyboard shortcuts.
+
+`rio_surface_mode_bits` exposes the few modes a host needs for its own decisions: bit 0 mouse reporting, bit 1 application cursor keys, bit 2 alternate screen, bit 3 bracketed paste.
+
+### Resize
+
+`rio_surface_resize(surface, cols, rows, pixel_width, pixel_height)` resizes the grid and signals the child. Pass real pixel sizes: programs that draw images use them to compute cell dimensions.
+
+## Selection
+
+Selection lives in the engine so it survives scrolling and reflows with the grid.
+
+```c
+/* On mouse down. viewport_line can be negative when scrolled into history. */
+rio_surface_selection_begin(surface, viewport_line, col, RIO_SELECTION_SIMPLE, side_right);
+/* On drag. */
+rio_surface_selection_update(surface, viewport_line, col, side_right);
+/* On copy. */
+char *text = rio_surface_selection_text(surface);
+if (text) { copy_to_clipboard(text); rio_text_free(text); }
+/* On click elsewhere. */
+rio_surface_selection_clear(surface);
+```
+
+`kind` is `RIO_SELECTION_SIMPLE`, `_WORD` (double click), `_LINE` (triple click) or `_BLOCK` (Alt drag). `side_right` says whether the pointer is in the right half of the cell, which is what lets a drag include the cells at both ends. Read the selection back for highlighting with `rio_render_state_selection`.
+
+Programs that write to the clipboard with OSC 52 reach you through `clipboard_write_cb`; `kind` distinguishes the clipboard from the primary selection.
+
+## Session persistence
+
+For restoring tabs after a restart, three calls give you what to save and one puts it back.
+
+- `rio_surface_working_dir` returns the current directory from OSC 7, or `NULL` if the shell has not reported one. Shell integration in Rio and Canario emits it.
+- `rio_surface_foreground_process_name` returns the running program's name for tab titles.
+- `rio_surface_dump` returns the whole buffer, scrollback and screen, as UTF-8.
+- `rio_surface_inject_output` writes bytes into the display, not the PTY, so you can replay a saved dump into a fresh surface before the new shell starts.
+
+Every returned string is freed with `rio_text_free`.
+
+## Callbacks and threads
+
+The rules that keep an embedder out of trouble.
+
+- **Callbacks may fire on librio's PTY IO thread.** `wakeup_cb`, `action_cb`, `clipboard_write_cb` and `close_surface_cb` must only flag or schedule work. Calling any `rio_*` function from inside a callback is undefined behavior.
+- **Strings in callbacks are borrowed.** `rio_action_s.title` and `subtitle` are valid only for the duration of the call. Copy them if you need them later.
+- **Render-state calls all come from one thread.** Pick your render thread and keep `rio_render_state_*` there.
+- **Input calls are safe from any thread.** `rio_surface_text`, `_paste`, `_key`, mouse and scroll functions can be called from your event thread directly.
+- **Panics never cross the boundary.** Every `extern "C"` entry point is wrapped in `catch_unwind`, so a bug in the engine fails a call rather than unwinding into your code.
+- **Do not signal the child yourself.** `rio_surface_free` hangs up the process group and an internal reader escalates SIGHUP to SIGKILL and reaps. A host-side `killpg` races that and can hit a recycled pid. If you need to hang up early, call `rio_surface_hangup_child`, which is a no-op once the child is gone. `rio_surface_child_pid` is for identity and diagnostics only.
+- **Ignore SIGPIPE on Linux.** librio's wake pipes are written from signal handlers and expect `EPIPE`. On macOS and BSD the sockets opt out per descriptor.
+- **`close_surface_cb`** fires when the child exits so you can close the tab.
+
+### Actions
+
+`action_cb` receives a `rio_action_s` with a `tag` and a payload.
+
+| Tag                                 | Payload                                                                                                                                                                     |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `RIO_ACTION_SET_TITLE`              | `title` and `subtitle` from OSC 0, 1, 2.                                                                                                                                    |
+| `RIO_ACTION_RING_BELL`              | None.                                                                                                                                                                       |
+| `RIO_ACTION_CURSOR_BLINKING_CHANGE` | `data_a` is the new blinking state.                                                                                                                                         |
+| `RIO_ACTION_PROGRESS`               | OSC 9;4 progress. `data_a` is the ConEmu state (0 remove, 1 set, 2 error, 3 indeterminate, 4 paused), `data_b` the 0 to 100 value. Rio uses this for progress bars in tabs. |
+
+## Spawning a command instead of a shell
+
+`rio_surface_config_s` takes a `shell` and an `args` array. `shell` set to `NULL` means `$SHELL` with `/bin/sh` as fallback. `args` reach the child through `execvp` as separate argv entries, so a host that wants to run a specific program does not type it into a line editor and nothing is ever interpreted by a shell.
+
+```c
+const char *args[] = { "--follow", "/var/log/system.log" };
+rio_surface_config_s desc = {0};
+desc.shell = "/usr/bin/tail";
+desc.args = args;
+desc.args_len = 2;
+desc.working_dir = "/var/log";
+desc.cols = 120; desc.rows = 40; desc.scrollback = 5000;
+```
+
+## API reference
+
+Every symbol in `librio.h`, grouped by what it touches.
+
+### Engine
+
+| Function                                       | Notes                                                                |
+| ---------------------------------------------- | -------------------------------------------------------------------- |
+| `rio_engine_new(const rio_runtime_config_s *)` | Create the runtime with your callbacks. One per process.             |
+| `rio_engine_free(rio_engine_t *)`              | Free after every surface is gone.                                    |
+| `rio_set_colors(const rio_colors_s *)`         | Replace the palette process-wide. `NULL` restores the default theme. |
+
+### Surface lifecycle
+
+| Function                                                | Notes                                                  |
+| ------------------------------------------------------- | ------------------------------------------------------ |
+| `rio_surface_new(engine, const rio_surface_config_s *)` | Spawn a PTY and shell. Returns `NULL` on failure.      |
+| `rio_surface_free(surface)`                             | Hangs up, reaps the child, frees.                      |
+| `rio_surface_id(surface)`                               | The id passed to callbacks for this surface.           |
+| `rio_surface_child_pid(surface)`                        | Child pid for diagnostics. 0 without a PTY.            |
+| `rio_surface_hangup_child(surface)`                     | Deliver SIGHUP through the lifecycle guard. Unix only. |
+| `rio_surface_resize(surface, cols, rows, px_w, px_h)`   | Resize grid and PTY.                                   |
+
+### Surface input
+
+| Function                                                             | Notes                                                          |
+| -------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `rio_surface_text(surface, bytes, len)`                              | Send UTF-8 to the PTY.                                         |
+| `rio_surface_paste(surface, bytes, len)`                             | Paste, bracketed when mode 2004 is on.                         |
+| `rio_surface_key(surface, const rio_key_event_s *)`                  | Encode a key event. Returns true when consumed.                |
+| `rio_surface_set_alt_is_meta(surface, bool)`                         | Alt prefixes ESC (default true).                               |
+| `rio_surface_set_grapheme_clustering(surface, bool)`                 | DEC 2027 default (default true).                               |
+| `rio_surface_mode_bits(surface)`                                     | Mouse, app cursor, alt screen, bracketed paste bits.           |
+| `rio_surface_scroll(surface, delta_lines)`                           | Move the scrollback view.                                      |
+| `rio_surface_scroll_wheel(surface, lines, col, row, mods)`           | Dispatch a wheel event. Returns true when the program took it. |
+| `rio_surface_mouse_button(surface, col, row, button, pressed, mods)` | Mouse report. Returns true when a report was sent.             |
+| `rio_surface_mouse_motion(surface, col, row, button, mods)`          | Motion report for modes 1002 and 1003.                         |
+
+### Surface selection and persistence
+
+| Function                                                                     | Notes                                                 |
+| ---------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `rio_surface_selection_begin(surface, viewport_line, col, kind, side_right)` | Start a selection.                                    |
+| `rio_surface_selection_update(surface, viewport_line, col, side_right)`      | Extend it.                                            |
+| `rio_surface_selection_clear(surface)`                                       | Drop it.                                              |
+| `rio_surface_selection_text(surface)`                                        | Selected text or `NULL`. Free with `rio_text_free`.   |
+| `rio_surface_working_dir(surface)`                                           | OSC 7 directory or `NULL`. Free with `rio_text_free`. |
+| `rio_surface_foreground_process_name(surface)`                               | Running program name. Free with `rio_text_free`.      |
+| `rio_surface_dump(surface)`                                                  | Whole buffer as UTF-8. Free with `rio_text_free`.     |
+| `rio_surface_inject_output(surface, bytes, len)`                             | Write to the display, not the PTY.                    |
+| `rio_text_free(char *)`                                                      | Free any string librio returned.                      |
+
+### Render state
+
+| Function                                                                  | Notes                                                                     |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `rio_render_state_new(surface)` / `rio_render_state_free(state)`          | One per surface, on your render thread.                                   |
+| `rio_render_state_update(state)`                                          | Snapshot the screen.                                                      |
+| `rio_render_state_lines(state)` / `rio_render_state_columns(state)`       | Grid size.                                                                |
+| `rio_render_state_row_dirty(state, line)`                                 | Whether the row changed since the last reset.                             |
+| `rio_render_state_reset_dirty(state)`                                     | Clear dirty flags after painting.                                         |
+| `rio_render_state_cell(state, line, col)`                                 | The cell. Out of range returns a blank cell with `RIO_COLOR_NONE` colors. |
+| `rio_render_state_cell_cluster(state, line, col, out, cap)`               | Full UTF-32 text of a clustered cell. Returns total count.                |
+| `rio_render_state_cell_underline_color(state, line, col)`                 | SGR 58 color or `RIO_COLOR_NONE`.                                         |
+| `rio_render_state_cursor(state)` / `rio_render_state_cursor_shape(state)` | Position and DECSCUSR shape.                                              |
+| `rio_render_state_dynamic_color(state, which, out)`                       | OSC 10/11/12 colors when set.                                             |
+| `rio_render_state_display_offset(state)`                                  | Lines scrolled into history.                                              |
+| `rio_render_state_alt_screen(state)`                                      | Alt screen active.                                                        |
+| `rio_render_state_selection(state)`                                       | Selection bounds for highlighting.                                        |
+| `rio_render_state_kitty_count(state)`                                     | Visible image placements.                                                 |
+| `rio_render_state_kitty_placement(state, index, cell_w, cell_h, out)`     | One placement in pixels.                                                  |
+| `rio_render_state_kitty_image_info(state, image_id, w, h, stamp)`         | Image size and change stamp.                                              |
+| `rio_render_state_kitty_image_rgba(state, image_id, buf, cap)`            | Copy RGBA pixels.                                                         |
+
+### Text helpers
+
+| Function                                                                          | Notes                                           |
+| --------------------------------------------------------------------------------- | ----------------------------------------------- |
+| `rio_cluster_width(codepoints, len, out_width)`                                   | Measure the first grapheme cluster in UTF-32.   |
+| `rio_symbols_nerd_font(len)`                                                      | Bytes of the bundled Symbols Nerd Font.         |
+| `rio_nerd_constrain(codepoint, glyph, cell_w, cell_h, icon_h, constraint_w, out)` | Fit an icon glyph to the cell the way Rio does. |
+
+## Versioning and platforms
+
+librio has no version of its own. It is built from the Rio tree and attached to every Rio release and nightly, so the header you download from a release matches the library next to it. Breaking changes to the header show up in the Rio [changelog](/changelog).
+
+| Platform             | Status                                                                                                                                                      |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| macOS, Apple silicon | Prebuilt `RioKit.xcframework`, `librio.a` and `librio.h` on each release.                                                                                   |
+| macOS, Intel         | Build from source.                                                                                                                                          |
+| Linux                | Build from source. Static library.                                                                                                                          |
+| Windows              | Build from source. ConPTY backs the surface.                                                                                                                |
+| WebAssembly          | Separate crate, librio-wasm, with no PTY: the host owns the transport. Consumed through the [rioterm](https://github.com/raphamorim/riotermjs) npm package. |
+
+## Further reading
+
+- [rio-vt](/docs/rio-vt), the safe Rust crate underneath librio.
+- [rio-vt and librio: Rio's terminal engine, now embeddable](/blog/2026/07/27/rio-vt-and-librio), the announcement with the design rationale.
+- [rio-vt-benchmark](https://github.com/raphamorim/rio-vt-benchmark), throughput against vt100 and alacritty_terminal.
+- [Canario](/canario), a macOS terminal built on librio.
+- [librio source](https://github.com/raphamorim/rio/tree/main/librio) and the C gate test in `librio/ctest/main.c`.

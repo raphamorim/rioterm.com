@@ -12,7 +12,10 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "format": "prettier \"**/*.{js,mjs,css,html,json,yml,md}\" --write"
+    "format": "prettier \"**/*.{js,mjs,css,html,json,yml,md}\" --write",
+    "demo-assets": "node scripts/demo-assets.mjs",
+    "prestart": "node scripts/demo-assets.mjs",
+    "prebuild": "node scripts/demo-assets.mjs"
   },
   "dependencies": {
     "@docusaurus/core": "^3.10.2",
@@ -20,11 +23,14 @@
     "@docusaurus/preset-classic": "^3.10.2",
     "@docusaurus/theme-search-algolia": "^3.10.2",
     "@mdx-js/react": "3.1.1",
+    "@wasmer/sdk": "^0.10.0",
     "clsx": "2.1.1",
     "prism-react-renderer": "2.4.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "react-tweet": "3.2.2"
+    "react-tweet": "3.2.2",
+    "rioterm": "0.1.8",
+    "v86": "^0.5.473"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^3.10.0",
@@ -45,6 +51,6 @@
     ]
   },
   "engines": {
-    "node": ">=20.0"
+    "node": ">=22.15"
   }
 }

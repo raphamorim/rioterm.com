@@ -1,0 +1,77 @@
+/* Full-bleed band: spans the viewport, no .container max-width. A flat
+ * background; the only gradients in the band are the heading text and the
+ * terminal frame. */
+
+.section {
+  --band-bg: #fafafa;
+  --band-muted: #71717a;
+
+  width: 100%;
+  padding-block: 4rem 3rem;
+  background-color: var(--band-bg);
+}
+
+[data-theme='dark'] .section {
+  --band-bg: #0f0f11;
+  --band-muted: #a1a1aa;
+}
+
+.demo {
+  padding-inline: max(1rem, 4vw);
+}
+
+@media (min-width: 960px) {
+  .demo {
+    padding-inline: max(1.5rem, 5vw);
+  }
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  max-width: 40rem;
+  min-width: 0;
+}
+
+.eyebrow {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--band-muted);
+}
+
+.title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  text-wrap: balance;
+  width: fit-content;
+  color: transparent;
+  background: linear-gradient(-120deg, #fb43fe 30%, #00dbe5);
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+@media (min-width: 960px) {
+  .title {
+    font-size: 2.25rem;
+  }
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--band-muted);
+  line-height: 1.5;
+}
+
+.footnote {
+  margin: 1.5rem auto 0;
+  padding-inline: 1rem;
+  color: var(--band-muted);
+  font-size: 0.875rem;
+  text-align: center;
+}

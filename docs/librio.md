@@ -3,6 +3,10 @@ title: 'Librio'
 language: 'en'
 ---
 
+:::tip Full documentation
+The complete librio guide, with Swift and C quick starts and the full API reference, lives at [rioterm.com/librio](/librio). This page is the short version.
+:::
+
 `librio` is Rio's terminal engine ([Rio-VT](./rio-vt.md)) exposed as a C ABI for Swift, C, and anything that speaks C. All the `unsafe` lives here; rio-vt itself stays safe Rust.
 
 ## Usage

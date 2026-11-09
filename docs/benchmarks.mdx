@@ -1,0 +1,83 @@
+---
+title: 'Benchmarks'
+language: 'en'
+sidebar_position: 0
+---
+
+import {
+  BenchmarkSuites,
+  FramePacing,
+  LatencyCurves,
+  LatencyStrip,
+  ReleaseHistory,
+  Scoreboard,
+} from '@site/src/components/Benchmarks';
+import LiveDemo from '@site/src/components/Benchmarks/LiveDemo';
+
+:::caution Preview data
+
+The charts on this page are a preview of the layout. The numbers are placeholders and do not represent real measurements yet. The only real numbers are the ones you measure yourself in the live demo below.
+
+:::
+
+How fast a terminal feels comes down to a few separate things: how quickly it drains output from the PTY, how many frames it can paint, how long a keypress takes to reach the screen, and how much memory it holds while doing so. No single number covers all of them, so this page tracks each one with the suites other terminals already use. That way the results can be checked against published numbers from Alacritty, kitty, Ghostty and others.
+
+## At a glance
+
+<BenchmarkSuites />
+
+## Run it in your browser
+
+[riotermjs](https://github.com/raphamorim/riotermjs) is Rio's terminal core compiled to WebAssembly. The terminal below is that engine, running in this tab. Each button streams 8 MB through it, using the same workloads as the riotermjs benchmark. The headline number is parse speed, the time the engine spends on the bytes. The table also shows when the first frame with the result was painted, which adds the wait for the browser's next frames.
+
+<LiveDemo />
+
+## Latency
+
+Averages hide the stutter you notice while typing. This plot shows the median and the p99.9 tail for each terminal, both on an idle machine and with a `cargo build` running in the background. The dashed lines mark one frame at 120 Hz and at 60 Hz. A terminal whose tail stays left of the 60 Hz line never makes you wait an extra frame.
+
+<LatencyStrip />
+
+The same measurements as curves. A narrow peak on the left means fast and consistent. A long tail to the right is the stutter you notice while typing.
+
+<LatencyCurves />
+
+## Frame pacing
+
+An average frame rate hides the frames that arrive late. This trace shows every frame while scrolling a large log at 120 Hz, so each spike is visible against the 120 Hz and 60 Hz frame budgets. Hover to read any frame.
+
+<FramePacing />
+
+## Scoreboard
+
+Every terminal against every suite in one table. Each cell is shaded by how close the result is to the best in the field, and the overall score is the average of those ratios.
+
+<Scoreboard />
+
+## Release history
+
+Rio's parser throughput across releases, with today's numbers for other terminals as reference lines.
+
+<ReleaseHistory />
+
+## Methodology
+
+All suites run on the same machine, on the same day, in a window of the same size, with each terminal on its default configuration and the same font. Each test runs five times and the median is reported.
+
+| Suite | What it measures | Tool |
+| --- | --- | --- |
+| Plaintext I/O | Time to `cat` an 11 MB text file to the screen | [hyperfine](https://github.com/sharkdp/hyperfine) |
+| vtebench | PTY read throughput across dense cells, scrolling regions and unicode | [alacritty/vtebench](https://github.com/alacritty/vtebench) |
+| Parser throughput | ASCII, Unicode, CSI and image payloads, in MB/s | [kitty `kitten __benchmark__`](https://sw.kovidgoyal.net/kitty/performance/) |
+| Termbench | ManyLine, LongLine, FGPerChar and FGBGPerChar workloads | [cmuratori/termbench](https://github.com/cmuratori/termbench) |
+| Input latency | Keypress to glyph on screen, median and p99.9 | [Typometer](https://pavelfatin.com/typometer/), [Is It Snappy](https://isitsnappy.com/) |
+| Frame rate | Full-screen 256-color repaint | [DOOM-fire-zig](https://github.com/const-void/DOOM-fire-zig) |
+| Memory | Idle RSS of one window, six seconds after a cold launch | `ps` / [btop](https://github.com/aristocratos/btop) |
+
+A few things to keep in mind when you read these:
+
+- Throughput suites such as vtebench measure how fast a terminal reads from the PTY. They say nothing about latency or frame pacing, so read them next to the latency plot.
+- On macOS, windows that are hidden or covered get throttled. Keep the terminal under test visible and frontmost, or frame-rate numbers collapse.
+- Terminals that support [synchronized updates](https://gist.github.com/christianparpart/d8a62cc1ab659194337d73e399004036) do better on full-screen redraw workloads, which matches how real TUIs behave.
+
+For the speed of Rio's terminal core as a library, without any rendering, see [Rio-VT](/docs/rio-vt).

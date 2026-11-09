@@ -18,3 +18,8 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Homepage terminal demo assets (fetched/built by scripts/demo-assets.mjs)
+/static/v86
+/static/wasmer
+/.v86-cache

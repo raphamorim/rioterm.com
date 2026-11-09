@@ -10,7 +10,7 @@ const RELEASE_BASE = 'https://github.com/raphamorim/rio/releases/latest/download
 
 export default function DownloadSection() {
   return (
-    <section className={clsx('container', styles.downloadSection)}>
+    <section id="download" className={clsx('container', styles.downloadSection)}>
       <div className={styles.platforms}>
         <div className={styles.platformCard}>
           <Heading as="h3" className={styles.platformName}>

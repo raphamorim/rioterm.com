@@ -65,6 +65,39 @@ const config = {
     },
   ],
 
+  plugins: [
+    // rioterm (the riotermjs wasm engine on /docs/benchmarks) is ESM-only and
+    // loaded in the browser with a dynamic import, so the server bundle,
+    // which resolves with `require` conditions, gets an empty stub.
+    () => ({
+      name: 'rioterm-client-only',
+      configureWebpack(_config, isServer) {
+        const webpack = require('webpack');
+        return {
+          // v86 and @wasmer/sdk (the homepage demo's Linux VM and WASIX bash)
+          // reference Node built-ins behind runtime guards. Strip the node:
+          // scheme and stub the modules so the browser bundle compiles.
+          plugins: [
+            new webpack.NormalModuleReplacementPlugin(/^node:/, (resource) => {
+              resource.request = resource.request.replace(/^node:/, '');
+            }),
+          ],
+          resolve: {
+            fallback: {
+              crypto: false,
+              fs: false,
+              'fs/promises': false,
+              path: false,
+            },
+            alias: isServer
+              ? { rioterm: false, v86: false, '@wasmer/sdk': false }
+              : {},
+          },
+        };
+      },
+    }),
+  ],
+
   presets: [
     [
       'classic',
@@ -113,6 +146,7 @@ const config = {
               { to: '/docs/config', label: 'Config' },
               { to: '/docs/features', label: 'Features' },
               { to: '/docs/key-bindings', label: 'Key Bindings' },
+              { to: '/docs/benchmarks', label: 'Benchmarks' },
             ],
           },
           {
@@ -123,7 +157,7 @@ const config = {
           },
           { to: '/changelog', label: 'Changelog', position: 'left' },
           { to: '/blog', label: 'Blog', position: 'left' },
-          { to: '/contributing', label: 'Contributing', position: 'left' },
+          { to: '/librio', label: 'Librio', position: 'left' },
           {
             type: 'localeDropdown',
             position: 'right',
@@ -153,6 +187,10 @@ const config = {
               {
                 label: 'Features',
                 to: '/docs/features',
+              },
+              {
+                label: 'librio',
+                to: '/librio',
               },
             ],
           },

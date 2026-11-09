@@ -1,0 +1,217 @@
+/* Chosen direction: header beside the controls, a permanent gradient frame
+ * on the terminal, everything else flat zinc. Tokens follow the site theme;
+ * the terminal itself stays dark in both. */
+
+.card {
+  --demo-ink: #18181b;
+  --demo-muted: #71717a;
+  --demo-dim: #a1a1aa;
+  --demo-border: #e4e4e7;
+  --demo-track: #ffffff;
+  --demo-hover: #f0f0f2;
+  --demo-active-bg: #18181b;
+  --demo-active-ink: #ffffff;
+  --demo-term: #0c0c0e;
+  --demo-gradient: linear-gradient(90deg, #fb43fe 0%, #00dbe5 100%);
+
+  margin: 0;
+  padding: 0;
+  color: var(--demo-ink);
+}
+
+[data-theme='dark'] .card {
+  --demo-ink: #f4f4f5;
+  --demo-muted: #a1a1aa;
+  --demo-dim: #52525b;
+  --demo-border: #2a2a2e;
+  --demo-track: #1c1c1f;
+  --demo-hover: #2a2a2e;
+  --demo-active-bg: #f4f4f5;
+  --demo-active-ink: #121214;
+}
+
+/* Header row: the section's heading on the left, the two controls stacked
+ * on the right, aligned to the bottom edge. */
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.header > * {
+  min-width: 0;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.625rem;
+}
+
+.controlRow {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.controlLabel {
+  width: 4.5rem;
+  color: var(--demo-muted);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.segmented {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--demo-border);
+  border-radius: 8px;
+  background: var(--demo-track);
+}
+
+.segment {
+  padding: 0.3125rem 0.875rem;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--demo-muted);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    background-color 0.15s;
+}
+
+.segment:hover {
+  background: var(--demo-hover);
+  color: var(--demo-ink);
+}
+
+.segment:focus-visible {
+  outline: 2px solid #00dbe5;
+  outline-offset: 1px;
+}
+
+.segment:disabled {
+  color: var(--demo-dim);
+  cursor: not-allowed;
+}
+
+.segment:disabled:hover {
+  background: transparent;
+}
+
+.segmentActive,
+.segmentActive:hover {
+  background: var(--demo-active-bg);
+  color: var(--demo-active-ink);
+}
+
+/* The frame: the one place the brand gradient lives, always on. Two
+ * backgrounds keep the radius intact. Focus only adds the glow, so the
+ * frame never switches styles; the wheel scrolls scrollback only when
+ * focused. */
+
+.liveTerminal {
+  position: relative;
+  overflow: hidden;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background:
+    linear-gradient(var(--demo-term), var(--demo-term)) padding-box,
+    var(--demo-gradient) border-box;
+  box-shadow:
+    0 0 48px rgba(251, 67, 254, 0.08),
+    0 0 48px rgba(0, 219, 229, 0.06);
+  transition: box-shadow 0.2s;
+}
+
+.liveTerminalFocused {
+  box-shadow:
+    0 0 0 4px rgba(251, 67, 254, 0.14),
+    0 0 56px rgba(251, 67, 254, 0.14),
+    0 0 56px rgba(0, 219, 229, 0.1);
+}
+
+.liveHost {
+  height: 420px;
+  margin: 0.75rem;
+}
+
+@media (min-width: 1200px) {
+  .liveHost {
+    height: 520px;
+  }
+}
+
+.liveOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: var(--demo-term);
+  color: #a1a1aa;
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+/* Caption: title and status on the left, focus hint and credit on the right. */
+
+.caption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-top: 0.75rem;
+  color: var(--demo-muted);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.caption a {
+  color: inherit;
+}
+
+.focusHint {
+  margin-right: 1rem;
+  color: var(--demo-ink);
+}
+
+.liveTerminalFocused ~ .caption .focusHint {
+  background: var(--demo-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.note {
+  margin: 1.125rem 0 0;
+  color: var(--demo-muted);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.note kbd {
+  padding: 1px 0.375rem;
+  border: 1px solid var(--demo-border);
+  border-radius: 4px;
+  background: var(--demo-track);
+  color: var(--demo-ink);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.78rem;
+}

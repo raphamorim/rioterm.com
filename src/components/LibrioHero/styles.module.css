@@ -1,0 +1,135 @@
+.hero {
+  padding: 2rem 0 2.5rem;
+  border-bottom: 1px solid #ebebed;
+  margin-bottom: 2.5rem;
+}
+
+[data-theme='dark'] .hero {
+  border-bottom-color: #2a2a2e;
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #71717a;
+}
+
+[data-theme='dark'] .eyebrow {
+  color: #a1a1aa;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 2.5rem;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: transparent;
+  background: linear-gradient(-120deg, #fb43fe 30%, #00dbe5);
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+@media (min-width: 640px) {
+  .title {
+    font-size: 3.25rem;
+  }
+}
+
+.subtitle {
+  max-width: 40rem;
+  margin: 1rem 0 0;
+  font-size: 1.125rem;
+  line-height: 1.55;
+  color: #3c3c43;
+  text-wrap: balance;
+}
+
+[data-theme='dark'] .subtitle {
+  color: #d4d4d8;
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+
+.pill {
+  padding: 0.25rem 0.75rem;
+  border: 1px solid #e4e4e7;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #52525b;
+}
+
+[data-theme='dark'] .pill {
+  border-color: #3f3f46;
+  color: #d4d4d8;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.25rem;
+  margin-top: 1.75rem;
+}
+
+.actionButton {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 1.375rem;
+  border-radius: 12px;
+  background: #18181b;
+  color: #fff;
+  font-weight: 600;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.actionButton:hover {
+  color: #fff;
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme='dark'] .actionButton,
+[data-theme='dark'] .actionButton:hover {
+  background: #fff;
+  color: #18181b;
+}
+
+.actionButtonSecondary {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #6b6b74;
+  border-bottom: 1px solid currentColor;
+}
+
+.actionButtonSecondary:hover {
+  color: var(--ifm-color-primary);
+  text-decoration: none;
+}
+
+[data-theme='dark'] .actionButtonSecondary {
+  color: #a1a1aa;
+}
+
+.finePrint {
+  margin: 1.25rem 0 0;
+  font-size: 0.875rem;
+  color: #71717a;
+}
+
+[data-theme='dark'] .finePrint {
+  color: #a1a1aa;
+}
