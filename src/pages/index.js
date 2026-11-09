@@ -3,6 +3,7 @@
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import BenchmarksSection from '@site/src/components/BenchmarksSection/index';
+import CanarioSection from '@site/src/components/CanarioSection';
 import DownloadSection from '@site/src/components/DownloadSection/index';
 import WasmDemoSection from '@site/src/components/WasmDemoSection/index';
 import Heading from '@theme/Heading';
@@ -66,6 +67,7 @@ export default function Home() {
       <main>
         <WasmDemoSection />
         <DownloadSection />
+        <CanarioSection />
         <BenchmarksSection />
       </main>
     </Layout>
