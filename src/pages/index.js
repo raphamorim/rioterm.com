@@ -26,7 +26,7 @@ function HomepageHeader() {
         </Heading>
         <p className={styles.subtitle}>{siteConfig.tagline}</p>
         <p className={styles.tagline}>
-          <Translate>Open source and trusted by thousands of developers.</Translate>
+          <Translate>Open source since 2022, trusted by thousands of developers.</Translate>
         </p>
         <div className={styles.actions}>
           <Link to="/docs/install" className={styles.actionButton}>
