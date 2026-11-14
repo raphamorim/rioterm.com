@@ -75,7 +75,7 @@ Execute a predefined action in Rio terminal.
 | ToggleQuake      | Show or hide the quake dropdown window. A `ToggleQuake` binding is also registered as a system wide hotkey on macOS, Windows and X11, so it works while Rio is unfocused. Size is set by [`window.quake-width-percentage`](/docs/config#windowquake-width-percentage) and [`window.quake-height-percentage`](/docs/config#windowquake-height-percentage) |
 | Quit             | Exit Rio |
 | ToggleFullscreen | Toggle fullscreen |
-| ScrollToPrevPrompt | Scroll so the previous shell prompt is at the top of the viewport. Requires a shell integration script emitting OSC 133 semantic prompts |
+| ScrollToPrevPrompt | Scroll so the previous shell prompt is at the top of the viewport. Requires a shell that emits OSC 133 prompt marks, as Rio's zsh integration and fish 4 do |
 | ScrollToNextPrompt | Scroll so the next shell prompt is at the top of the viewport |
 | ToggleAppearanceTheme | Toggle between dark and light appearance theme |
 | OpenCommandPalette | Open the command palette overlay (Raycast-style fuzzy launcher). Close via `Esc`. |

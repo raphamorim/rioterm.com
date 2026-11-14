@@ -66,7 +66,7 @@ OSC 8 ; [params] ; [url] ST
 
 The `[params]` consists of zero or more colon-delimited key-value pairs. A key-value pair is formatted as `key=value`. The only currently defined key is id.
 
-If the url is absent then that ends the hyperlink. Typical usage would look like:
+Everything after the second `;` is the url, taken verbatim, so a url may itself contain `;`. Rio opens it exactly as sent, without the cleanup `post-processing` applies to regex matches. If the url is absent then that ends the hyperlink, even when an `id` is given. Typical usage would look like:
 
 ```bash
 OSC 8 ; ; https://example.com/ ST Link to example website OSC 8 ; ; ST
