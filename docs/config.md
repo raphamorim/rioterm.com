@@ -867,7 +867,7 @@ mods = ["Control", "Shift"]
 - **`alphabet`**: String of characters used for hint labels
 - **`regex`**: Regular expression pattern to match
 - **`hyperlinks`**: Whether to treat matches as hyperlinks
-- **`post-processing`**: Apply post-processing to clean up matched text
+- **`post-processing`**: Apply post-processing to clean up matched text (trailing punctuation, unmatched brackets). Only regex matches are cleaned; OSC 8 hyperlink URIs open exactly as the program sent them
 - **`persist`**: Keep hint mode active after selection
 
 ### Actions
@@ -1047,6 +1047,23 @@ Default is `240`.
 [navigation]
 max-tab-width = 240
 ```
+
+## notify-on-command-finish
+
+Announce a shell command that ran longer than `after` milliseconds, through the bell, a desktop notification, or both. Off by default. It needs a shell that marks commands with OSC 133 `C` and `D`: Rio's [shell integration](#shell-integration) does this for zsh, fish 4 does it on its own, and the PowerShell script does not yet.
+
+```toml
+[notify-on-command-finish]
+when = "unfocused"
+bell = true
+notify = false
+after = 5000
+```
+
+- **`when`**: `never` (default), `unfocused` or `always`. `unfocused` means the command's pane is not the one you are looking at: another window has focus, or another tab or split is active.
+- **`bell`**: ring the bell as `BEL` would, so the [`[bell]`](#bell) settings apply: the audio bell when `audio` is on (the default only on macOS and Windows), and the tab indicator when the command's tab is not the current one. Default is `true`.
+- **`notify`**: send a desktop notification with the exit status and the duration, for example "Command Failed: Command took 2m 3s and exited with code 1." Default is `false`.
+- **`after`**: commands that ran this many milliseconds or less are not announced. Default is `5000`.
 
 ## option-as-alt
 
@@ -1423,7 +1440,7 @@ args = ["new-session", "-c", "/var/www"]
 
 ## shell-integration
 
-Rio injects a small shell integration script into spawned shells, so the shell reports its working directory to the terminal (OSC 7) on every prompt and directory change with no user setup. This powers the [`title.content`](#titlecontent) path variables and opening new tabs in the current directory.
+Rio injects a small shell integration script into spawned shells, so the shell reports its working directory to the terminal (OSC 7) on every prompt and directory change with no user setup. This powers the [`title.content`](#titlecontent) path variables and opening new tabs in the current directory. In zsh the script also marks prompts and commands with OSC 133, which powers prompt navigation (`ScrollToPrevPrompt`, `ScrollToNextPrompt`) and [`notify-on-command-finish`](#notify-on-command-finish); fish 4 sends those marks on its own, and the PowerShell script only reports the directory.
 
 How it loads, per shell:
 

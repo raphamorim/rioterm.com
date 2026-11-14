@@ -90,7 +90,7 @@ hint-background = '#f4bf75'  # Background color for hint labels
 
 - **`regex`**: Regular expression pattern to match
 - **`hyperlinks`**: Whether to treat matches as hyperlinks (enables special handling)
-- **`post-processing`**: Apply post-processing to clean up matched text
+- **`post-processing`**: Apply post-processing to clean up matched text (trailing punctuation, unmatched brackets). Only regex matches are cleaned; OSC 8 hyperlink URIs open exactly as the program sent them
 - **`persist`**: Keep hint mode active after selection (useful for multiple selections)
 
 ### Actions
