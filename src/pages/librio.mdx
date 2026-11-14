@@ -253,16 +253,17 @@ librio lays out text with grapheme clustering (DEC mode 2027) on by default. Whe
 - `rio_render_state_alt_screen` is true when a full-screen program owns the display.
 - `rio_render_state_selection` returns the active selection as a start and end position plus `is_block`.
 
-### Kitty graphics
+### Images
 
-Images transmitted with the Kitty graphics protocol are decoded by the engine and exposed as placements. Each frame:
+Images drawn with the Kitty graphics protocol, Sixel or the iTerm2 inline image protocol are decoded by the engine and exposed as one list of placements, in draw order. Each frame:
 
-1. `rio_render_state_kitty_count(state)` tells you how many placements are visible.
-2. `rio_render_state_kitty_placement(state, index, cell_width, cell_height, &out)` resolves one to pixels. `x` and `y` are relative to the grid origin, `src_*` is the normalized crop rectangle, and `z_index` says whether it sits above or below text.
-3. `rio_render_state_kitty_image_info(state, image_id, &w, &h, &stamp)` gives dimensions and a stamp that changes when the pixels do, so you can cache uploaded textures.
-4. `rio_render_state_kitty_image_rgba(state, image_id, buf, cap)` copies the RGBA pixels when you need to upload them.
+1. `rio_render_state_image_placements_generation(state)` changes when a placement was added, removed or moved (a scroll included). If it matches the value you last built your draw list against, keep the list.
+2. `rio_render_state_image_count(state)` tells you how many placements there are, visible or not.
+3. `rio_render_state_image_placement(state, index, cell_width, cell_height, &out)` resolves one to pixels, or returns false when it is scrolled out of view. `x` and `y` are relative to the grid origin, `src_*` is the normalized crop rectangle, `layer` (`RIO_IMAGE_LAYER_BELOW_BACKGROUND`, `_BELOW_TEXT`, `_ABOVE_TEXT`) and `z_index` say where it sits relative to the text, and `protocol` is `RIO_IMAGE_PROTOCOL_KITTY` or `RIO_IMAGE_PROTOCOL_INLINE` (Sixel and iTerm2, which share one store). Image ids are only unique within a protocol.
+4. `rio_render_state_image_info(state, protocol, image_id, &w, &h, &stamp)` gives dimensions and a stamp that changes when the pixels do; cache uploaded textures by (protocol, id, stamp). The placement carries the same stamp as `image_stamp`.
+5. `rio_render_state_image_rgba(state, protocol, image_id, buf, cap)` copies the RGBA pixels when you need to upload them.
 
-Sixel and iTerm2 inline images go through the same pipeline. Image decoding needs the `graphics` feature, which is on by default in the native build and off in the wasm build.
+Draw the layers in this order: images below the background, cell backgrounds, images below the text, text, images above the text; within a layer, follow the list order. The `rio_render_state_kitty_*` calls remain and index the kitty subset of the same list. Image decoding for iTerm2 and kitty PNG payloads needs the `graphics` feature, which is on by default in the native build and off in the wasm build.
 
 ### Nerd Font helpers
 
@@ -445,10 +446,15 @@ Every symbol in `librio.h`, grouped by what it touches.
 | `rio_render_state_display_offset(state)`                                  | Lines scrolled into history.                                              |
 | `rio_render_state_alt_screen(state)`                                      | Alt screen active.                                                        |
 | `rio_render_state_selection(state)`                                       | Selection bounds for highlighting.                                        |
-| `rio_render_state_kitty_count(state)`                                     | Visible image placements.                                                 |
-| `rio_render_state_kitty_placement(state, index, cell_w, cell_h, out)`     | One placement in pixels.                                                  |
-| `rio_render_state_kitty_image_info(state, image_id, w, h, stamp)`         | Image size and change stamp.                                              |
-| `rio_render_state_kitty_image_rgba(state, image_id, buf, cap)`            | Copy RGBA pixels.                                                         |
+| `rio_render_state_image_count(state)`                                     | Image placements of every protocol, in draw order.                        |
+| `rio_render_state_image_placements_generation(state)`                     | Changes when the placement list changes or moves.                         |
+| `rio_render_state_image_placement(state, index, cell_w, cell_h, out)`     | One placement in pixels, with protocol, layer and z.                      |
+| `rio_render_state_image_info(state, protocol, image_id, w, h, stamp)`     | Image size and change stamp.                                              |
+| `rio_render_state_image_rgba(state, protocol, image_id, buf, cap)`        | Copy RGBA pixels.                                                         |
+| `rio_render_state_kitty_count(state)`                                     | Kitty placements only; the kitty subset of the list above.                |
+| `rio_render_state_kitty_placement(state, index, cell_w, cell_h, out)`     | One kitty placement in pixels.                                            |
+| `rio_render_state_kitty_image_info(state, image_id, w, h, stamp)`         | Kitty image size and change stamp.                                        |
+| `rio_render_state_kitty_image_rgba(state, image_id, buf, cap)`            | Copy a kitty image's RGBA pixels.                                         |
 
 ### Text helpers
 
