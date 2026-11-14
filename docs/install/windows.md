@@ -8,9 +8,11 @@ Note: Rio is only available for Windows 10 or later.
 Prebuilt binaries for Windows:
 
 - [Download MSI installer for x86_64](https://github.com/raphamorim/rio/releases/latest/download/rio-installer-x86_64.msi)
-- [Download portable executable for x86_64](https://github.com/raphamorim/rio/releases/latest/download/rio-portable-x86_64.exe)
+- [Download portable zip for x86_64](https://github.com/raphamorim/rio/releases/latest/download/rio-portable-x86_64.zip)
 - [Download MSI installer for aarch64](https://github.com/raphamorim/rio/releases/latest/download/rio-installer-aarch64.msi)
-- [Download portable executable for aarch64](https://github.com/raphamorim/rio/releases/latest/download/rio-portable-aarch64.exe)
+- [Download portable zip for aarch64](https://github.com/raphamorim/rio/releases/latest/download/rio-portable-aarch64.zip)
+
+The portable zip holds `rio.exe` together with `conpty.dll` and `OpenConsole.exe`, a current pseudoconsole from the Windows Terminal project that the installer places next to `rio.exe` too. Extract the whole zip into one folder and run `rio.exe` from there: with the files beside it, images render and programs restore the screen when they exit; without them Rio falls back to the pseudoconsole built into Windows.
 
 - Using WinGet package manager:
 
@@ -34,8 +36,8 @@ scoop install rio
 
 There's a few things to note about the installer and the portable version:
 
-- The browser will ask if you want to keep the file, click "Keep" to save the installer/executable on your computer.
-- When opening the file, Windows will give you a warning, click "More info" and then "Run anyway" to run the installer/executable.
+- The browser will ask if you want to keep the file, click "Keep" to save the installer or zip on your computer.
+- When opening the installer or the extracted `rio.exe`, Windows will give you a warning, click "More info" and then "Run anyway".
 
 If you want to change the default shell to the new PowerShell platform, change the following line in your config file (see [Configuration file](/docs/config) for more information):
 
