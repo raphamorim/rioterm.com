@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&amp;display=swap"><link rel="stylesheet" href="/zh-hans/assets/css/styles.873bf78b.css">
-<script src="/zh-hans/assets/js/runtime~main.f524fd7e.js" defer="defer"></script>
+<script src="/zh-hans/assets/js/runtime~main.3dfdb4c0.js" defer="defer"></script>
 <script src="/zh-hans/assets/js/main.1d90c0a9.js" defer="defer"></script>
 </head>
 <body>
@@ -66,24 +66,39 @@ To make Windows utilize a GPU for a specific application through Windows display
 <li class="">Click on the Save button.</li>
 </ol>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="image-support-sixel-iterm2-kitty-graphics">Image support (Sixel, iTerm2, Kitty graphics)<a href="#image-support-sixel-iterm2-kitty-graphics" class="hash-link" aria-label="Image support (Sixel, iTerm2, Kitty graphics)的直接链接" title="Image support (Sixel, iTerm2, Kitty graphics)的直接链接" translate="no">​</a></h2>
-<p>Terminal image protocols require a modern Windows pseudoconsole (ConPTY
-1.22 or newer, from the Windows Terminal project). The ConPTY that ships
-in-box with most Windows builds is older and rewrites or strips the escape
-sequences image protocols use, so tools like Yazi render previews
-incorrectly (<a href="https://github.com/raphamorim/rio/issues/1759" target="_blank" rel="noopener noreferrer" class="">#1759</a>).</p>
-<p>Rio uses a newer ConPTY when its two files are deployed <strong>next to
-<code>rio.exe</code></strong>:</p>
+<p>Terminal image protocols need a modern Windows pseudoconsole. The ConPTY
+built into most Windows builds predates Windows Terminal 1.22 and strips
+or rewrites the escape sequences image protocols use, so tools like Yazi
+render nothing (<a href="https://github.com/raphamorim/rio/issues/1759" target="_blank" rel="noopener noreferrer" class="">#1759</a>,
+<a href="https://github.com/raphamorim/rio/issues/729" target="_blank" rel="noopener noreferrer" class="">#729</a>), the screen is not
+restored when a TUI exits, and the IME candidate window lands in the
+corner (<a href="https://github.com/raphamorim/rio/issues/2031" target="_blank" rel="noopener noreferrer" class="">#2031</a>).</p>
+<p>Since 0.5.32 the MSI installer and the portable zip ship a modern
+pseudoconsole beside <code>rio.exe</code>: <code>conpty.dll</code> and <code>OpenConsole.exe</code> from
+the Windows Terminal project, version 1.25.261109001 (MIT, the notice is
+in <code>LICENSE-ConPTY.txt</code>). Rio loads <code>conpty.dll</code> from its own directory
+only, never from <code>PATH</code>, and logs <code>Using conpty.dll for pseudoconsole</code>
+when it does. Without the files Rio falls back to the pseudoconsole built
+into Windows.</p>
+<p>If you installed Rio another way, such as <code>cargo install rioterm</code>, copy
+these from the portable zip for your architecture into the directory that
+holds <code>rio.exe</code>:</p>
 <ol>
-<li class=""><code>conpty.dll</code> — must match Rio&#x27;s architecture (x64 or arm64).</li>
-<li class=""><code>OpenConsole.exe</code> — must match your system architecture.</li>
+<li class=""><code>conpty.dll</code> (matches Rio&#x27;s architecture: x64 or arm64)</li>
+<li class="">the <code>OpenConsole.exe</code> folders, <code>x64\</code> and <code>arm64\</code> in the x86_64 zip
+and <code>arm64\</code> in the aarch64 zip (keep the folders; <code>conpty.dll</code> picks
+the one that matches your machine)</li>
+<li class=""><code>LICENSE-ConPTY.txt</code></li>
 </ol>
-<p>Both must be present; <code>conpty.dll</code> alone silently falls back to the in-box
-console host. They are redistributable (MIT) via the
-<a href="https://www.nuget.org/packages/Microsoft.Windows.Console.ConPTY" target="_blank" rel="noopener noreferrer" class=""><code>Microsoft.Windows.Console.ConPTY</code></a>
-NuGet package — download it (a <code>.nupkg</code> is a zip), then copy
-<code>runtimes/win-x64/native/conpty.dll</code> and
-<code>build/native/runtimes/x64/OpenConsole.exe</code> beside <code>rio.exe</code>.</p>
-<p>With both files in place, Rio loads the newer ConPTY automatically and
-image previews work.</p></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-edit-meta-row"><div class="col noPrint_WFHX"><a href="https://github.com/raphamorim/rioterm.com/tree/main/docs/install/windows.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>编辑此页</a></div><div class="col lastUpdated_JAkA"></div></div></footer></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="文件选项卡"><a class="pagination-nav__link pagination-nav__link--prev" href="/zh-hans/docs/install/webassembly"><div class="pagination-nav__sublabel">上一页</div><div class="pagination-nav__label">WebAssembly</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/zh-hans/docs/key-bindings"><div class="pagination-nav__sublabel">下一页</div><div class="pagination-nav__label">Key Bindings</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#image-support-sixel-iterm2-kitty-graphics" class="table-of-contents__link toc-highlight">Image support (Sixel, iTerm2, Kitty graphics)</a></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/zh-hans/docs/install">Install</a></li><li class="footer__item"><a class="footer__link-item" href="/zh-hans/docs/config">Config</a></li><li class="footer__item"><a class="footer__link-item" href="/zh-hans/docs/features">Features</a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://twitter.com/raphamorims" target="_blank" rel="noopener noreferrer" class="footer__link-item">Twitter<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/zh-hans/blog">Blog</a></li><li class="footer__item"><a href="https://github.com/raphamorim/rio" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2023-2026 Rio Terminal.</div></div></div></footer></div>
+<p><code>conpty.dll</code> alone silently falls back to the in-box console host, so the
+<code>OpenConsole.exe</code> folder for your machine has to be there too.</p>
+<p>The shipped version is the stable release that fixed every report above;
+Rio pins it by version and hash in
+<a href="https://github.com/raphamorim/rio/blob/main/misc/windows/conhost/fetch.ps1" target="_blank" rel="noopener noreferrer" class=""><code>misc/windows/conhost/fetch.ps1</code></a>.
+One upstream problem is still open: a cursor position report sent while a
+long image upload is in flight can cut the upload short
+(<a href="https://github.com/microsoft/terminal/issues/19621" target="_blank" rel="noopener noreferrer" class="">microsoft/terminal#19621</a>),
+which shows up as a missing image and stray base64 text with very large
+kitty images. If you hit it, report the Rio version and the image size.</p></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-edit-meta-row"><div class="col noPrint_WFHX"><a href="https://github.com/raphamorim/rioterm.com/tree/main/docs/install/windows.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>编辑此页</a></div><div class="col lastUpdated_JAkA"></div></div></footer></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="文件选项卡"><a class="pagination-nav__link pagination-nav__link--prev" href="/zh-hans/docs/install/webassembly"><div class="pagination-nav__sublabel">上一页</div><div class="pagination-nav__label">WebAssembly</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/zh-hans/docs/key-bindings"><div class="pagination-nav__sublabel">下一页</div><div class="pagination-nav__label">Key Bindings</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#image-support-sixel-iterm2-kitty-graphics" class="table-of-contents__link toc-highlight">Image support (Sixel, iTerm2, Kitty graphics)</a></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/zh-hans/docs/install">Install</a></li><li class="footer__item"><a class="footer__link-item" href="/zh-hans/docs/config">Config</a></li><li class="footer__item"><a class="footer__link-item" href="/zh-hans/docs/features">Features</a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://twitter.com/raphamorims" target="_blank" rel="noopener noreferrer" class="footer__link-item">Twitter<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/zh-hans/blog">Blog</a></li><li class="footer__item"><a href="https://github.com/raphamorim/rio" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2023-2026 Rio Terminal.</div></div></div></footer></div>
 </body>
 </html>
