@@ -59,24 +59,40 @@ To make Windows utilize a GPU for a specific application through Windows display
 
 ## Image support (Sixel, iTerm2, Kitty graphics)
 
-Terminal image protocols require a modern Windows pseudoconsole (ConPTY
-1.22 or newer, from the Windows Terminal project). The ConPTY that ships
-in-box with most Windows builds is older and rewrites or strips the escape
-sequences image protocols use, so tools like Yazi render previews
-incorrectly ([#1759](https://github.com/raphamorim/rio/issues/1759)).
+Terminal image protocols need a modern Windows pseudoconsole. The ConPTY
+built into most Windows builds predates Windows Terminal 1.22 and strips
+or rewrites the escape sequences image protocols use, so tools like Yazi
+render nothing ([#1759](https://github.com/raphamorim/rio/issues/1759),
+[#729](https://github.com/raphamorim/rio/issues/729)), the screen is not
+restored when a TUI exits, and the IME candidate window lands in the
+corner ([#2031](https://github.com/raphamorim/rio/issues/2031)).
 
-Rio uses a newer ConPTY when its two files are deployed **next to
-`rio.exe`**:
+Since 0.5.32 the MSI installer and the portable zip ship a modern
+pseudoconsole beside `rio.exe`: `conpty.dll` and `OpenConsole.exe` from
+the Windows Terminal project, version 1.25.261109001 (MIT, the notice is
+in `LICENSE-ConPTY.txt`). Rio loads `conpty.dll` from its own directory
+only, never from `PATH`, and logs `Using conpty.dll for pseudoconsole`
+when it does. Without the files Rio falls back to the pseudoconsole built
+into Windows.
 
-1. `conpty.dll` — must match Rio's architecture (x64 or arm64).
-2. `OpenConsole.exe` — must match your system architecture.
+If you installed Rio another way, such as `cargo install rioterm`, copy
+these from the portable zip for your architecture into the directory that
+holds `rio.exe`:
 
-Both must be present; `conpty.dll` alone silently falls back to the in-box
-console host. They are redistributable (MIT) via the
-[`Microsoft.Windows.Console.ConPTY`](https://www.nuget.org/packages/Microsoft.Windows.Console.ConPTY)
-NuGet package — download it (a `.nupkg` is a zip), then copy
-`runtimes/win-x64/native/conpty.dll` and
-`build/native/runtimes/x64/OpenConsole.exe` beside `rio.exe`.
+1. `conpty.dll` (matches Rio's architecture: x64 or arm64)
+2. the `OpenConsole.exe` folders, `x64\` and `arm64\` in the x86_64 zip
+   and `arm64\` in the aarch64 zip (keep the folders; `conpty.dll` picks
+   the one that matches your machine)
+3. `LICENSE-ConPTY.txt`
 
-With both files in place, Rio loads the newer ConPTY automatically and
-image previews work.
+`conpty.dll` alone silently falls back to the in-box console host, so the
+`OpenConsole.exe` folder for your machine has to be there too.
+
+The shipped version is the stable release that fixed every report above;
+Rio pins it by version and hash in
+[`misc/windows/conhost/fetch.ps1`](https://github.com/raphamorim/rio/blob/main/misc/windows/conhost/fetch.ps1).
+One upstream problem is still open: a cursor position report sent while a
+long image upload is in flight can cut the upload short
+([microsoft/terminal#19621](https://github.com/microsoft/terminal/issues/19621)),
+which shows up as a missing image and stray base64 text with very large
+kitty images. If you hit it, report the Rio version and the image size.
