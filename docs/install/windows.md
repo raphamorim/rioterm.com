@@ -67,8 +67,8 @@ render nothing ([#1759](https://github.com/raphamorim/rio/issues/1759),
 restored when a TUI exits, and the IME candidate window lands in the
 corner ([#2031](https://github.com/raphamorim/rio/issues/2031)).
 
-Since 0.5.32 the MSI installer and the portable zip ship a modern
-pseudoconsole beside `rio.exe`: `conpty.dll` and `OpenConsole.exe` from
+The MSI installer and the portable zip ship a modern pseudoconsole
+beside `rio.exe`: `conpty.dll` and `OpenConsole.exe` from
 the Windows Terminal project, version 1.25.261109001 (MIT, the notice is
 in `LICENSE-ConPTY.txt`). Rio loads `conpty.dll` from its own directory
 only, never from `PATH`, and logs `Using conpty.dll for pseudoconsole`
